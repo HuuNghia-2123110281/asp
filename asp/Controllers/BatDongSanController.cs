@@ -6,20 +6,36 @@ namespace asp.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CategoryController1 : ControllerBase
+    public class BatDongSanController : ControllerBase
     {
         // GET: api/<CategoryController1>
         [HttpGet]
-        public IEnumerable<string> Get()
+        public IEnumerable<BatDongSan> Get()
         {
-            return new string[] { "value1", "value2" };
+            return new List<BatDongSan>()
+    {
+        new BatDongSan {
+            Id = 1,
+            TieuDe = "Căn hộ cao cấp Vinhomes",
+            DiaChi = "Bình Thạnh, TP.HCM",
+            Gia = 4500000000,
+            LoaiHinh = "Căn hộ"
+        },
+        new BatDongSan {
+            Id = 2,
+            TieuDe = "Đất nền sổ đỏ chính chủ",
+            DiaChi = "Đức Hòa, Long An",
+            Gia = 1200000000,   
+            LoaiHinh = "Đất nền"
+        }
+    };
         }
 
         // GET api/<CategoryController1>/5
         [HttpGet("{id}")]
-        public string Get(int id)
+        public BatDongSan Get(int id)
         {
-            return "value";
+            return new BatDongSan { Id = id, TieuDe = "Căn hộ mẫu", DiaChi = "Địa chỉ mẫu", Gia = 0 };
         }
 
         // POST api/<CategoryController1>

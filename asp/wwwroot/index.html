@@ -1,0 +1,134 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web Bất Động Sản - Nguyễn Hữu Nghĩa</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f0f2f5;
+            padding: 20px;
+            margin: 0;
+        }
+
+        h1 {
+            text-align: center;
+            color: #1a73e8;
+            margin-bottom: 30px;
+            text-transform: uppercase;
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 25px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+
+            .card:hover {
+                transform: translateY(-5px);
+            }
+
+        .card-img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            background: #ddd;
+        }
+
+        .card-content {
+            padding: 20px;
+        }
+
+        .card h3 {
+            margin: 0 0 10px 0;
+            font-size: 1.3em;
+            color: #333;
+        }
+
+        .address {
+            color: #666;
+            font-size: 0.9em;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+
+        .price {
+            color: #e91e63;
+            font-weight: bold;
+            font-size: 1.4em;
+            margin: 10px 0;
+        }
+
+        .badge {
+            display: inline-block;
+            background: #e8f0fe;
+            color: #1a73e8;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Bất Động Sản Nghĩa</h1>
+
+    <div id="list-bds" class="container">
+        <p style="text-align: center;">Đang tải dữ liệu...</p>
+    </div>
+
+    <script>
+        // QUAN TRỌNG: Đường dẫn đã đổi thành /api/BatDongSan theo Controller mới của bạn
+        const API_URL = '/api/BatDongSan';
+
+        function loadData() {
+            fetch(API_URL)
+                .then(res => {
+                    if (!res.ok) throw new Error("Không thể kết nối API");
+                    return res.json();
+                })
+                .then(data => {
+                    let html = '';
+                    data.forEach(item => {
+                        // Tạo hình ảnh ngẫu nhiên cho sinh động (vì Model của bạn chưa có ảnh)
+                        const randomImg = `https://loremflickr.com/400/300/house,villa?lock=${item.id}`;
+
+                        html += `
+                                <div class="card">
+                                    <img src="${randomImg}" class="card-img" alt="House">
+                                    <div class="card-content">
+                                        <span class="badge">${item.loaiHinh}</span>
+                                        <h3>${item.tieuDe}</h3>
+                                        <p class="address">📍 ${item.diaChi}</p>
+                                        <p class="price">${item.gia.toLocaleString('vi-VN')} VNĐ</p>
+                                        <button style="width:100%; padding:10px; border:none; background:#1a73e8; color:white; border-radius:5px; cursor:pointer;">Xem chi tiết</button>
+                                    </div>
+                                </div>
+                            `;
+                    });
+                    document.getElementById('list-bds').innerHTML = html;
+                })
+                .catch(err => {
+                    console.error("Lỗi:", err);
+                    document.getElementById('list-bds').innerHTML = `<p style="color:red; text-align:center;">Lỗi: Không gọi được API. Hãy chắc chắn bạn đã chạy dự án ASP.NET!</p>`;
+                });
+        }
+
+        // Chạy hàm load dữ liệu khi trang web mở lên
+        loadData();
+    </script>
+</body>
+</html>
