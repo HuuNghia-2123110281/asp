@@ -1,0 +1,191 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chi tiết Bất Động Sản - BĐS Nghĩa</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #1a73e8;
+            --accent: #e91e63;
+            --dark: #202124;
+            --gray: #5f6368;
+        }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #f4f7f6;
+            margin: 0;
+        }
+
+        header {
+            background: white;
+            padding: 15px 5%;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+        }
+
+        .back-btn {
+            text-decoration: none;
+            color: var(--primary);
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 30px auto;
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 25px rgba(0,0,0,0.1);
+        }
+
+        .main-img {
+            width: 100%;
+            height: 500px;
+            object-fit: cover;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .price {
+            color: var(--accent);
+            font-size: 32px;
+            font-weight: 800;
+            margin-bottom: 10px;
+        }
+
+        .title {
+            font-size: 28px;
+            margin: 0 0 15px 0;
+            color: var(--dark);
+        }
+
+        .address {
+            color: var(--gray);
+            margin-bottom: 30px;
+            font-size: 18px;
+        }
+
+        .specs {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            padding: 20px 0;
+            border-top: 1px solid #eee;
+            border-bottom: 1px solid #eee;
+        }
+
+        .spec-item {
+            text-align: center;
+        }
+
+            .spec-item i {
+                font-size: 24px;
+                color: var(--primary);
+                margin-bottom: 8px;
+            }
+
+            .spec-item div {
+                font-weight: bold;
+                font-size: 18px;
+            }
+
+        .description {
+            margin-top: 30px;
+            line-height: 1.8;
+            color: #444;
+        }
+
+        .contact-box {
+            margin-top: 40px;
+            background: #e8f0fe;
+            padding: 25px;
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .btn-call {
+            background: var(--primary);
+            color: white;
+            padding: 15px 30px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <a href="index.html" class="back-btn"><i class="fas fa-arrow-left"></i> Quay lại danh sách</a>
+    </header>
+
+    <div id="detail-content" class="container">
+        <p style="padding: 50px; text-align: center;">Đang tải chi tiết bất động sản...</p>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const propertyId = urlParams.get('id');
+
+            if (propertyId) {
+                fetchPropertyDetail(propertyId);
+            } else {
+                document.getElementById('detail-content').innerHTML = "<p>Không tìm thấy ID sản phẩm!</p>";
+            }
+        });
+
+        async function fetchPropertyDetail(id) {
+            try {
+                const response = await fetch(`/api/BatDongSan/${id}`);
+                if (!response.ok) throw new Error("Không lấy được dữ liệu");
+
+                const item = await response.json();
+
+
+                const container = document.getElementById('detail-content');
+                const randomImg = `https://loremflickr.com/1000/600/villa,mansion?lock=${item.id}`;
+
+                container.innerHTML = `
+                    <img src="${randomImg}" class="main-img" alt="BĐS">
+                    <div class="content">
+                        <div class="price">${item.gia.toLocaleString('vi-VN')} VNĐ</div>
+                        <h1 class="title">${item.tieuDe}</h1>
+                        <div class="address"><i class="fas fa-map-marker-alt"></i> ${item.diaChi}</div>
+
+                        <div class="specs">
+                            <div class="spec-item"><i class="fas fa-home"></i><p>Loại hình</p><div>${item.loaiHinh}</div></div>
+                            <div class="spec-item"><i class="fas fa-bed"></i><p>Phòng ngủ</p><div>2 PN</div></div>
+                            <div class="spec-item"><i class="fas fa-expand-arrows-alt"></i><p>Diện tích</p><div>85 m²</div></div>
+                        </div>
+
+                        <div class="description">
+                            <h3>Mô tả chi tiết</h3>
+                            <p>${item.moTa || "Thông tin mô tả đang được cập nhật cho căn bất động sản này..."}</p>
+                        </div>
+
+                        <div class="contact-box">
+                            <div>
+                                <h4 style="margin:0">Liên hệ nhân viên kinh doanh</h4>
+                                <p style="margin:5px 0 0 0; color:var(--gray)">Hỗ trợ tư vấn pháp lý và xem nhà 24/7</p>
+                            </div>
+                            <a href="tel:0901234567" class="btn-call"><i class="fas fa-phone-alt"></i> Gọi ngay</a>
+                        </div>
+                    </div>
+                `;
+            } catch (err) {
+                document.getElementById('detail-content').innerHTML = `<p style="color:red; padding:50px;">Lỗi: ${err.message}</p>`;
+            }
+        }
+    </script>
+</body>
+</html>

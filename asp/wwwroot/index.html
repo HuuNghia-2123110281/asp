@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bất Động Sản Nghĩa - Hệ thống tìm kiếm nhà đất hàng đầu</title>
+    <title>Bất Động Sản Nghĩa - Hệ thống tìm kiếm nhà đất</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
@@ -16,41 +16,68 @@
 
         body {
             font-family: 'Segoe UI', Roboto, sans-serif;
-            background: #f8f9fa !important;
+            background: #f8f9fa;
             margin: 0;
-            color: #202124 !important;
+            color: #202124;
         }
 
-
+        /* HEADER CĂN GIỮA & NỔI BẬT */
         header {
             background: white;
-            padding: 15px 5%;
+            padding: 30px 5%;
             display: flex;
-            justify-content: space-between;
+            flex-direction: column; /* Xếp dọc để căn giữa tuyệt đối */
+            justify-content: center;
             align-items: center;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
             position: sticky;
             top: 0;
             z-index: 1000;
+            gap: 20px;
         }
 
         .logo {
-            font-size: 24px;
-            font-weight: bold;
+            font-size: 36px; /* Làm logo to hơn */
+            font-weight: 800;
             color: var(--primary);
             text-decoration: none;
+            letter-spacing: 2px;
+            text-transform: uppercase;
         }
 
-        nav a {
-            margin-left: 20px;
-            text-decoration: none;
-            color: var(--dark);
-            font-weight: 500;
+        nav {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 40px;
+            width: 100%;
         }
 
+            nav a {
+                text-decoration: none;
+                color: var(--dark);
+                font-weight: 600;
+                font-size: 20px; /* Chữ menu to hơn */
+                transition: 0.3s;
+            }
 
+                nav a:hover {
+                    color: var(--primary);
+                    transform: scale(1.1);
+                }
+
+        .auth-box {
+            margin-left: 10px;
+            padding-left: 20px;
+            border-left: 2px solid #eee;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        /* HERO SECTION */
         .hero {
-            background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://images.unsplash.com/photo-1560518883-ce09059eeffa?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
+            background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=1350&q=80');
             background-size: cover;
             background-position: center;
             height: 450px;
@@ -60,16 +87,20 @@
             align-items: center;
             color: white;
             text-align: center;
-            padding: 0 20px;
         }
+
+            .hero h1 {
+                font-size: 42px;
+                text-shadow: 2px 2px 10px rgba(0,0,0,0.5);
+            }
 
         .search-container {
             background: white;
-            padding: 20px;
+            padding: 15px;
             border-radius: 50px;
             display: flex;
             width: 90%;
-            max-width: 800px;
+            max-width: 700px;
             box-shadow: 0 10px 25px rgba(0,0,0,0.2);
             margin-top: 20px;
         }
@@ -78,45 +109,43 @@
                 flex: 1;
                 border: none;
                 padding: 10px 20px;
-                font-size: 16px;
                 outline: none;
+                font-size: 16px;
             }
 
         .search-btn {
             background: var(--primary);
             color: white;
             border: none;
-            padding: 12px 30px;
+            padding: 10px 25px;
             border-radius: 30px;
             cursor: pointer;
             font-weight: bold;
         }
 
-
-        .section-title {
-            text-align: center;
-            margin: 50px 0 30px;
-        }
-
+        /* DANH SÁCH BĐS */
         .container {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 25px;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 30px;
             max-width: 1200px;
-            margin: 0 auto 50px;
+            margin: 50px auto;
             padding: 0 20px;
         }
 
         .card {
             background: white;
-            border-radius: 12px;
+            border-radius: 15px;
             overflow: hidden;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
-            transition: 0.3s;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+            transition: 0.4s;
+            cursor: pointer;
+            position: relative;
         }
 
             .card:hover {
-                transform: translateY(-8px);
+                transform: translateY(-10px);
+                box-shadow: 0 15px 30px rgba(0,0,0,0.1);
             }
 
         .card-img-wrapper {
@@ -125,30 +154,52 @@
 
         .card-img {
             width: 100%;
-            height: 200px;
+            height: 230px;
             object-fit: cover;
         }
 
         .price-tag {
             position: absolute;
-            bottom: 10px;
-            left: 10px;
+            bottom: 15px;
+            left: 15px;
             background: var(--accent);
             color: white;
-            padding: 5px 15px;
-            border-radius: 5px;
+            padding: 7px 15px;
+            border-radius: 8px;
             font-weight: bold;
+            font-size: 18px;
         }
+
+        /* NÚT YÊU THÍCH */
+        .wishlist-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: var(--gray);
+            transition: 0.3s;
+            z-index: 10;
+        }
+
+            .wishlist-btn:hover {
+                transform: scale(1.2);
+                color: var(--accent);
+            }
+
+            .wishlist-btn.active {
+                color: var(--accent);
+            }
 
         .card-content {
-            padding: 20px;
-        }
-
-        .card h3 {
-            margin: 10px 0;
-            font-size: 1.1em;
-            height: 2.4em;
-            overflow: hidden;
+            padding: 25px;
         }
 
         .info-row {
@@ -161,131 +212,116 @@
             margin-top: 15px;
         }
 
-        /* 5. Footer */
         footer {
             background: var(--dark);
             color: white;
-            padding: 50px 5% 20px;
-            margin-top: 50px;
-        }
-
-        .footer-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 40px;
-            max-width: 1200px;
-            margin: 0 auto;
+            padding: 50px 5%;
+            text-align: center;
+            margin-top: 60px;
         }
     </style>
 </head>
 <body>
 
     <header>
-        <a href="#" class="logo"><i class="fas fa-home"></i> BĐS NGHĨA</a>
+        <a href="index.html" class="logo"><i class="fas fa-home"></i> BĐS NGHĨA</a>
         <nav>
-            <a href="#">Trang chủ</a>
+            <a href="index.html">Trang chủ</a>
             <a href="#">Nhà đất bán</a>
             <a href="#">Cho thuê</a>
-            <a href="#">Tin tức</a>
-            <a href="#" style="color: var(--primary);"><i class="fas fa-user-circle"></i> Đăng nhập</a>
+            <div class="auth-box" id="auth-section">
+                <a href="login.html" style="color: var(--primary);"><i class="fas fa-user-circle"></i> Đăng nhập</a>
+            </div>
         </nav>
     </header>
 
     <section class="hero">
-        <h1>Tìm kiếm tổ ấm tương lai của bạn</h1>
-        <p>Hơn 10,000+ tin đăng bất động sản được xác thực mỗi ngày</p>
+        <h1>Khám phá ngôi nhà mơ ước</h1>
         <div class="search-container">
-            <input type="text" placeholder="Nhập địa điểm, loại nhà đất, dự án...">
-            <button class="search-btn"><i class="fas fa-search"></i> Tìm kiếm</button>
+            <input type="text" placeholder="Nhập địa điểm, dự án...">
+            <button class="search-btn">Tìm kiếm</button>
         </div>
     </section>
 
-    <div class="section-title">
-        <h2>Bất động sản nổi bật</h2>
-        <p>Những cơ hội đầu tư và an cư tốt nhất dành cho bạn</p>
-    </div>
-
     <div id="list-bds" class="container">
-        <p style="text-align: center; grid-column: 1/-1;">Đang kết nối đến hệ thống...</p>
+        <p style="text-align: center; grid-column: 1/-1;">Đang tải dữ liệu từ MongoDB...</p>
     </div>
 
     <footer>
-        <div class="footer-grid">
-            <div>
-                <h3>BĐS NGHĨA</h3>
-                <p>Cung cấp dịch vụ bất động sản chuyên nghiệp, minh bạch và tận tâm.</p>
-            </div>
-            <div>
-                <h4>Liên hệ</h4>
-                <p><i class="fas fa-phone"></i> 0123 456 789</p>
-                <p><i class="fas fa-envelope"></i> contact@nghiabds.vn</p>
-            </div>
-            <div>
-                <h4>Theo dõi</h4>
-                <div style="font-size: 20px;">
-                    <i class="fab fa-facebook-square"></i> &nbsp;
-                    <i class="fab fa-youtube"></i> &nbsp;
-                    <i class="fab fa-zalo"></i>
-                </div>
-            </div>
-        </div>
-        <hr style="margin: 30px 0; border: 0.5px solid #444;">
-        <p style="text-align: center; font-size: 0.8em; color: #888;">© 2026 Nguyễn Hữu Nghĩa - Real Estate Template</p>
+        <p>© 2026 Nguyễn Hữu Nghĩa - Hệ thống quản lý BĐS chuyên nghiệp</p>
     </footer>
 
     <script>
-        const API_URL = '/api/BatDongSan';
+        document.addEventListener("DOMContentLoaded", () => {
+            const fullName = localStorage.getItem("username");
+            const authSection = document.getElementById("auth-section");
+
+            if (fullName) {
+                authSection.innerHTML = `
+                        <span style="font-size: 18px; font-weight:600;"><i class="fas fa-user"></i> ${fullName}</span>
+                        <a href="#" class="logout-btn" onclick="logout()" style="font-size:18px; margin-left:15px;">Thoát</a>
+                    `;
+            }
+            loadData();
+        });
+
+        function logout() {
+            localStorage.removeItem("username");
+            window.location.reload();
+        }
+
+        // Xử lý yêu thích
+        function toggleFavorite(event, btn) {
+            event.stopPropagation(); // Ngăn việc nhấn tim bị nhảy vào trang chi tiết
+            btn.classList.toggle('active');
+            const icon = btn.querySelector('i');
+            icon.style.color = btn.classList.contains('active') ? '#e91e63' : '#5f6368';
+        }
+
+        // Xem chi tiết
+        function viewDetail(id) {
+            window.location.href = `detail.html?id=${id}`;
+        }
 
         function loadData() {
-            fetch(API_URL)
-                .then(res => {
-                    if (!res.ok) throw new Error("API Offline");
-                    return res.json();
-                })
+            fetch('/api/BatDongSan')
+                .then(res => res.json())
                 .then(data => {
                     let html = '';
-                    data.forEach(item => {
-                        const randomImg = `https://loremflickr.com/400/300/house,villa?lock=${item.id}`;
-
-                        html += `
-                                <div class="card">
-                                    <div class="card-img-wrapper">
-                                        <img src="${randomImg}" class="card-img" alt="House">
-                                        <span class="price-tag">${item.gia.toLocaleString('vi-VN')} đ</span>
-                                    </div>
-                                    <div class="card-content">
-                                        <span style="color: var(--primary); font-size: 12px; font-weight:bold; text-transform: uppercase;">
-                                            ${item.loaiHinh}
-                                        </span>
-                                        <h3>${item.tieuDe}</h3>
-                                        <p style="color: #666; font-size: 14px;"><i class="fas fa-map-marker-alt"></i> ${item.diaChi}</p>
-
-                                        <div class="info-row">
-                                            <span><i class="fas fa-bed"></i> 2 PN</span>
-                                            <span><i class="fas fa-bath"></i> 1 WC</span>
-                                            <span><i class="fas fa-ruler-combined"></i> 75m²</span>
+                    if (data.length === 0) {
+                        html = '<p style="grid-column: 1/-1; text-align:center;">Chưa có dữ liệu nhà đất nào.</p>';
+                    } else {
+                        data.forEach(item => {
+                            const randomImg = `https://loremflickr.com/400/300/house,villa?lock=${item.id}`;
+                            html += `
+                                    <div class="card" onclick="viewDetail('${item.id}')">
+                                        <div class="card-img-wrapper">
+                                            <img src="${randomImg}" class="card-img" alt="House">
+                                            <span class="price-tag">${item.gia.toLocaleString('vi-VN')} đ</span>
+                                            <button class="wishlist-btn" onclick="toggleFavorite(event, this)">
+                                                <i class="fas fa-heart"></i>
+                                            </button>
                                         </div>
-                                        <button style="margin-top:15px; width:100%; padding:10px; border:1px solid var(--primary); background:white; color:var(--primary); border-radius:5px; cursor:pointer; font-weight:bold; transition: 0.2s;" onmouseover="this.style.background='var(--primary)'; this.style.color='white'" onmouseout="this.style.background='white'; this.style.color='var(--primary)'">
-                                            Xem chi tiết
-                                        </button>
+                                        <div class="card-content">
+                                            <small style="color:var(--primary); font-weight:bold; text-transform:uppercase;">${item.loaiHinh}</small>
+                                            <h3 style="margin: 10px 0; font-size:22px;">${item.tieuDe}</h3>
+                                            <p style="color: #666; font-size: 14px;"><i class="fas fa-map-marker-alt"></i> ${item.diaChi}</p>
+                                            <div class="info-row">
+                                                <span><i class="fas fa-bed"></i> 2 PN</span>
+                                                <span><i class="fas fa-bath"></i> 2 WC</span>
+                                                <span><i class="fas fa-expand"></i> 80m²</span>
+                                            </div>
+                                        </div>
                                     </div>
-                                </div>
-                            `;
-                    });
+                                `;
+                        });
+                    }
                     document.getElementById('list-bds').innerHTML = html;
                 })
                 .catch(err => {
-                    console.error("Lỗi:", err);
-                    document.getElementById('list-bds').innerHTML = `
-                            <div style="grid-column: 1/-1; text-align:center; padding: 50px;">
-                                <i class="fas fa-plug" style="font-size: 40px; color: #ccc;"></i>
-                                <p style="color:#666; margin-top: 10px;">Đang chạy ở chế độ Demo (Không tìm thấy API ASP.NET)</p>
-                            </div>
-                        `;
+                    document.getElementById('list-bds').innerHTML = `<p style="color:red; text-align:center; grid-column:1/-1;">Lỗi: ${err.message}</p>`;
                 });
         }
-
-        loadData();
     </script>
 </body>
 </html>

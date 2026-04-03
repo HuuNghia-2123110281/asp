@@ -1,8 +1,14 @@
-namespace asp
+using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
+
+namespace asp.Data
 {
     public class BatDongSan
     {
-        public int Id { get; set; }
+        [BsonId]
+        [BsonRepresentation(BsonType.ObjectId)]
+        public string? Id { get; set; }
+
         public string TieuDe { get; set; }
         public string DiaChi { get; set; }
         public decimal Gia { get; set; }
