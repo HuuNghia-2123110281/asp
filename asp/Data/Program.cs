@@ -1,21 +1,20 @@
 ﻿using MongoDB.Driver;
-using asp.Data; // Đảm bảo đúng namespace chứa class BatDongSan của bạn
+using asp.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// 1. Lấy thông tin cấu hình từ appsettings.json
+
 var mongoConnectionString = builder.Configuration.GetSection("MongoDB:ConnectionString").Value;
 var mongoDatabaseName = builder.Configuration.GetSection("MongoDB:DatabaseName").Value;
 
-// 2. Kết nối và Đăng ký MongoDB (Thay thế hoàn toàn SQL Server)
+
 var mongoClient = new MongoClient(mongoConnectionString);
 var mongoDatabase = mongoClient.GetDatabase(mongoDatabaseName);
 
-// Đăng ký IMongoDatabase dưới dạng Singleton để các Controller có thể sử dụng
 builder.Services.AddSingleton(mongoDatabase);
 builder.Services.AddSingleton<IMongoClient>(mongoClient);
 
-// 3. Cấu hình CORS (Giữ nguyên để giao diện HTML gọi được API)
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll", policy =>
@@ -26,21 +25,27 @@ builder.Services.AddCors(options =>
     });
 });
 
-// 4. Thêm dịch vụ Controller và Swagger
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+
+builder.Services.AddSwaggerGen(options =>
+{
+    options.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
+    {
+        Title = "NguyenHuuNghia_2123110281",
+        Version = "v1",
+        Description = "Hệ thống API Bất Động Sản của Nguyễn Hữu Nghĩa"
+    });
+});
 
 var app = builder.Build();
 
-
-    app.UseSwagger();
-    app.UseSwaggerUI();
-
+app.UseSwagger();
+app.UseSwaggerUI();
 
 app.UseHttpsRedirection();
 
-// Cho phép chạy file index.html từ thư mục wwwroot
+
 app.UseDefaultFiles();
 app.UseStaticFiles();
 
