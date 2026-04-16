@@ -78,7 +78,7 @@
 
                 if (response.ok) {
                     alert("Chào mừng " + (result.fullName || user.Username));
-                    localStorage.setItem("user", JSON.stringify(result)); // Lưu thông tin đăng nhập
+                    localStorage.setItem("username", result.fullName || user.Username);
                     window.location.href = "index.html"; // Chuyển sang trang chủ
                 } else {
                     document.getElementById('message').innerText = result.message || "Sai tài khoản!";
