@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MongoDB.Driver;
-using asp.Data; // Đảm bảo đúng namespace chứa file User.cs của bạn
+using asp.Data;
 
 namespace asp.Controllers
 {
@@ -27,6 +27,12 @@ namespace asp.Controllers
                 return BadRequest(new { message = "Tài khoản này đã có người sử dụng!" });
             }
 
+            // Tự động gán quyền KhachHang cho tài khoản mới đăng ký trên web
+            if (string.IsNullOrEmpty(user.Role))
+            {
+                user.Role = "KhachHang";
+            }
+
             // Lưu người dùng mới vào MongoDB
             await _userCollection.InsertOneAsync(user);
             return Ok(new { message = "Đăng ký thành công!" });
@@ -45,8 +51,9 @@ namespace asp.Controllers
             return Ok(new
             {
                 message = "Đăng nhập thành công!",
-                fullName = user.FullName ?? user.Username, // Nếu không có FullName thì lấy Username hiện lên
-                username = user.Username
+                fullName = user.FullName ?? user.Username,
+                username = user.Username,
+                role = user.Role
             });
         }
     }
