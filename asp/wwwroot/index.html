@@ -12,6 +12,7 @@
             --dark: #202124;
             --gray: #5f6368;
             --light: #f8f9fa;
+            --success: #00a652; /* Màu xanh lá chuẩn của nút Đăng tin */
         }
 
         body {
@@ -21,63 +22,133 @@
             color: #202124;
         }
 
-        /* HEADER CĂN GIỮA & NỔI BẬT */
+        /* TÂN TRANG LẠI HEADER: CHUYÊN NGHIỆP - DÀN HÀNG NGANG */
         header {
             background: white;
-            padding: 30px 5%;
+            padding: 15px 4%;
             display: flex;
-            flex-direction: column;
-            justify-content: center;
+            flex-direction: row; /* Dàn hàng ngang */
+            justify-content: space-between; /* Đẩy Logo trái, Nút phải */
             align-items: center;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
             position: sticky;
             top: 0;
             z-index: 1000;
-            gap: 20px;
         }
 
         .logo {
-            font-size: 36px;
+            font-size: 28px;
             font-weight: 800;
             color: var(--primary);
             text-decoration: none;
-            letter-spacing: 2px;
             text-transform: uppercase;
-        }
-
-        nav {
             display: flex;
             align-items: center;
-            justify-content: center;
-            gap: 40px;
-            width: 100%;
+            gap: 10px;
         }
 
-            nav a {
+        /* THANH MENU Ở GIỮA */
+        .nav-links {
+            display: flex;
+            gap: 30px;
+            align-items: center;
+        }
+
+            .nav-links a {
                 text-decoration: none;
                 color: var(--dark);
                 font-weight: 600;
-                font-size: 20px;
-                transition: 0.3s;
+                font-size: 16px;
+                padding: 10px 0;
+                position: relative;
+                transition: color 0.3s;
             }
 
-                nav a:hover {
+                .nav-links a:hover {
                     color: var(--primary);
-                    transform: scale(1.1);
                 }
 
+                /* Hiệu ứng gạch chân chạy ra khi Hover giống các web xịn */
+                .nav-links a::after {
+                    content: '';
+                    position: absolute;
+                    width: 0;
+                    height: 3px;
+                    bottom: 0;
+                    left: 0;
+                    background-color: var(--primary);
+                    transition: width 0.3s ease-in-out;
+                    border-radius: 2px;
+                }
+
+                .nav-links a:hover::after {
+                    width: 100%;
+                }
+
+        /* KHU VỰC NÚT BẤM BÊN PHẢI */
         .auth-box {
-            margin-left: 10px;
-            padding-left: 20px;
-            border-left: 2px solid #eee;
             display: flex;
             align-items: center;
             gap: 15px;
         }
 
+        /* Định dạng chung cho các nút bấm trên Header */
+        .btn-header {
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 15px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+            cursor: pointer;
+            border: 1px solid transparent;
+        }
+
+        .btn-outline {
+            border-color: var(--gray);
+            color: var(--dark);
+            background: transparent;
+        }
+
+            .btn-outline:hover {
+                border-color: var(--primary);
+                color: var(--primary);
+                background: #f0f4f8;
+            }
+
+        .btn-post {
+            background: var(--success);
+            color: white;
+            box-shadow: 0 4px 6px rgba(0, 166, 82, 0.2);
+        }
+
+            .btn-post:hover {
+                background: #008a44;
+                transform: translateY(-2px);
+            }
+
+        .btn-admin {
+            background: var(--dark);
+            color: white;
+        }
+
+        .user-greeting {
+            font-weight: 600;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding-right: 15px;
+            border-right: 1px solid #ddd;
+        }
+
+
         /* HERO SECTION */
         .hero {
-            background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=1350&q=80');
+            background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1350&q=80');
             background-size: cover;
             background-position: center;
             height: 450px;
@@ -141,6 +212,7 @@
             transition: 0.4s;
             cursor: pointer;
             position: relative;
+            border: 1px solid #eee;
         }
 
             .card:hover {
@@ -170,7 +242,6 @@
             font-size: 18px;
         }
 
-        /* NÚT YÊU THÍCH */
         .wishlist-btn {
             position: absolute;
             top: 15px;
@@ -224,27 +295,31 @@
 <body>
 
     <header>
-        <a href="index.html" class="logo"><i class="fas fa-home"></i> BĐS NGHĨA</a>
-        <nav>
+        <a href="index.html" class="logo"><i class="fas fa-city"></i> BĐS NGHĨA</a>
+
+        <nav class="nav-links">
             <a href="index.html">Trang chủ</a>
             <a href="#">Nhà đất bán</a>
             <a href="#">Cho thuê</a>
-            <div class="auth-box" id="auth-section">
-                <a href="login.html" style="color: var(--primary);"><i class="fas fa-user-circle"></i> Đăng nhập</a>
-            </div>
+            <a href="#">Dự án</a>
+            <a href="#">Tin tức</a>
         </nav>
+
+        <div class="auth-box" id="auth-section">
+            <a href="login.html" class="btn-header btn-outline"><i class="fas fa-user-circle"></i> Đăng nhập</a>
+        </div>
     </header>
 
     <section class="hero">
         <h1>Khám phá ngôi nhà mơ ước</h1>
         <div class="search-container">
-            <input type="text" placeholder="Nhập địa điểm, dự án...">
-            <button class="search-btn">Tìm kiếm</button>
+            <input type="text" placeholder="Nhập địa điểm, dự án, từ khóa...">
+            <button class="search-btn"><i class="fas fa-search"></i> Tìm kiếm</button>
         </div>
     </section>
 
     <div id="list-bds" class="container">
-        <p style="text-align: center; grid-column: 1/-1;">Đang tải dữ liệu từ MongoDB...</p>
+        <p style="text-align: center; grid-column: 1/-1; padding: 50px;"><i class="fas fa-spinner fa-spin"></i> Đang tải dữ liệu từ máy chủ...</p>
     </div>
 
     <footer>
@@ -258,25 +333,28 @@
             const authSection = document.getElementById("auth-section");
 
             if (fullName) {
-                // 1. Hiển thị tên người dùng đã đăng nhập
-                let menuHTML = `<span style="font-size: 18px; font-weight:600;"><i class="fas fa-user"></i> ${fullName}</span>`;
+                // Hiển thị tên tài khoản có gạch dọc ngăn cách
+                let menuHTML = `<div class="user-greeting">
+                                       <i class="fas fa-user-circle" style="font-size: 22px; color: var(--primary);"></i>
+                                       ${fullName}
+                                    </div>`;
 
-                // 2. PHÂN QUYỀN ĐIỀU HƯỚNG
+                // Phân quyền hiện nút bấm cực xịn
                 if (role === "Admin") {
                     menuHTML += `
-                <a href="admin-dashboard.html" style="margin-left:15px; font-size:18px; color: #e91e63;"><i class="fas fa-cogs"></i> Quản trị</a>
-                <a href="add-property.html" style="margin-left:15px; font-size:18px; color: #28a745;"><i class="fas fa-plus-circle"></i> Đăng tin</a>
-            `;
+                            <a href="admin-dashboard.html" class="btn-header btn-admin"><i class="fas fa-chart-pie"></i> Quản trị</a>
+                            <a href="add-property.html" class="btn-header btn-post"><i class="fas fa-edit"></i> Đăng tin</a>
+                        `;
                 }
                 else if (role === "Sales") {
                     menuHTML += `
-                <a href="add-property.html" style="margin-left:15px; font-size:18px; color: #28a745;"><i class="fas fa-plus-circle"></i> Đăng tin</a>
-                <a href="manage-clients.html" style="margin-left:15px; font-size:18px; color: #1a73e8;"><i class="fas fa-users"></i> Khách hàng</a>
-            `;
+                            <a href="manage-clients.html" class="btn-header btn-outline"><i class="fas fa-users"></i> Khách hàng</a>
+                            <a href="add-property.html" class="btn-header btn-post"><i class="fas fa-edit"></i> Đăng tin</a>
+                        `;
                 }
 
-                // 3. Nút đăng xuất dùng chung cho tất cả
-                menuHTML += `<a href="#" class="logout-btn" onclick="logout()" style="font-size:18px; margin-left:15px; border-left: 1px solid #ccc; padding-left: 15px;">Thoát</a>`;
+                // Nút đăng xuất chữ xám
+                menuHTML += `<a href="#" onclick="logout()" style="color: var(--gray); text-decoration: none; margin-left: 10px; font-weight: bold;"><i class="fas fa-sign-out-alt"></i> Thoát</a>`;
 
                 authSection.innerHTML = menuHTML;
             }
@@ -284,13 +362,11 @@
         });
 
         function logout() {
-            // XÓA SẠCH DỮ LIỆU KHI ĐĂNG XUẤT
             localStorage.removeItem("username");
             localStorage.removeItem("role");
             window.location.reload();
         }
 
-        // Xử lý yêu thích
         function toggleFavorite(event, btn) {
             event.stopPropagation();
             btn.classList.toggle('active');
@@ -298,7 +374,6 @@
             icon.style.color = btn.classList.contains('active') ? '#e91e63' : '#5f6368';
         }
 
-        // Xem chi tiết
         function viewDetail(id) {
             window.location.href = `detail.html?id=${id}`;
         }
@@ -312,28 +387,30 @@
                         html = '<p style="grid-column: 1/-1; text-align:center;">Chưa có dữ liệu nhà đất nào.</p>';
                     } else {
                         data.forEach(item => {
+                            // Lấy ảnh thật, nếu lỗi dùng ảnh mặc định
                             const realImg = item.hinhAnhUrl ? item.hinhAnhUrl : `https://loremflickr.com/400/300/house?lock=${item.id}`;
+
                             html += `
-                                        <div class="card" onclick="viewDetail('${item.id}')">
-                                            <div class="card-img-wrapper">
-                                                <img src="${realImg}" class="card-img" alt="House">
-                                                <span class="price-tag">${item.gia.toLocaleString('vi-VN')} đ</span>
-                                                <button class="wishlist-btn" onclick="toggleFavorite(event, this)">
-                                                    <i class="fas fa-heart"></i>
-                                                </button>
-                                            </div>
-                                            <div class="card-content">
-                                                <small style="color:var(--primary); font-weight:bold; text-transform:uppercase;">${item.loaiHinh}</small>
-                                                <h3 style="margin: 10px 0; font-size:22px;">${item.tieuDe}</h3>
-                                                <p style="color: #666; font-size: 14px;"><i class="fas fa-map-marker-alt"></i> ${item.diaChi}</p>
-                                                <div class="info-row">
-                                                    <span><i class="fas fa-bed"></i> 2 PN</span>
-                                                    <span><i class="fas fa-bath"></i> 2 WC</span>
-                                                    <span><i class="fas fa-expand"></i> 80m²</span>
-                                                </div>
+                                    <div class="card" onclick="viewDetail('${item.id}')">
+                                        <div class="card-img-wrapper">
+                                            <img src="${realImg}" class="card-img" alt="House">
+                                            <span class="price-tag">${item.gia.toLocaleString('vi-VN')} đ</span>
+                                            <button class="wishlist-btn" onclick="toggleFavorite(event, this)">
+                                                <i class="fas fa-heart"></i>
+                                            </button>
+                                        </div>
+                                        <div class="card-content">
+                                            <small style="color:var(--primary); font-weight:bold; text-transform:uppercase;">${item.loaiHinh}</small>
+                                            <h3 style="margin: 10px 0; font-size:22px;">${item.tieuDe}</h3>
+                                            <p style="color: #666; font-size: 14px;"><i class="fas fa-map-marker-alt"></i> ${item.diaChi}</p>
+
+                                            <div class="info-row">
+                                                <span><i class="fas fa-bed"></i> ${item.phongNgu || 0} PN</span>
+                                                <span><i class="fas fa-expand"></i> ${item.dienTich || 0} m²</span>
                                             </div>
                                         </div>
-                                    `;
+                                    </div>
+                                `;
                         });
                     }
                     document.getElementById('list-bds').innerHTML = html;
