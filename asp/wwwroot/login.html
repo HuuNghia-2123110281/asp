@@ -78,8 +78,12 @@
 
                 if (response.ok) {
                     alert("Chào mừng " + (result.fullName || user.Username));
+
+
                     localStorage.setItem("username", result.fullName || user.Username);
-                    window.location.href = "index.html"; // Chuyển sang trang chủ
+                    localStorage.setItem("role", result.role || "KhachHang");
+
+                    window.location.href = "index.html";
                 } else {
                     document.getElementById('message').innerText = result.message || "Sai tài khoản!";
                 }

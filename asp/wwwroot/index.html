@@ -26,7 +26,7 @@
             background: white;
             padding: 30px 5%;
             display: flex;
-            flex-direction: column; /* Xếp dọc để căn giữa tuyệt đối */
+            flex-direction: column;
             justify-content: center;
             align-items: center;
             box-shadow: 0 4px 15px rgba(0,0,0,0.08);
@@ -37,7 +37,7 @@
         }
 
         .logo {
-            font-size: 36px; /* Làm logo to hơn */
+            font-size: 36px;
             font-weight: 800;
             color: var(--primary);
             text-decoration: none;
@@ -57,7 +57,7 @@
                 text-decoration: none;
                 color: var(--dark);
                 font-weight: 600;
-                font-size: 20px; /* Chữ menu to hơn */
+                font-size: 20px;
                 transition: 0.3s;
             }
 
@@ -254,25 +254,41 @@
     <script>
         document.addEventListener("DOMContentLoaded", () => {
             const fullName = localStorage.getItem("username");
+            const role = localStorage.getItem("role"); // Lấy chức vụ
             const authSection = document.getElementById("auth-section");
 
             if (fullName) {
-                authSection.innerHTML = `
-                        <span style="font-size: 18px; font-weight:600;"><i class="fas fa-user"></i> ${fullName}</span>
-                        <a href="#" class="logout-btn" onclick="logout()" style="font-size:18px; margin-left:15px;">Thoát</a>
-                    `;
+                // Hiển thị tên người dùng
+                let menuHTML = `<span style="font-size: 18px; font-weight:600;"><i class="fas fa-user"></i> ${fullName}</span>`;
+
+                // PHÂN QUYỀN GIAO DIỆN
+                if (role === "Admin") {
+                    menuHTML += `<a href="admin-dashboard.html" style="margin-left:15px; font-size:18px; color: #e91e63;"><i class="fas fa-cogs"></i> Quản trị</a>`;
+                } else if (role === "Sales") {
+                    menuHTML += `
+                            <a href="add-property.html" style="margin-left:15px; font-size:18px; color: #28a745;"><i class="fas fa-plus-circle"></i> Đăng tin</a>
+                            <a href="manage-clients.html" style="margin-left:15px; font-size:18px; color: #1a73e8;"><i class="fas fa-users"></i> Khách hàng</a>
+                        `;
+                }
+
+                // Nút đăng xuất (Dành cho tất cả)
+                menuHTML += `<a href="#" class="logout-btn" onclick="logout()" style="font-size:18px; margin-left:15px; border-left: 1px solid #ccc; padding-left: 15px;">Thoát</a>`;
+
+                authSection.innerHTML = menuHTML;
             }
             loadData();
         });
 
         function logout() {
+            // XÓA SẠCH DỮ LIỆU KHI ĐĂNG XUẤT
             localStorage.removeItem("username");
+            localStorage.removeItem("role");
             window.location.reload();
         }
 
         // Xử lý yêu thích
         function toggleFavorite(event, btn) {
-            event.stopPropagation(); // Ngăn việc nhấn tim bị nhảy vào trang chi tiết
+            event.stopPropagation();
             btn.classList.toggle('active');
             const icon = btn.querySelector('i');
             icon.style.color = btn.classList.contains('active') ? '#e91e63' : '#5f6368';
@@ -294,26 +310,26 @@
                         data.forEach(item => {
                             const randomImg = `https://loremflickr.com/400/300/house,villa?lock=${item.id}`;
                             html += `
-                                    <div class="card" onclick="viewDetail('${item.id}')">
-                                        <div class="card-img-wrapper">
-                                            <img src="${randomImg}" class="card-img" alt="House">
-                                            <span class="price-tag">${item.gia.toLocaleString('vi-VN')} đ</span>
-                                            <button class="wishlist-btn" onclick="toggleFavorite(event, this)">
-                                                <i class="fas fa-heart"></i>
-                                            </button>
-                                        </div>
-                                        <div class="card-content">
-                                            <small style="color:var(--primary); font-weight:bold; text-transform:uppercase;">${item.loaiHinh}</small>
-                                            <h3 style="margin: 10px 0; font-size:22px;">${item.tieuDe}</h3>
-                                            <p style="color: #666; font-size: 14px;"><i class="fas fa-map-marker-alt"></i> ${item.diaChi}</p>
-                                            <div class="info-row">
-                                                <span><i class="fas fa-bed"></i> 2 PN</span>
-                                                <span><i class="fas fa-bath"></i> 2 WC</span>
-                                                <span><i class="fas fa-expand"></i> 80m²</span>
+                                        <div class="card" onclick="viewDetail('${item.id}')">
+                                            <div class="card-img-wrapper">
+                                                <img src="${randomImg}" class="card-img" alt="House">
+                                                <span class="price-tag">${item.gia.toLocaleString('vi-VN')} đ</span>
+                                                <button class="wishlist-btn" onclick="toggleFavorite(event, this)">
+                                                    <i class="fas fa-heart"></i>
+                                                </button>
+                                            </div>
+                                            <div class="card-content">
+                                                <small style="color:var(--primary); font-weight:bold; text-transform:uppercase;">${item.loaiHinh}</small>
+                                                <h3 style="margin: 10px 0; font-size:22px;">${item.tieuDe}</h3>
+                                                <p style="color: #666; font-size: 14px;"><i class="fas fa-map-marker-alt"></i> ${item.diaChi}</p>
+                                                <div class="info-row">
+                                                    <span><i class="fas fa-bed"></i> 2 PN</span>
+                                                    <span><i class="fas fa-bath"></i> 2 WC</span>
+                                                    <span><i class="fas fa-expand"></i> 80m²</span>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                `;
+                                    `;
                         });
                     }
                     document.getElementById('list-bds').innerHTML = html;
