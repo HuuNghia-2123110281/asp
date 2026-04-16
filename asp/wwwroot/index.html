@@ -312,11 +312,11 @@
                         html = '<p style="grid-column: 1/-1; text-align:center;">Chưa có dữ liệu nhà đất nào.</p>';
                     } else {
                         data.forEach(item => {
-                            const randomImg = `https://loremflickr.com/400/300/house,villa?lock=${item.id}`;
+                            const realImg = item.hinhAnhUrl ? item.hinhAnhUrl : `https://loremflickr.com/400/300/house?lock=${item.id}`;
                             html += `
                                         <div class="card" onclick="viewDetail('${item.id}')">
                                             <div class="card-img-wrapper">
-                                                <img src="${randomImg}" class="card-img" alt="House">
+                                                <img src="${realImg}" class="card-img" alt="House">
                                                 <span class="price-tag">${item.gia.toLocaleString('vi-VN')} đ</span>
                                                 <button class="wishlist-btn" onclick="toggleFavorite(event, this)">
                                                     <i class="fas fa-heart"></i>
