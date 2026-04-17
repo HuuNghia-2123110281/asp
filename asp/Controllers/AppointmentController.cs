@@ -1,6 +1,8 @@
 ﻿using asp.Data;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Driver;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace asp.Controllers
 {
@@ -10,9 +12,8 @@ namespace asp.Controllers
     {
         private readonly IMongoCollection<Appointment> _appointmentCollection;
 
-        public AppointmentController(IMongoClient mongoClient)
+        public AppointmentController(IMongoDatabase database)
         {
-            var database = mongoClient.GetDatabase("BdsDB");
             _appointmentCollection = database.GetCollection<Appointment>("Appointments");
         }
 
@@ -20,7 +21,9 @@ namespace asp.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Appointment>>> GetAll()
         {
-            var appointments = await _appointmentCollection.Find(_ => true).ToListAsync();
+            var appointments = await _appointmentCollection.Find(_ => true)
+                .SortByDescending(a => a.AppointmentDate)
+                .ToListAsync();
             return Ok(appointments);
         }
 
@@ -32,7 +35,7 @@ namespace asp.Controllers
             return Ok(new { message = "Tạo lịch hẹn thành công!", data = appointment });
         }
 
-        // 3. Cập nhật trạng thái lịch hẹn (Ví dụ: Chuyển sang "Đã xem" hoặc "Hủy")
+        // 3. Cập nhật trạng thái lịch hẹn 
         [HttpPut("{id}/status")]
         public async Task<ActionResult> UpdateStatus(string id, [FromBody] string newStatus)
         {
