@@ -10,13 +10,11 @@ namespace asp.Data
         [BsonRepresentation(BsonType.ObjectId)]
         public string? Id { get; set; }
 
-        [BsonRepresentation(BsonType.ObjectId)]
         public string CustomerId { get; set; } = null!;
 
         [BsonRepresentation(BsonType.ObjectId)]
         public string PropertyId { get; set; } = null!;
 
-        [BsonRepresentation(BsonType.ObjectId)]
         public string? UserId { get; set; }
 
         [BsonElement("AppointmentDate")]
