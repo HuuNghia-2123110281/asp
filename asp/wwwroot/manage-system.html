@@ -1,0 +1,242 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cấu hình Hệ thống - BĐS Nghĩa</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #1a73e8;
+            --dark: #202124;
+            --bg: #f4f7f6;
+            --success: #28a745;
+            --danger: #dc3545;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+            background-color: var(--bg);
+            margin: 0;
+        }
+
+        header {
+            background: var(--dark);
+            padding: 15px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 800;
+            color: white;
+            text-decoration: none;
+            text-transform: uppercase;
+        }
+
+        .nav-links a {
+            color: #ddd;
+            text-decoration: none;
+            font-weight: bold;
+            margin-left: 20px;
+            transition: 0.3s;
+        }
+
+            .nav-links a:hover {
+                color: white;
+            }
+
+        .container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 25px;
+        }
+
+        .box {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            border-top: 4px solid var(--primary);
+        }
+
+            .box h3 {
+                margin-top: 0;
+                color: var(--dark);
+                border-bottom: 1px solid #eee;
+                padding-bottom: 10px;
+                margin-bottom: 20px;
+            }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+            .form-group input {
+                width: 100%;
+                padding: 12px;
+                border: 1px solid #ccc;
+                border-radius: 6px;
+                outline: none;
+                box-sizing: border-box;
+                font-size: 14px;
+            }
+
+                .form-group input:focus {
+                    border-color: var(--primary);
+                }
+
+        .btn-add {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+            width: 100%;
+        }
+
+            .btn-add:hover {
+                opacity: 0.9;
+            }
+
+        .data-list {
+            margin-top: 20px;
+            max-height: 250px;
+            overflow-y: auto;
+            border: 1px solid #eee;
+            border-radius: 6px;
+            background: #fafafa;
+        }
+
+        .data-item {
+            padding: 10px 15px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 14px;
+        }
+
+            .data-item:last-child {
+                border-bottom: none;
+            }
+
+            .data-item strong {
+                color: var(--dark);
+            }
+    </style>
+</head>
+<body>
+
+    <header>
+        <a href="index.html" class="logo"><i class="fas fa-cogs"></i> CẤU HÌNH HỆ THỐNG</a>
+        <nav class="nav-links">
+            <a href="admin-dashboard.html"><i class="fas fa-chart-line"></i> Dashboard</a>
+            <a href="index.html"><i class="fas fa-home"></i> Trang chủ</a>
+        </nav>
+    </header>
+
+    <div class="container">
+        <p style="text-align: center; color: #666; margin-bottom: 30px;">Trang dành riêng cho Quản trị viên (Admin) thiết lập các dữ liệu nền tảng trước khi Sales tiến hành đăng BĐS.</p>
+
+        <div class="grid-3">
+            <div class="box">
+                <h3><i class="fas fa-tags"></i> Quản lý Loại Bất Động Sản</h3>
+                <div class="form-group"><input type="text" id="catName" placeholder="Tên loại (VD: Căn hộ, Shophouse)..."></div>
+                <div class="form-group"><input type="text" id="catDesc" placeholder="Mô tả ngắn (Tùy chọn)..."></div>
+                <button class="btn-add" onclick="addCategory()"><i class="fas fa-plus"></i> THÊM LOẠI BĐS</button>
+                <div class="data-list" id="list-categories">Đang tải...</div>
+            </div>
+
+            <div class="box" style="border-color: var(--success);">
+                <h3><i class="fas fa-building"></i> Quản lý Dự Án</h3>
+                <div class="form-group"><input type="text" id="projName" placeholder="Tên dự án (VD: Vinhomes)..."></div>
+                <div class="form-group"><input type="text" id="projInvestor" placeholder="Chủ đầu tư (VD: Vingroup)..."></div>
+                <button class="btn-add" style="background: var(--success);" onclick="addProject()"><i class="fas fa-plus"></i> THÊM DỰ ÁN</button>
+                <div class="data-list" id="list-projects">Đang tải...</div>
+            </div>
+
+            <div class="box" style="border-color: var(--warning);">
+                <h3><i class="fas fa-user-tie"></i> Quản lý Chủ Nhà Ký Gửi</h3>
+                <div class="form-group"><input type="text" id="ownName" placeholder="Họ tên Chủ nhà..."></div>
+                <div class="form-group"><input type="text" id="ownPhone" placeholder="Số điện thoại..."></div>
+                <div class="form-group"><input type="text" id="ownID" placeholder="CCCD (Tùy chọn)..."></div>
+                <button class="btn-add" style="background: var(--warning); color: black;" onclick="addOwner()"><i class="fas fa-plus"></i> THÊM CHỦ NHÀ</button>
+                <div class="data-list" id="list-owners">Đang tải...</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const role = localStorage.getItem("role");
+            if (role !== "Admin") {
+                alert("⛔ Chỉ Admin mới có quyền truy cập trang cấu hình hệ thống!");
+                window.location.href = "index.html";
+                return;
+            }
+            loadAllData();
+        });
+
+        function loadAllData() {
+            // Tải Danh mục
+            fetch('/api/Category').then(res => res.json()).then(data => {
+                let html = '';
+                data.forEach(d => html += `<div class="data-item"><strong>${d.name}</strong></div>`);
+                document.getElementById('list-categories').innerHTML = html || '<div class="data-item">Chưa có dữ liệu</div>';
+            });
+
+            // Tải Dự án
+            fetch('/api/Project').then(res => res.json()).then(data => {
+                let html = '';
+                data.forEach(d => html += `<div class="data-item"><strong>${d.name}</strong> <small style="color:#666;">${d.investor||''}</small></div>`);
+                document.getElementById('list-projects').innerHTML = html || '<div class="data-item">Chưa có dữ liệu</div>';
+            });
+
+            // Tải Chủ nhà
+            fetch('/api/Owner').then(res => res.json()).then(data => {
+                let html = '';
+                data.forEach(d => html += `<div class="data-item"><strong>${d.fullName}</strong> <span style="color:var(--primary)">${d.phone}</span></div>`);
+                document.getElementById('list-owners').innerHTML = html || '<div class="data-item">Chưa có dữ liệu</div>';
+            });
+        }
+
+        async function addCategory() {
+            const name = document.getElementById('catName').value.trim();
+            if(!name) return alert("Vui lòng nhập tên loại BĐS!");
+            await fetch('/api/Category', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({name: name, description: document.getElementById('catDesc').value}) });
+            document.getElementById('catName').value = '';
+            loadAllData();
+        }
+
+        async function addProject() {
+            const name = document.getElementById('projName').value.trim();
+            if(!name) return alert("Vui lòng nhập tên Dự án!");
+            await fetch('/api/Project', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({name: name, investor: document.getElementById('projInvestor').value}) });
+            document.getElementById('projName').value = '';
+            loadAllData();
+        }
+
+        async function addOwner() {
+            const name = document.getElementById('ownName').value.trim();
+            const phone = document.getElementById('ownPhone').value.trim();
+            if(!name || !phone) return alert("Vui lòng nhập Tên và Số điện thoại chủ nhà!");
+            await fetch('/api/Owner', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({fullName: name, phone: phone, idCard: document.getElementById('ownID').value}) });
+            document.getElementById('ownName').value = ''; document.getElementById('ownPhone').value = '';
+            loadAllData();
+        }
+    </script>
+</body>
+</html>

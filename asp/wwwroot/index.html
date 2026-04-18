@@ -347,6 +347,7 @@
 
                 if (role === "Admin") {
                     menuHTML += `
+                                <a href="manage-system.html" class="btn-header btn-outline"><i class="fas fa-cogs"></i> Cấu hình</a>
                                 <a href="manage-transactions.html" class="btn-header btn-outline"><i class="fas fa-handshake"></i> Giao dịch</a>
                                 <a href="admin-dashboard.html" class="btn-header btn-admin"><i class="fas fa-chart-pie"></i> Quản trị</a>
                                 <a href="add-property.html" class="btn-header btn-post"><i class="fas fa-edit"></i> Đăng tin</a>
@@ -364,10 +365,8 @@
                 authSection.innerHTML = menuHTML;
             }
 
-            // Tải danh sách mặc định khi mới vào web
             loadData();
 
-            // LẮNG NGHE SỰ KIỆN PHÍM ENTER
             document.getElementById("searchKeyword").addEventListener("keypress", function (event) {
                 if (event.key === "Enter") {
                     event.preventDefault();
