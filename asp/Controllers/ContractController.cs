@@ -1,6 +1,10 @@
-﻿using asp.Data;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using MongoDB.Driver;
+using asp.Data;
+using Microsoft.AspNetCore.Http;
+using System.IO;
+using System.Threading.Tasks;
+using System;
 
 namespace asp.Controllers
 {
@@ -10,44 +14,49 @@ namespace asp.Controllers
     {
         private readonly IMongoCollection<Contract> _contractCollection;
 
-        public ContractController(IMongoClient mongoClient)
+        public ContractController(IMongoDatabase database)
         {
-            var database = mongoClient.GetDatabase("BdsDB");
             _contractCollection = database.GetCollection<Contract>("Contracts");
         }
 
-        // 1. Lấy danh sách tất cả hợp đồng
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<Contract>>> GetAll()
+        // Upload file PDF Hợp đồng
+        [HttpPost("upload")]
+        public async Task<IActionResult> UploadContract([FromForm] string transactionId, [FromForm] string contractNumber, IFormFile file)
         {
-            var contracts = await _contractCollection.Find(_ => true).ToListAsync();
-            return Ok(contracts);
-        }
+            if (file == null || file.Length == 0 || file.ContentType != "application/pdf")
+                return BadRequest(new { message = "Vui lòng chọn file định dạng PDF!" });
 
-        // 2. Tìm hợp đồng theo mã giao dịch
-        [HttpGet("transaction/{transactionId}")]
-        public async Task<ActionResult<Contract>> GetByTransaction(string transactionId)
-        {
-            var contract = await _contractCollection.Find(c => c.TransactionId == transactionId).FirstOrDefaultAsync();
-            if (contract == null) return NotFound(new { message = "Giao dịch này chưa có hợp đồng" });
-            return Ok(contract);
-        }
+            // Tạo thư mục nếu chưa có
+            var uploadDir = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads", "contracts");
+            if (!Directory.Exists(uploadDir)) Directory.CreateDirectory(uploadDir);
 
-        // 3. Tạo mới hợp đồng
-        [HttpPost]
-        public async Task<ActionResult> Create(Contract contract)
-        {
+            // Lưu file với tên ngẫu nhiên để tránh trùng lặp
+            var fileName = $"{Guid.NewGuid()}_{file.FileName}";
+            var filePath = Path.Combine(uploadDir, fileName);
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                await file.CopyToAsync(stream);
+            }
+
+            // Lưu vào MongoDB
+            var contract = new Contract
+            {
+                TransactionId = transactionId,
+                ContractNumber = contractNumber,
+                FileUrl = $"/uploads/contracts/{fileName}"
+            };
             await _contractCollection.InsertOneAsync(contract);
+
             return Ok(new { message = "Lưu hợp đồng thành công!", data = contract });
         }
 
-        // 4. Xóa hợp đồng
-        [HttpDelete("{id}")]
-        public async Task<ActionResult> Delete(string id)
+        // Lấy hợp đồng ra xem
+        [HttpGet("transaction/{transId}")]
+        public async Task<IActionResult> GetByTransaction(string transId)
         {
-            var result = await _contractCollection.DeleteOneAsync(c => c.Id == id);
-            if (result.DeletedCount == 0) return NotFound();
-            return Ok(new { message = "Đã xóa hợp đồng" });
+            var contract = await _contractCollection.Find(c => c.TransactionId == transId).FirstOrDefaultAsync();
+            if (contract == null) return NotFound();
+            return Ok(contract);
         }
     }
 }

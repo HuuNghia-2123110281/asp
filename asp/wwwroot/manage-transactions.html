@@ -203,6 +203,23 @@
         </table>
     </div>
 
+    <div id="contractModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:1000; align-items:center; justify-content:center;">
+        <div style="background:white; padding:30px; border-radius:12px; width:400px; box-shadow: 0 10px 30px rgba(0,0,0,0.2);">
+            <h3 style="margin-top:0; color:var(--primary);"><i class="fas fa-file-upload"></i> Tải lên Hợp Đồng (PDF)</h3>
+            <input type="hidden" id="modalTransId">
+            <div class="form-row" style="margin-bottom:15px;">
+                <input type="text" id="contractNum" placeholder="Số hợp đồng (VD: HD-001)" style="width:100%;">
+            </div>
+            <div class="form-row" style="margin-bottom:20px;">
+                <input type="file" id="contractFile" accept="application/pdf" style="width:100%; border: 1px dashed #ccc; padding: 20px; background: #f9f9f9;">
+            </div>
+            <div style="display:flex; justify-content:flex-end; gap:10px;">
+                <button onclick="closeModal()" class="action-btn" style="background:#ccc; color:black;">Hủy</button>
+                <button onclick="submitContract()" class="action-btn" style="background:var(--primary); color:white;"><i class="fas fa-save"></i> Lưu Hợp Đồng</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         let customersList = [];
         let propertiesList = [];
@@ -230,6 +247,7 @@
 
                 let cusHtml = '<option value="">-- Chọn Khách hàng chốt đơn --</option>';
                 customersList.forEach(c => cusHtml += `<option value="${c.id}">${c.name} - ${c.phone}</option>`);
+                cusHtml += `<option value="Khách Web tự đặt">Khách Web tự đặt</option>`; // Thêm lựa chọn này
                 document.getElementById('selectCusId').innerHTML = cusHtml;
 
                 let propHtml = '<option value="">-- Chọn Bất động sản --</option>';
@@ -237,7 +255,7 @@
                 document.getElementById('selectPropId').innerHTML = propHtml;
 
                 loadTransactions();
-            } catch(err) {
+            } catch (err) {
                 console.error("Lỗi", err);
             }
         }
@@ -266,13 +284,17 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(data)
                 });
+
+                const responseData = await res.json();
+
                 if (res.ok) {
                     msg.style.color = "green"; msg.innerText = "✅ Tạo Giao dịch thành công!";
                     document.getElementById('transPrice').value = "";
                     loadTransactions();
                     setTimeout(() => msg.innerText = "", 3000);
                 } else {
-                    msg.style.color = "red"; msg.innerText = "Có lỗi xảy ra khi tạo giao dịch!";
+                    // Hiển thị thông báo lỗi từ server (Ví dụ: Lỗi bán trùng nhà)
+                    msg.style.color = "red"; msg.innerText = responseData.message || "Có lỗi xảy ra khi tạo giao dịch!";
                 }
             } catch (err) {
                 msg.style.color = "red"; msg.innerText = "Lỗi kết nối server!";
@@ -298,25 +320,25 @@
                             if (t.status === "Đã hủy") statusClass = "da-huy";
 
                             html += `
-                                <tr>
-                                    <td style="color:#666; font-size:12px; font-weight:bold;">#${t.id ? t.id.slice(-5).toUpperCase() : 'NEW'}</td>
-                                    <td>${cus.name}</td>
-                                    <td style="font-weight:bold; color:var(--primary);">${prop.tieuDe}</td>
-                                    <td>
-                                        <span style="color:#666;">${t.type}</span><br>
-                                        <strong style="color:var(--accent); font-size:16px;">${t.price.toLocaleString('vi-VN')} đ</strong>
-                                    </td>
-                                    <td><span class="status ${statusClass}">${t.status}</span></td>
-                                    <td>
-                                        ${t.status === 'Đang xử lý' ? `
-                                            <button class="action-btn" style="background:#28a745; color:white;" onclick="updateStatus('${t.id}', 'Hoàn tất')"><i class="fas fa-check"></i> Hoàn tất</button>
-                                            <button class="action-btn" style="background:#dc3545; color:white;" onclick="updateStatus('${t.id}', 'Đã hủy')"><i class="fas fa-times"></i> Hủy</button>
-                                        ` : `
-                                            <button class="action-btn" style="background:#1a73e8; color:white;" onclick="alert('Chức năng in và tải Hợp đồng PDF đang được cập nhật!')"><i class="fas fa-file-pdf"></i> Hợp đồng</button>
-                                        `}
-                                    </td>
-                                </tr>
-                            `;
+                                    <tr>
+                                        <td style="color:#666; font-size:12px; font-weight:bold;">#${t.id ? t.id.slice(-5).toUpperCase() : 'NEW'}</td>
+                                        <td>${cus.name}</td>
+                                        <td style="font-weight:bold; color:var(--primary);">${prop.tieuDe}</td>
+                                        <td>
+                                            <span style="color:#666;">${t.type}</span><br>
+                                            <strong style="color:var(--accent); font-size:16px;">${t.price.toLocaleString('vi-VN')} đ</strong>
+                                        </td>
+                                        <td><span class="status ${statusClass}">${t.status}</span></td>
+                                        <td>
+                                            ${t.status === 'Đang xử lý' ? `
+                                                <button class="action-btn" style="background:#28a745; color:white;" onclick="updateStatus('${t.id}', 'Hoàn tất')"><i class="fas fa-check"></i> Hoàn tất</button>
+                                                <button class="action-btn" style="background:#dc3545; color:white;" onclick="updateStatus('${t.id}', 'Đã hủy')"><i class="fas fa-times"></i> Hủy</button>
+                                            ` : `
+                                                <button class="action-btn" style="background:#1a73e8; color:white;" onclick="openContractModal('${t.id}')"><i class="fas fa-file-pdf"></i> Quản lý Hợp đồng</button>
+                                            `}
+                                        </td>
+                                    </tr>
+                                `;
                         });
                     }
                     document.getElementById('transaction-list').innerHTML = html;
@@ -325,7 +347,7 @@
 
         // 4. CẬP NHẬT TRẠNG THÁI GIAO DỊCH
         async function updateStatus(id, newStatus) {
-            if(!confirm(`Chuyển trạng thái giao dịch thành: ${newStatus}?`)) return;
+            if (!confirm(`Chuyển trạng thái giao dịch thành: ${newStatus}?`)) return;
             try {
                 await fetch(`/api/Transaction/${id}/status`, {
                     method: 'PUT',
@@ -335,6 +357,63 @@
                 loadTransactions();
             } catch (err) {
                 alert("Lỗi kết nối, không thể cập nhật!");
+            }
+        }
+
+        // 5. MỞ HỘP THOẠI HỢP ĐỒNG HOẶC XEM PDF
+        function openContractModal(transId) {
+            // Gọi API kiểm tra xem giao dịch này đã có hợp đồng PDF tải lên chưa
+            fetch(`/api/Contract/transaction/${transId}`)
+                .then(res => {
+                    if (res.ok) return res.json();
+                    throw new Error('Chưa có hợp đồng');
+                })
+                .then(data => {
+                    // Đã có hợp đồng -> Mở tab mới để hiển thị thẳng file PDF
+                    window.open(data.fileUrl, '_blank');
+                })
+                .catch(() => {
+                    // Chưa có -> Mở hộp thoại yêu cầu tải lên
+                    document.getElementById('modalTransId').value = transId;
+                    document.getElementById('contractModal').style.display = 'flex';
+                });
+        }
+
+        // 6. ĐÓNG HỘP THOẠI HỢP ĐỒNG
+        function closeModal() {
+            document.getElementById('contractModal').style.display = 'none';
+        }
+
+        // 7. GỬI FILE HỢP ĐỒNG PDF LÊN MÁY CHỦ
+        async function submitContract() {
+            const transId = document.getElementById('modalTransId').value;
+            const contractNum = document.getElementById('contractNum').value.trim();
+            const fileInput = document.getElementById('contractFile').files[0];
+
+            if (!contractNum || !fileInput) {
+                alert("Vui lòng nhập số hợp đồng và chọn file PDF!");
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append("transactionId", transId);
+            formData.append("contractNumber", contractNum);
+            formData.append("file", fileInput);
+
+            try {
+                const res = await fetch('/api/Contract/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (res.ok) {
+                    alert("Tải lên hợp đồng thành công!");
+                    closeModal();
+                } else {
+                    alert("Có lỗi xảy ra khi tải file lên máy chủ!");
+                }
+            } catch (err) {
+                alert("Lỗi kết nối!");
             }
         }
     </script>

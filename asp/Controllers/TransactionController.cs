@@ -27,10 +27,21 @@ namespace asp.Controllers
             return Ok(list);
         }
 
-        // 2. Tạo giao dịch mới (Module 5.3.1)
+        // 2. Tạo giao dịch mới (Kèm Fix lỗi TC07)
         [HttpPost]
         public async Task<IActionResult> Post(Transaction transaction)
         {
+            // KIỂM TRA LOGIC TC07: BĐS này đã bị chốt hay chưa?
+            var existing = await _transactionCollection.Find(t =>
+                t.PropertyId == transaction.PropertyId &&
+                (t.Status == "Đang xử lý" || t.Status == "Hoàn tất")
+            ).FirstOrDefaultAsync();
+
+            if (existing != null)
+            {
+                return BadRequest(new { message = "LỖI: Bất động sản này đã được giao dịch, không thể thao tác!" });
+            }
+
             transaction.Date = System.DateTime.Now;
             if (string.IsNullOrEmpty(transaction.Status))
             {
