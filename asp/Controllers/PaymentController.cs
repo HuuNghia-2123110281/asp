@@ -1,6 +1,8 @@
-﻿using asp.Data;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using MongoDB.Driver;
+using asp.Data;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace asp.Controllers
 {
@@ -10,43 +12,31 @@ namespace asp.Controllers
     {
         private readonly IMongoCollection<Payment> _paymentCollection;
 
-        public PaymentController(IMongoClient mongoClient)
+        public PaymentController(IMongoDatabase database)
         {
-            var database = mongoClient.GetDatabase("BdsDB");
             _paymentCollection = database.GetCollection<Payment>("Payments");
         }
 
-        // 1. Lấy tất cả lịch sử thanh toán (Toàn hệ thống)
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<Payment>>> GetAll()
+        // 1. Lấy toàn bộ lịch sử thanh toán của 1 Giao dịch
+        [HttpGet("transaction/{transId}")]
+        public async Task<ActionResult<IEnumerable<Payment>>> GetByTransaction(string transId)
         {
-            var payments = await _paymentCollection.Find(_ => true).ToListAsync();
-            return Ok(payments);
+            var list = await _paymentCollection.Find(p => p.TransactionId == transId)
+                .SortByDescending(p => p.PaymentDate)
+                .ToListAsync();
+            return Ok(list);
         }
 
-        // 2. API QUAN TRỌNG: Lấy lịch sử đóng tiền của một Giao dịch cụ thể
-        [HttpGet("transaction/{transactionId}")]
-        public async Task<ActionResult<IEnumerable<Payment>>> GetByTransaction(string transactionId)
-        {
-            var payments = await _paymentCollection.Find(p => p.TransactionId == transactionId).ToListAsync();
-            return Ok(payments);
-        }
-
-        // 3. Ghi nhận một đợt thanh toán mới
+        // 2. Thêm một đợt thanh toán mới
         [HttpPost]
-        public async Task<ActionResult> Create(Payment payment)
+        public async Task<IActionResult> Create(Payment payment)
         {
-            await _paymentCollection.InsertOneAsync(payment);
-            return Ok(new { message = "Ghi nhận thanh toán thành công!", data = payment });
-        }
+            if (payment.Amount <= 0) return BadRequest(new { message = "Số tiền phải lớn hơn 0" });
 
-        // 4. Xóa một đợt thanh toán (Nếu nhập sai)
-        [HttpDelete("{id}")]
-        public async Task<ActionResult> Delete(string id)
-        {
-            var result = await _paymentCollection.DeleteOneAsync(p => p.Id == id);
-            if (result.DeletedCount == 0) return NotFound();
-            return Ok(new { message = "Đã xóa bản ghi thanh toán" });
+            payment.PaymentDate = System.DateTime.Now;
+            await _paymentCollection.InsertOneAsync(payment);
+
+            return Ok(new { message = "Ghi nhận thanh toán thành công!", data = payment });
         }
     }
 }

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quản lý Giao dịch - BĐS Nghĩa</title>
+    <title>Quản lý Giao dịch & Dòng tiền - BĐS Nghĩa</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
@@ -80,10 +80,6 @@
                 font-size: 15px;
             }
 
-                .form-row select:focus, .form-row input:focus {
-                    border-color: var(--primary);
-                }
-
         .btn-add {
             background: var(--success);
             color: white;
@@ -153,7 +149,37 @@
             font-weight: bold;
             font-size: 13px;
             margin-right: 5px;
+            margin-bottom: 5px;
         }
+
+        /* Box thống kê tiền */
+        .finance-summary {
+            display: flex;
+            gap: 10px;
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border: 1px solid #eee;
+        }
+
+        .finance-item {
+            flex: 1;
+            text-align: center;
+        }
+
+            .finance-item span {
+                display: block;
+                font-size: 12px;
+                color: #666;
+            }
+
+            .finance-item strong {
+                display: block;
+                font-size: 18px;
+                color: var(--dark);
+                margin-top: 5px;
+            }
     </style>
 </head>
 <body>
@@ -167,7 +193,6 @@
     </header>
 
     <div class="container">
-
         <div class="add-box">
             <h3><i class="fas fa-file-signature"></i> Tạo Giao Dịch Mới (Chốt Sale)</h3>
             <div class="form-row">
@@ -213,10 +238,48 @@
             <div class="form-row" style="margin-bottom:20px;">
                 <input type="file" id="contractFile" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" style="width:100%; border: 1px dashed #ccc; padding: 20px; background: #f9f9f9;">
             </div>
-            <p style="font-size:12px; color:#666; margin-top:-10px; margin-bottom:20px;">* Hỗ trợ định dạng: PDF, Word (.doc, .docx) và Ảnh (.jpg, .png)</p>
+            <p style="font-size:12px; color:#666; margin-top:-10px; margin-bottom:20px;">* Hỗ trợ định dạng: PDF, Word và Ảnh</p>
             <div style="display:flex; justify-content:flex-end; gap:10px;">
-                <button onclick="closeModal()" class="action-btn" style="background:#ccc; color:black;">Hủy</button>
+                <button onclick="closeContractModal()" class="action-btn" style="background:#ccc; color:black;">Hủy</button>
                 <button onclick="submitContract()" class="action-btn" style="background:var(--primary); color:white;"><i class="fas fa-save"></i> Lưu Hồ Sơ</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="paymentModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:1000; align-items:center; justify-content:center;">
+        <div style="background:white; padding:30px; border-radius:12px; width:600px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); max-height: 90vh; overflow-y: auto;">
+            <h3 style="margin-top:0; color:var(--primary);"><i class="fas fa-money-bill-wave"></i> Quản lý Thanh toán</h3>
+            <input type="hidden" id="payTransId">
+            <input type="hidden" id="payTotalPrice">
+
+            <div class="finance-summary">
+                <div class="finance-item"><span>Tổng giá trị giao dịch</span><strong id="lblTotal" style="color:var(--primary)">0 đ</strong></div>
+                <div class="finance-item"><span>Đã thu (Khách đóng)</span><strong id="lblPaid" style="color:var(--success)">0 đ</strong></div>
+                <div class="finance-item"><span>Số tiền còn thiếu</span><strong id="lblRemaining" style="color:var(--danger)">0 đ</strong></div>
+            </div>
+
+            <div style="background: #f9f9f9; padding: 15px; border-radius: 8px; margin-bottom: 20px; border: 1px dashed #ccc;">
+                <h4 style="margin-top:0; font-size:14px; color:#333;">+ Ghi nhận đợt thanh toán mới</h4>
+                <div class="form-row" style="margin-bottom:10px;">
+                    <input type="number" id="payAmount" placeholder="Số tiền thu (VNĐ)...">
+                    <select id="payMethod">
+                        <option value="Chuyển khoản">Chuyển khoản</option>
+                        <option value="Tiền mặt">Tiền mặt</option>
+                        <option value="Thẻ tín dụng">Thẻ tín dụng</option>
+                    </select>
+                </div>
+                <div class="form-row" style="margin-bottom:0;">
+                    <input type="text" id="payNote" placeholder="Ghi chú (VD: Thu cọc đợt 1)">
+                    <button onclick="submitPayment()" class="action-btn" style="background:var(--success); color:white; margin:0;"><i class="fas fa-plus"></i> Lưu</button>
+                </div>
+            </div>
+
+            <h4 style="margin-bottom: 10px; font-size: 14px; border-bottom: 2px solid #eee; padding-bottom: 5px;">Lịch sử các đợt đóng tiền</h4>
+            <div id="payment-history-list" style="font-size: 14px;">
+            </div>
+
+            <div style="display:flex; justify-content:flex-end; margin-top: 20px;">
+                <button onclick="closePaymentModal()" class="action-btn" style="background:#ccc; color:black;">Đóng cửa sổ</button>
             </div>
         </div>
     </div>
@@ -283,7 +346,6 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(data)
                 });
-
                 const responseData = await res.json();
 
                 if (res.ok) {
@@ -292,10 +354,10 @@
                     loadTransactions();
                     setTimeout(() => msg.innerText = "", 3000);
                 } else {
-                    msg.style.color = "red"; msg.innerText = responseData.message || "Có lỗi xảy ra khi tạo giao dịch!";
+                    msg.style.color = "red"; msg.innerText = responseData.message || "Lỗi giao dịch!";
                 }
             } catch (err) {
-                msg.style.color = "red"; msg.innerText = "Lỗi kết nối server!";
+                msg.style.color = "red"; msg.innerText = "Lỗi kết nối!";
             }
         }
 
@@ -329,9 +391,12 @@
                                             ${t.status === 'Đang xử lý' ? `
                                                 <button class="action-btn" style="background:#28a745; color:white;" onclick="updateStatus('${t.id}', 'Hoàn tất')"><i class="fas fa-check"></i> Hoàn tất</button>
                                                 <button class="action-btn" style="background:#dc3545; color:white;" onclick="updateStatus('${t.id}', 'Đã hủy')"><i class="fas fa-times"></i> Hủy</button>
-                                            ` : `
-                                                <button class="action-btn" style="background:#1a73e8; color:white;" onclick="openContractModal('${t.id}')"><i class="fas fa-file-contract"></i> Quản lý Hợp đồng</button>
-                                            `}
+                                            ` : ``}
+
+                                            ${(t.status === 'Đang xử lý' || t.status === 'Hoàn tất') ? `
+                                                <button class="action-btn" style="background:#1a73e8; color:white;" onclick="openContractModal('${t.id}')"><i class="fas fa-file-contract"></i> Hợp đồng</button>
+                                                <button class="action-btn" style="background:#ffc107; color:black;" onclick="openPaymentModal('${t.id}', ${t.price})"><i class="fas fa-money-bill-wave"></i> Dòng tiền</button>
+                                            ` : ''}
                                         </td>
                                     </tr>
                                 `;
@@ -345,44 +410,28 @@
             if (!confirm(`Chuyển trạng thái giao dịch thành: ${newStatus}?`)) return;
             try {
                 await fetch(`/api/Transaction/${id}/status`, {
-                    method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(newStatus)
+                    method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(newStatus)
                 });
                 loadTransactions();
-            } catch (err) {
-                alert("Lỗi kết nối, không thể cập nhật!");
-            }
+            } catch (err) { alert("Lỗi!"); }
         }
 
+        // --- CÁC HÀM XỬ LÝ HỢP ĐỒNG ---
         function openContractModal(transId) {
             fetch(`/api/Contract/transaction/${transId}`)
-                .then(res => {
-                    if (res.ok) return res.json();
-                    throw new Error('Chưa có hợp đồng');
-                })
-                .then(data => {
-                    window.open(data.fileUrl, '_blank');
-                })
+                .then(res => { if (res.ok) return res.json(); throw new Error('Chưa có'); })
+                .then(data => { window.open(data.fileUrl, '_blank'); })
                 .catch(() => {
                     document.getElementById('modalTransId').value = transId;
                     document.getElementById('contractModal').style.display = 'flex';
                 });
         }
-
-        function closeModal() {
-            document.getElementById('contractModal').style.display = 'none';
-        }
-
+        function closeContractModal() { document.getElementById('contractModal').style.display = 'none'; }
         async function submitContract() {
             const transId = document.getElementById('modalTransId').value;
             const contractNum = document.getElementById('contractNum').value.trim();
             const fileInput = document.getElementById('contractFile').files[0];
-
-            if (!contractNum || !fileInput) {
-                alert("Vui lòng nhập số/tên hợp đồng và chọn file đính kèm!");
-                return;
-            }
+            if (!contractNum || !fileInput) { alert("Nhập đủ thông tin HĐ!"); return; }
 
             const formData = new FormData();
             formData.append("transactionId", transId);
@@ -390,22 +439,88 @@
             formData.append("file", fileInput);
 
             try {
-                const res = await fetch('/api/Contract/upload', {
-                    method: 'POST',
-                    body: formData
+                const res = await fetch('/api/Contract/upload', { method: 'POST', body: formData });
+                if (res.ok) { alert("Tải lên thành công!"); closeContractModal(); }
+                else { alert("Lỗi server!"); }
+            } catch (err) { alert("Lỗi kết nối!"); }
+        }
+
+        // --- MỚI: CÁC HÀM XỬ LÝ THANH TOÁN (DÒNG TIỀN) ---
+        function openPaymentModal(transId, totalPrice) {
+            document.getElementById('payTransId').value = transId;
+            document.getElementById('payTotalPrice').value = totalPrice;
+            document.getElementById('lblTotal').innerText = totalPrice.toLocaleString('vi-VN') + ' đ';
+
+            document.getElementById('paymentModal').style.display = 'flex';
+            fetchPayments(transId, totalPrice);
+        }
+
+        function closePaymentModal() { document.getElementById('paymentModal').style.display = 'none'; }
+
+        function fetchPayments(transId, totalPrice) {
+            fetch(`/api/Payment/transaction/${transId}`)
+                .then(res => res.json())
+                .then(data => {
+                    let html = '';
+                    let totalPaid = 0;
+
+                    if (data.length === 0) {
+                        html = '<p style="color:#666; text-align:center;">Chưa có đợt thanh toán nào được ghi nhận.</p>';
+                    } else {
+                        data.forEach((p, index) => {
+                            totalPaid += p.amount;
+                            const dateObj = new Date(p.paymentDate);
+                            const formattedDate = dateObj.toLocaleString('vi-VN', { hour: '2-digit', minute: '2-digit', day: '2-digit', month: '2-digit', year: 'numeric' });
+
+                            html += `
+                                    <div style="display:flex; justify-content:space-between; padding: 10px 0; border-bottom: 1px solid #eee;">
+                                        <div>
+                                            <strong>Đợt ${data.length - index}: <span style="color:var(--success)">+ ${p.amount.toLocaleString('vi-VN')} đ</span></strong><br>
+                                            <small style="color:#666;">${p.note || 'Không có ghi chú'} - Bằng: ${p.method}</small>
+                                        </div>
+                                        <div style="color:#888; font-size:12px;">${formattedDate}</div>
+                                    </div>
+                                `;
+                        });
+                    }
+
+                    // Cập nhật Box Thống kê tiền
+                    document.getElementById('lblPaid').innerText = totalPaid.toLocaleString('vi-VN') + ' đ';
+                    const remaining = totalPrice - totalPaid;
+                    document.getElementById('lblRemaining').innerText = (remaining > 0 ? remaining : 0).toLocaleString('vi-VN') + ' đ';
+                    if (remaining <= 0) document.getElementById('lblRemaining').style.color = "var(--success)";
+
+                    document.getElementById('payment-history-list').innerHTML = html;
                 });
+        }
 
-                const responseData = await res.json();
+        async function submitPayment() {
+            const data = {
+                transactionId: document.getElementById('payTransId').value,
+                amount: parseFloat(document.getElementById('payAmount').value) || 0,
+                method: document.getElementById('payMethod').value,
+                note: document.getElementById('payNote').value.trim()
+            };
 
+            if (data.amount <= 0) { alert("Vui lòng nhập số tiền lớn hơn 0!"); return; }
+
+            try {
+                const res = await fetch('/api/Payment', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
                 if (res.ok) {
-                    alert("Tải lên hồ sơ thành công!");
-                    closeModal();
+                    // Xóa form và tải lại danh sách thanh toán
+                    document.getElementById('payAmount').value = '';
+                    document.getElementById('payNote').value = '';
+                    const transId = document.getElementById('payTransId').value;
+                    const totalPrice = parseFloat(document.getElementById('payTotalPrice').value);
+                    fetchPayments(transId, totalPrice);
                 } else {
-                    alert(responseData.message || "Có lỗi xảy ra khi tải file lên máy chủ!");
+                    alert("Lỗi khi lưu!");
                 }
-            } catch (err) {
-                alert("Lỗi kết nối!");
-            }
+            } catch (err) { alert("Lỗi kết nối!"); }
         }
     </script>
 </body>

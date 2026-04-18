@@ -1,5 +1,6 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
+using System;
 
 namespace asp.Data
 {
@@ -9,17 +10,15 @@ namespace asp.Data
         [BsonRepresentation(BsonType.ObjectId)]
         public string? Id { get; set; }
 
-        // Liên kết với _id của bảng Transactions
         [BsonRepresentation(BsonType.ObjectId)]
         public string TransactionId { get; set; } = null!;
 
-        [BsonElement("Amount")]
         public double Amount { get; set; }
 
-        [BsonElement("PaymentDate")]
-        public DateTime PaymentDate { get; set; }
-
-        [BsonElement("Method")]
         public string Method { get; set; } = "Chuyển khoản";
+
+        public DateTime PaymentDate { get; set; } = DateTime.Now;
+
+        public string? Note { get; set; }
     }
 }
