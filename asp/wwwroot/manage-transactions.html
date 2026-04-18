@@ -204,18 +204,19 @@
     </div>
 
     <div id="contractModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:1000; align-items:center; justify-content:center;">
-        <div style="background:white; padding:30px; border-radius:12px; width:400px; box-shadow: 0 10px 30px rgba(0,0,0,0.2);">
-            <h3 style="margin-top:0; color:var(--primary);"><i class="fas fa-file-upload"></i> Tải lên Hợp Đồng (PDF)</h3>
+        <div style="background:white; padding:30px; border-radius:12px; width:450px; box-shadow: 0 10px 30px rgba(0,0,0,0.2);">
+            <h3 style="margin-top:0; color:var(--primary);"><i class="fas fa-file-upload"></i> Tải lên Hợp Đồng / Giấy tờ</h3>
             <input type="hidden" id="modalTransId">
             <div class="form-row" style="margin-bottom:15px;">
-                <input type="text" id="contractNum" placeholder="Số hợp đồng (VD: HD-001)" style="width:100%;">
+                <input type="text" id="contractNum" placeholder="Số hợp đồng hoặc Ghi chú (VD: HD-001)" style="width:100%;">
             </div>
             <div class="form-row" style="margin-bottom:20px;">
-                <input type="file" id="contractFile" accept="application/pdf" style="width:100%; border: 1px dashed #ccc; padding: 20px; background: #f9f9f9;">
+                <input type="file" id="contractFile" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" style="width:100%; border: 1px dashed #ccc; padding: 20px; background: #f9f9f9;">
             </div>
+            <p style="font-size:12px; color:#666; margin-top:-10px; margin-bottom:20px;">* Hỗ trợ định dạng: PDF, Word (.doc, .docx) và Ảnh (.jpg, .png)</p>
             <div style="display:flex; justify-content:flex-end; gap:10px;">
                 <button onclick="closeModal()" class="action-btn" style="background:#ccc; color:black;">Hủy</button>
-                <button onclick="submitContract()" class="action-btn" style="background:var(--primary); color:white;"><i class="fas fa-save"></i> Lưu Hợp Đồng</button>
+                <button onclick="submitContract()" class="action-btn" style="background:var(--primary); color:white;"><i class="fas fa-save"></i> Lưu Hồ Sơ</button>
             </div>
         </div>
     </div>
@@ -234,7 +235,6 @@
             loadAllData();
         });
 
-        // 1. TẢI DỮ LIỆU ĐỔ VÀO MENU THẢ XUỐNG
         async function loadAllData() {
             try {
                 const [resCus, resProp] = await Promise.all([
@@ -247,7 +247,7 @@
 
                 let cusHtml = '<option value="">-- Chọn Khách hàng chốt đơn --</option>';
                 customersList.forEach(c => cusHtml += `<option value="${c.id}">${c.name} - ${c.phone}</option>`);
-                cusHtml += `<option value="Khách Web tự đặt">Khách Web tự đặt</option>`; // Thêm lựa chọn này
+                cusHtml += `<option value="Khách Web tự đặt">Khách Web tự đặt</option>`;
                 document.getElementById('selectCusId').innerHTML = cusHtml;
 
                 let propHtml = '<option value="">-- Chọn Bất động sản --</option>';
@@ -260,7 +260,6 @@
             }
         }
 
-        // 2. TẠO GIAO DỊCH MỚI
         async function createTransaction() {
             const msg = document.getElementById('msgTrans');
             const data = {
@@ -293,7 +292,6 @@
                     loadTransactions();
                     setTimeout(() => msg.innerText = "", 3000);
                 } else {
-                    // Hiển thị thông báo lỗi từ server (Ví dụ: Lỗi bán trùng nhà)
                     msg.style.color = "red"; msg.innerText = responseData.message || "Có lỗi xảy ra khi tạo giao dịch!";
                 }
             } catch (err) {
@@ -301,7 +299,6 @@
             }
         }
 
-        // 3. HIỂN THỊ DANH SÁCH GIAO DỊCH
         function loadTransactions() {
             fetch('/api/Transaction')
                 .then(res => res.json())
@@ -311,7 +308,6 @@
                         html = '<tr><td colspan="6" style="text-align: center;">Chưa có giao dịch nào.</td></tr>';
                     } else {
                         data.forEach(t => {
-                            // Map ID sang tên Khách & tên BĐS
                             const cus = customersList.find(c => c.id === t.customerId) || { name: `<strong>${t.customerId}</strong>` };
                             const prop = propertiesList.find(p => p.id === t.propertyId) || { tieuDe: 'BĐS đã xóa/ẩn' };
 
@@ -334,7 +330,7 @@
                                                 <button class="action-btn" style="background:#28a745; color:white;" onclick="updateStatus('${t.id}', 'Hoàn tất')"><i class="fas fa-check"></i> Hoàn tất</button>
                                                 <button class="action-btn" style="background:#dc3545; color:white;" onclick="updateStatus('${t.id}', 'Đã hủy')"><i class="fas fa-times"></i> Hủy</button>
                                             ` : `
-                                                <button class="action-btn" style="background:#1a73e8; color:white;" onclick="openContractModal('${t.id}')"><i class="fas fa-file-pdf"></i> Quản lý Hợp đồng</button>
+                                                <button class="action-btn" style="background:#1a73e8; color:white;" onclick="openContractModal('${t.id}')"><i class="fas fa-file-contract"></i> Quản lý Hợp đồng</button>
                                             `}
                                         </td>
                                     </tr>
@@ -345,7 +341,6 @@
                 });
         }
 
-        // 4. CẬP NHẬT TRẠNG THÁI GIAO DỊCH
         async function updateStatus(id, newStatus) {
             if (!confirm(`Chuyển trạng thái giao dịch thành: ${newStatus}?`)) return;
             try {
@@ -360,38 +355,32 @@
             }
         }
 
-        // 5. MỞ HỘP THOẠI HỢP ĐỒNG HOẶC XEM PDF
         function openContractModal(transId) {
-            // Gọi API kiểm tra xem giao dịch này đã có hợp đồng PDF tải lên chưa
             fetch(`/api/Contract/transaction/${transId}`)
                 .then(res => {
                     if (res.ok) return res.json();
                     throw new Error('Chưa có hợp đồng');
                 })
                 .then(data => {
-                    // Đã có hợp đồng -> Mở tab mới để hiển thị thẳng file PDF
                     window.open(data.fileUrl, '_blank');
                 })
                 .catch(() => {
-                    // Chưa có -> Mở hộp thoại yêu cầu tải lên
                     document.getElementById('modalTransId').value = transId;
                     document.getElementById('contractModal').style.display = 'flex';
                 });
         }
 
-        // 6. ĐÓNG HỘP THOẠI HỢP ĐỒNG
         function closeModal() {
             document.getElementById('contractModal').style.display = 'none';
         }
 
-        // 7. GỬI FILE HỢP ĐỒNG PDF LÊN MÁY CHỦ
         async function submitContract() {
             const transId = document.getElementById('modalTransId').value;
             const contractNum = document.getElementById('contractNum').value.trim();
             const fileInput = document.getElementById('contractFile').files[0];
 
             if (!contractNum || !fileInput) {
-                alert("Vui lòng nhập số hợp đồng và chọn file PDF!");
+                alert("Vui lòng nhập số/tên hợp đồng và chọn file đính kèm!");
                 return;
             }
 
@@ -406,11 +395,13 @@
                     body: formData
                 });
 
+                const responseData = await res.json();
+
                 if (res.ok) {
-                    alert("Tải lên hợp đồng thành công!");
+                    alert("Tải lên hồ sơ thành công!");
                     closeModal();
                 } else {
-                    alert("Có lỗi xảy ra khi tải file lên máy chủ!");
+                    alert(responseData.message || "Có lỗi xảy ra khi tải file lên máy chủ!");
                 }
             } catch (err) {
                 alert("Lỗi kết nối!");

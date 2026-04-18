@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Http;
 using System.IO;
 using System.Threading.Tasks;
 using System;
+using System.Linq;
 
 namespace asp.Controllers
 {
@@ -19,19 +20,28 @@ namespace asp.Controllers
             _contractCollection = database.GetCollection<Contract>("Contracts");
         }
 
-        // Upload file PDF Hợp đồng
+        // Upload file Hợp đồng đa định dạng
         [HttpPost("upload")]
         public async Task<IActionResult> UploadContract([FromForm] string transactionId, [FromForm] string contractNumber, IFormFile file)
         {
-            if (file == null || file.Length == 0 || file.ContentType != "application/pdf")
-                return BadRequest(new { message = "Vui lòng chọn file định dạng PDF!" });
+            // Danh sách các đuôi file được phép tải lên
+            var allowedExtensions = new[] { ".pdf", ".doc", ".docx", ".jpg", ".jpeg", ".png" };
+
+            if (file == null || file.Length == 0)
+                return BadRequest(new { message = "Không tìm thấy file tải lên!" });
+
+            // Lấy đuôi file hiện tại và chuyển thành chữ thường để so sánh
+            var extension = Path.GetExtension(file.FileName).ToLower();
+
+            if (!allowedExtensions.Contains(extension))
+                return BadRequest(new { message = "Hệ thống chỉ chấp nhận định dạng PDF, Word (.doc, .docx) hoặc Hình ảnh (.jpg, .png)!" });
 
             // Tạo thư mục nếu chưa có
             var uploadDir = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads", "contracts");
             if (!Directory.Exists(uploadDir)) Directory.CreateDirectory(uploadDir);
 
-            // Lưu file với tên ngẫu nhiên để tránh trùng lặp
-            var fileName = $"{Guid.NewGuid()}_{file.FileName}";
+            // Giữ lại đuôi file gốc khi lưu
+            var fileName = $"{Guid.NewGuid()}{extension}";
             var filePath = Path.Combine(uploadDir, fileName);
             using (var stream = new FileStream(filePath, FileMode.Create))
             {
