@@ -18,16 +18,21 @@ namespace asp.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Category>>> GetAll()
-        {
-            return Ok(await _categoryCollection.Find(_ => true).ToListAsync());
-        }
+        public async Task<ActionResult<IEnumerable<Category>>> GetAll() => Ok(await _categoryCollection.Find(_ => true).ToListAsync());
 
         [HttpPost]
         public async Task<IActionResult> Create(Category category)
         {
             await _categoryCollection.InsertOneAsync(category);
             return Ok(new { message = "Thêm danh mục thành công!", data = category });
+        }
+
+        //Sửa danh mục
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Update(string id, Category updatedCat)
+        {
+            await _categoryCollection.ReplaceOneAsync(c => c.Id == id, updatedCat);
+            return Ok(new { message = "Cập nhật danh mục thành công!" });
         }
     }
 }

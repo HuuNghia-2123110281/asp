@@ -12,33 +12,43 @@ namespace asp.Controllers
     {
         private readonly IMongoCollection<Customer> _customerCollection;
 
-        // Kết nối vào collection "Customers" trong MongoDB
         public CustomerController(IMongoDatabase database)
         {
             _customerCollection = database.GetCollection<Customer>("Customers");
         }
 
-        // 1. Lấy danh sách toàn bộ khách hàng
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Customer>>> GetCustomers()
         {
-            var list = await _customerCollection.Find(_ => true)
-                .SortByDescending(x => x.Id)
-                .ToListAsync();
-            return Ok(list);
+            return Ok(await _customerCollection.Find(_ => true).SortByDescending(x => x.Id).ToListAsync());
         }
 
-        // 2. Thêm khách hàng mới (Pass Test Case: Bắt lỗi bỏ trống tên/sđt)
+        //Xem chi tiết 1 khách hàng
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Customer>> GetById(string id)
+        {
+            var customer = await _customerCollection.Find(c => c.Id == id).FirstOrDefaultAsync();
+            if (customer == null) return NotFound();
+            return Ok(customer);
+        }
+
         [HttpPost]
         public async Task<ActionResult<Customer>> CreateCustomer(Customer customer)
         {
             if (string.IsNullOrEmpty(customer.Name) || string.IsNullOrEmpty(customer.Phone))
-            {
                 return BadRequest(new { message = "Tên và Số điện thoại là bắt buộc!" });
-            }
 
             await _customerCollection.InsertOneAsync(customer);
             return Ok(customer);
+        }
+
+        //Cập nhật thông tin khách hàng
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Update(string id, Customer updatedCustomer)
+        {
+            var result = await _customerCollection.ReplaceOneAsync(c => c.Id == id, updatedCustomer);
+            if (result.MatchedCount == 0) return NotFound();
+            return Ok(new { message = "Cập nhật thành công!" });
         }
     }
 }
