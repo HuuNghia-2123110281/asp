@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chi tiết Bất Động Sản - BĐS Nghĩa</title>
+    <title>Chi tiết BĐS - BĐS Nghĩa</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
@@ -49,6 +49,28 @@
             object-fit: cover;
         }
 
+        /* Album ảnh phụ */
+        .image-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 10px;
+            padding: 20px;
+            background: #eee;
+        }
+
+        .gallery-item {
+            width: 100%;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+            .gallery-item:hover {
+                transform: scale(1.05);
+            }
+
         .content {
             padding: 40px;
         }
@@ -64,12 +86,6 @@
             font-size: 28px;
             margin: 0 0 15px 0;
             color: var(--dark);
-        }
-
-        .address {
-            color: var(--gray);
-            margin-bottom: 20px;
-            font-size: 18px;
         }
 
         .specs {
@@ -89,11 +105,6 @@
                 font-size: 24px;
                 color: var(--primary);
                 margin-bottom: 8px;
-            }
-
-            .spec-item div {
-                font-weight: bold;
-                font-size: 18px;
             }
 
         .description {
@@ -120,6 +131,14 @@
             text-decoration: none;
             font-weight: bold;
         }
+
+        .booking-box {
+            margin-top: 20px;
+            background: #fff3cd;
+            padding: 25px;
+            border-radius: 10px;
+            border-left: 5px solid #ffc107;
+        }
     </style>
 </head>
 <body>
@@ -136,25 +155,35 @@
         document.addEventListener("DOMContentLoaded", () => {
             const urlParams = new URLSearchParams(window.location.search);
             const propertyId = urlParams.get('id');
-
-            if (propertyId) {
-                fetchPropertyDetail(propertyId);
-            } else {
-                document.getElementById('detail-content').innerHTML = "<p>Không tìm thấy ID sản phẩm!</p>";
-            }
+            if (propertyId) { fetchPropertyDetail(propertyId); }
         });
 
         async function fetchPropertyDetail(id) {
             try {
-                const response = await fetch(`/api/BatDongSan/${id}`);
-                if (!response.ok) throw new Error("Không lấy được dữ liệu");
+                // 1. Lấy thông tin chính
+                const resBds = await fetch(`/api/BatDongSan/${id}`);
+                const item = await resBds.json();
 
-                const item = await response.json();
+                // 2. Lấy album ảnh phụ (Mới thêm)
+                const resImages = await fetch(`/api/PropertyImage/property/${id}`);
+                const gallery = await resImages.json();
+
                 const container = document.getElementById('detail-content');
-                const realImg = item.hinhAnhUrl ? item.hinhAnhUrl : `https://loremflickr.com/1000/600/house?lock=${item.id}`;
+                const mainImg = item.hinhAnhUrl || `https://loremflickr.com/1000/600/house?lock=${item.id}`;
+
+                // Tạo HTML cho Gallery
+                let galleryHtml = "";
+                if (gallery.length > 0) {
+                    galleryHtml = `<div class="image-gallery">`;
+                    gallery.forEach(img => {
+                        galleryHtml += `<img src="${img.imageUrl}" class="gallery-item" onclick="changeMainImg('${img.imageUrl}')">`;
+                    });
+                    galleryHtml += `</div>`;
+                }
 
                 container.innerHTML = `
-                        <img src="${realImg}" class="main-img" alt="BĐS">
+                        <img src="${mainImg}" class="main-img" id="mainImgView" alt="BĐS">
+                        ${galleryHtml}
                         <div class="content">
                             <div class="price">${item.gia.toLocaleString('vi-VN')} VNĐ</div>
                             <h1 class="title">${item.tieuDe}</h1>
@@ -163,91 +192,59 @@
                             <div id="admin-actions" style="margin-bottom: 25px;"></div>
 
                             <div class="specs">
-                                <div class="spec-item"><i class="fas fa-home"></i><p>Loại hình</p><div>${item.loaiHinh}</div></div>
-                                <div class="spec-item"><i class="fas fa-bed"></i><p>Phòng ngủ</p><div>${item.phongNgu || 0} PN</div></div>
+                                <div class="spec-item"><i class="fas fa-home"></i><p>Loại</p><div>${item.loaiHinh}</div></div>
+                                <div class="spec-item"><i class="fas fa-bed"></i><p>PN</p><div>${item.phongNgu || 0} PN</div></div>
                                 <div class="spec-item"><i class="fas fa-expand-arrows-alt"></i><p>Diện tích</p><div>${item.dienTich || 0} m²</div></div>
                             </div>
 
                             <div class="description">
                                 <h3>Mô tả chi tiết</h3>
-                                <p>${item.moTa || "Thông tin mô tả đang được cập nhật cho căn bất động sản này..."}</p>
+                                <p>${item.moTa || "Thông tin đang cập nhật..."}</p>
                             </div>
 
                             <div class="contact-box">
-                                <div>
-                                    <h4 style="margin:0">Liên hệ nhân viên kinh doanh</h4>
-                                    <p style="margin:5px 0 0 0; color:var(--gray)">Hỗ trợ tư vấn pháp lý và xem nhà 24/7</p>
-                                </div>
+                                <div><h4>Liên hệ ngay</h4><p>Hỗ trợ tư vấn pháp lý 24/7</p></div>
                                 <a href="tel:0901234567" class="btn-call"><i class="fas fa-phone-alt"></i> Gọi ngay</a>
                             </div>
 
-                            <div class="booking-box" style="margin-top: 20px; background: #fff3cd; padding: 25px; border-radius: 10px; border-left: 5px solid #ffc107;">
-                                <h3 style="margin-top: 0; color: #856404;"><i class="fas fa-calendar-check"></i> Đặt lịch xem nhà thực tế</h3>
-                                <p style="font-size: 15px; color: #666;">Tính năng chỉ dành cho khách hàng thành viên. Vui lòng chọn thời gian để Sales liên hệ xác nhận.</p>
+                            <div class="booking-box">
+                                <h3 style="margin-top: 0; color: #856404;"><i class="fas fa-calendar-check"></i> Đặt lịch xem nhà</h3>
                                 <div style="display: flex; gap: 15px; margin-top: 15px;">
-                                    <input type="datetime-local" id="clientAppDate" style="flex: 1; padding: 12px; border: 1px solid #ccc; border-radius: 6px; outline: none;">
-                                    <button onclick="clientBookAppointment('${item.id}')" style="background: #ffc107; color: black; border: none; padding: 12px 25px; font-weight: bold; border-radius: 6px; cursor: pointer; transition: 0.3s;"><i class="fas fa-paper-plane"></i> Gửi yêu cầu</button>
+                                    <input type="datetime-local" id="clientAppDate" style="flex: 1; padding: 12px; border: 1px solid #ccc; border-radius: 6px;">
+                                    <button onclick="clientBookAppointment('${item.id}')" style="background: #ffc107; padding: 12px 25px; font-weight: bold; border-radius: 6px; cursor: pointer; border:none;">Gửi yêu cầu</button>
                                 </div>
                                 <p id="bookMsg" style="margin-top: 15px; font-weight: bold;"></p>
                             </div>
                         </div>
                     `;
 
-                // XỬ LÝ PHÂN QUYỀN HIỆN NÚT SỬA
-                const role = localStorage.getItem("role");
-                if (role === "Admin" || role === "Sales") {
+                // Phân quyền hiện nút sửa
+                if (["Admin", "Sales"].includes(localStorage.getItem("role"))) {
                     document.getElementById("admin-actions").innerHTML = `
-                            <a href="edit-property.html?id=${item.id}"
-                               style="background-color: #ffc107; color: #000; padding: 12px 25px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
-                               <i class="fas fa-edit"></i> Chỉnh sửa thông tin BĐS
-                            </a>
-                        `;
+                            <a href="edit-property.html?id=${item.id}" style="background: #ffc107; padding: 10px 20px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block;">
+                                <i class="fas fa-edit"></i> Sửa thông tin
+                            </a>`;
                 }
-
-            } catch (err) {
-                document.getElementById('detail-content').innerHTML = `<p style="color:red; padding:50px; text-align:center;">Lỗi: ${err.message}</p>`;
-            }
+            } catch (err) { console.error(err); }
         }
 
-        // HÀM KHÁCH HÀNG TỰ ĐẶT LỊCH
+        function changeMainImg(url) { document.getElementById('mainImgView').src = url; }
+
         async function clientBookAppointment(propertyId) {
             const username = localStorage.getItem("username");
-            const msg = document.getElementById("bookMsg");
-
-            if (!username) {
-                alert("⛔ CHỈ KHÁCH HÀNG CÓ TÀI KHOẢN MỚI ĐƯỢC ĐẶT LỊCH!\n\nVui lòng Đăng nhập hoặc Đăng ký để tiếp tục.");
-                window.location.href = "login.html";
-                return;
-            }
+            if (!username) { alert("Vui lòng đăng nhập!"); window.location.href = "login.html"; return; }
 
             const appDate = document.getElementById("clientAppDate").value;
-            if (!appDate) {
-                msg.style.color = "red"; msg.innerText = "Vui lòng chọn ngày giờ bạn muốn xem nhà!"; return;
-            }
-
-            msg.style.color = "blue"; msg.innerText = "Đang gửi yêu cầu cho bộ phận Sales...";
-
-            const data = {
-                customerId: username,
-                propertyId: propertyId,
-                appointmentDate: appDate
-            };
+            if (!appDate) return alert("Chọn ngày giờ!");
 
             try {
                 const res = await fetch('/api/Appointment', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(data)
+                    body: JSON.stringify({ customerId: username, propertyId: propertyId, appointmentDate: appDate })
                 });
-                if (res.ok) {
-                    msg.style.color = "green";
-                    msg.innerHTML = "✅ Tuyệt vời! Yêu cầu của bạn đã được ghi nhận. Sales sẽ sớm liên hệ lại.";
-                } else {
-                    msg.style.color = "red"; msg.innerText = "Có lỗi xảy ra khi lưu dữ liệu!";
-                }
-            } catch (err) {
-                msg.style.color = "red"; msg.innerText = "Lỗi kết nối máy chủ!";
-            }
+                if (res.ok) document.getElementById("bookMsg").innerHTML = "Đã gửi yêu cầu!";
+            } catch (err) { alert("Lỗi!"); }
         }
     </script>
 </body>

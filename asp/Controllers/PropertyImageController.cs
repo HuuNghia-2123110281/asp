@@ -1,6 +1,8 @@
 ﻿using asp.Data;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Driver;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace asp.Controllers
 {
@@ -10,22 +12,17 @@ namespace asp.Controllers
     {
         private readonly IMongoCollection<PropertyImage> _imageCollection;
 
-        public PropertyImageController(IMongoClient mongoClient)
+        public PropertyImageController(IMongoDatabase database)
         {
-            var database = mongoClient.GetDatabase("BdsDB");
             _imageCollection = database.GetCollection<PropertyImage>("PropertyImages");
         }
 
-        // GET: api/PropertyImage
         [HttpGet]
         public async Task<ActionResult<IEnumerable<PropertyImage>>> GetAll()
         {
-            var images = await _imageCollection.Find(_ => true).ToListAsync();
-            return Ok(images);
+            return Ok(await _imageCollection.Find(_ => true).ToListAsync());
         }
 
-        // API ĐẶC BIỆT: Lấy tất cả hình ảnh của 1 BĐS cụ thể
-        // GET: api/PropertyImage/property/{propertyId}
         [HttpGet("property/{propertyId}")]
         public async Task<ActionResult<IEnumerable<PropertyImage>>> GetImagesByPropertyId(string propertyId)
         {
@@ -33,7 +30,6 @@ namespace asp.Controllers
             return Ok(images);
         }
 
-        // POST: api/PropertyImage
         [HttpPost]
         public async Task<ActionResult> Create(PropertyImage image)
         {
@@ -41,17 +37,11 @@ namespace asp.Controllers
             return Ok(new { message = "Thêm hình ảnh thành công!", data = image });
         }
 
-        // DELETE: api/PropertyImage/{id}
         [HttpDelete("{id}")]
         public async Task<ActionResult> Delete(string id)
         {
             var result = await _imageCollection.DeleteOneAsync(i => i.Id == id);
-
-            if (result.DeletedCount == 0)
-            {
-                return NotFound(new { message = "Không tìm thấy ảnh để xóa" });
-            }
-
+            if (result.DeletedCount == 0) return NotFound(new { message = "Không tìm thấy ảnh" });
             return Ok(new { message = "Xóa ảnh thành công!" });
         }
     }
