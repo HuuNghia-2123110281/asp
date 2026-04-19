@@ -368,7 +368,7 @@
                 const responseData = await res.json();
 
                 if (res.ok) {
-                    msg.style.color = "green"; msg.innerText = "✅ Tạo Giao dịch thành công!";
+                    msg.style.color = "green"; msg.innerText = " Tạo Giao dịch thành công!";
                     document.getElementById('transPrice').value = "";
                     loadTransactions();
                     setTimeout(() => msg.innerText = "", 3000);
@@ -407,6 +407,8 @@
                                         </td>
                                         <td><span class="status ${statusClass}">${t.status}</span></td>
                                         <td>
+                                            <a href="transaction-detail.html?id=${t.id}" class="action-btn" style="background:#17a2b8; color:white; text-decoration:none; display:inline-block;"><i class="fas fa-eye"></i> Xem</a>
+
                                             ${t.status === 'Đang xử lý' ? `
                                                 <button class="action-btn" style="background:#28a745; color:white;" onclick="updateStatus('${t.id}', 'Hoàn tất')"><i class="fas fa-check"></i> Hoàn tất</button>
                                                 <button class="action-btn" style="background:#dc3545; color:white;" onclick="updateStatus('${t.id}', 'Đã hủy')"><i class="fas fa-times"></i> Hủy</button>
