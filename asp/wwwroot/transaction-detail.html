@@ -1,0 +1,209 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chi tiết Giao dịch - BĐS Nghĩa</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #1a73e8;
+            --dark: #202124;
+            --success: #28a745;
+            --warning: #ffc107;
+        }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #f0f2f5;
+            margin: 0;
+        }
+
+        header {
+            background: white;
+            padding: 20px 5%;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            display: flex;
+            align-items: center;
+        }
+
+        .back-btn {
+            text-decoration: none;
+            color: var(--primary);
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 40px auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+            overflow: hidden;
+        }
+
+        .header-card {
+            background: var(--primary);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+            .header-card h1 {
+                margin: 0;
+                font-size: 24px;
+            }
+
+            .header-card .price {
+                font-size: 36px;
+                font-weight: bold;
+                margin-top: 10px;
+                color: #ffd700;
+            }
+
+        .content {
+            padding: 40px;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 15px 0;
+            border-bottom: 1px solid #eee;
+            font-size: 18px;
+        }
+
+        .info-label {
+            color: #666;
+            font-weight: bold;
+        }
+
+        .info-value {
+            color: var(--dark);
+            font-weight: bold;
+            text-align: right;
+        }
+
+        .status-badge {
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: bold;
+            color: white;
+        }
+
+        .status-completed {
+            background: var(--success);
+        }
+
+        .status-pending {
+            background: var(--warning);
+            color: black;
+        }
+
+        .action-box {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <a href="index.html" class="back-btn"><i class="fas fa-arrow-left"></i> Quay lại danh sách</a>
+    </header>
+
+    <div class="container" id="transaction-content">
+        <p style="padding: 50px; text-align: center;">Đang tải thông tin giao dịch...</p>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const transactionId = urlParams.get('id');
+
+            if (transactionId) {
+                fetchTransactionDetail(transactionId);
+            } else {
+                document.getElementById('transaction-content').innerHTML = "<p style='text-align:center; padding: 50px; color: red;'>Không tìm thấy mã giao dịch!</p>";
+            }
+        });
+
+        async function fetchTransactionDetail(id) {
+            try {
+                // Gọi API Xem chi tiết Giao dịch vừa mới tạo
+                const response = await fetch(`/api/Transaction/${id}`);
+                if (!response.ok) throw new Error("Giao dịch không tồn tại");
+
+                const trans = await response.json();
+
+                const statusClass = (trans.status === "Hoàn tất" || trans.status === "Completed") ? "status-completed" : "status-pending";
+                const dateObj = new Date(trans.date);
+                const formattedDate = `${dateObj.getDate()}/${dateObj.getMonth() + 1}/${dateObj.getFullYear()} ${dateObj.getHours()}:${dateObj.getMinutes()}`;
+
+                document.getElementById('transaction-content').innerHTML = `
+                    <div class="header-card">
+                        <h1>MÃ GIAO DỊCH: ${trans.id.substring(0, 8).toUpperCase()}...</h1>
+                        <div class="price">${trans.price.toLocaleString('vi-VN')} VNĐ</div>
+                        <div style="margin-top: 15px;">
+                            <span class="status-badge ${statusClass}">${trans.status.toUpperCase()}</span>
+                        </div>
+                    </div>
+
+                    <div class="content">
+                        <div class="info-row">
+                            <span class="info-label"><i class="fas fa-home"></i> Mã Bất động sản:</span>
+                            <span class="info-value">...${trans.propertyId.substring(trans.propertyId.length - 8)}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label"><i class="fas fa-user"></i> Mã Khách hàng:</span>
+                            <span class="info-value">...${trans.customerId.substring(trans.customerId.length - 8)}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label"><i class="fas fa-file-signature"></i> Loại giao dịch:</span>
+                            <span class="info-value">${trans.type || "Mua bán"}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label"><i class="fas fa-calendar-alt"></i> Ngày chốt:</span>
+                            <span class="info-value">${formattedDate}</span>
+                        </div>
+
+                        <div class="action-box">
+                            <p style="margin: 0 0 15px 0; color: #666;">Cập nhật trạng thái hợp đồng pháp lý</p>
+                            <button onclick="updateStatus('${trans.id}', 'Hoàn tất')" style="background: var(--success); color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-weight: bold; margin-right: 10px;">Đánh dấu Hoàn Tất</button>
+                            <button onclick="updateStatus('${trans.id}', 'Đã hủy')" style="background: #dc3545; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-weight: bold;">Hủy giao dịch</button>
+                        </div>
+                    </div>
+                `;
+            } catch (err) {
+                document.getElementById('transaction-content').innerHTML = `<p style="text-align:center; padding:50px; color:red;">Lỗi: ${err.message}</p>`;
+            }
+        }
+
+        async function updateStatus(id, newStatus) {
+            if(!confirm(`Bạn có chắc muốn chuyển giao dịch này sang trạng thái: ${newStatus}?`)) return;
+
+            try {
+                const res = await fetch(`/api/Transaction/${id}/status`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(newStatus)
+                });
+
+                if(res.ok) {
+                    alert("Đã cập nhật trạng thái thành công!");
+                    location.reload();
+                } else {
+                    alert("Lỗi khi cập nhật!");
+                }
+            } catch(e) {
+                alert("Lỗi kết nối mạng!");
+            }
+        }
+    </script>
+</body>
+</html>
