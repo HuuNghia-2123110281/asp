@@ -3,321 +3,421 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Quản Trị - BĐS Nghĩa</title>
+    <title>Admin Dashboard - BĐS Nghĩa</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root {
             --primary: #1a73e8;
             --dark: #202124;
-            --bg: #f4f7f6;
+            --sidebar-bg: #1c2331;
+            --bg-color: #f4f7f6;
+            --text-gray: #8f9bb3;
             --success: #28a745;
             --warning: #ffc107;
-            --danger: #dc3545;
-            --info: #17a2b8;
         }
 
         body {
             font-family: 'Segoe UI', Tahoma, sans-serif;
-            background-color: var(--bg);
             margin: 0;
-            color: #333;
-        }
-
-        header {
-            background: var(--dark);
-            padding: 15px 5%;
+            background-color: var(--bg-color);
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            height: 100vh;
+            overflow: hidden;
         }
 
-        .logo {
-            font-size: 24px;
-            font-weight: 800;
+        /* SIDEBAR LÊN BÊN TRÁI */
+        .sidebar {
+            width: 260px;
+            background-color: var(--sidebar-bg);
             color: white;
-            text-decoration: none;
-            text-transform: uppercase;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s;
         }
 
-        .nav-links a {
-            color: #ddd;
+        .sidebar-header {
+            padding: 20px;
+            font-size: 22px;
+            font-weight: 900;
+            color: white;
+            text-align: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            letter-spacing: 1px;
+        }
+
+            .sidebar-header span {
+                color: var(--primary);
+            }
+
+        .nav-menu {
+            flex: 1;
+            overflow-y: auto;
+            padding-top: 20px;
+        }
+
+        .nav-item {
+            padding: 15px 25px;
+            color: var(--text-gray);
             text-decoration: none;
-            font-weight: bold;
-            margin-left: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 15px;
+            font-weight: 500;
             transition: 0.3s;
         }
 
-            .nav-links a:hover {
-                color: white;
+            .nav-item i {
+                width: 20px;
+                text-align: center;
+                font-size: 18px;
             }
 
-        .container {
-            max-width: 1200px;
-            margin: 30px auto;
-            padding: 0 20px;
+            .nav-item:hover, .nav-item.active {
+                background-color: rgba(26, 115, 232, 0.1);
+                color: var(--primary);
+                border-right: 4px solid var(--primary);
+            }
+
+        /* KHU VỰC NỘI DUNG CHÍNH */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
         }
 
+        /* THANH TOPBAR BÊN TRÊN */
+        .topbar {
+            background: white;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            z-index: 10;
+        }
 
-        .kpi-grid {
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+            .user-profile span {
+                font-weight: bold;
+                color: var(--dark);
+            }
+
+        .btn-logout {
+            background: #ffebee;
+            color: #d32f2f;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        /* NỘI DUNG DASHBOARD */
+        .dashboard-content {
+            padding: 30px;
+        }
+
+        .page-title {
+            margin-top: 0;
+            color: var(--dark);
+            margin-bottom: 25px;
+        }
+
+        /* KHUNG THỐNG KÊ (CARDS) */
+        .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
             gap: 20px;
             margin-bottom: 30px;
         }
 
-        .kpi-card {
+        .stat-card {
             background: white;
             padding: 25px;
             border-radius: 12px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.03);
             display: flex;
             align-items: center;
             justify-content: space-between;
             border-left: 5px solid var(--primary);
-            transition: 0.3s;
         }
 
-            .kpi-card:hover {
-                transform: translateY(-5px);
-                box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            .stat-card.success {
+                border-left-color: var(--success);
             }
 
-            .kpi-card.green {
-                border-color: var(--success);
+            .stat-card.warning {
+                border-left-color: var(--warning);
             }
 
-            .kpi-card.yellow {
-                border-color: var(--warning);
+            .stat-card.danger {
+                border-left-color: #dc3545;
             }
 
-            .kpi-card.red {
-                border-color: var(--danger);
-            }
-
-        .kpi-info h3 {
-            margin: 0 0 5px 0;
-            font-size: 14px;
+        .stat-info h4 {
+            margin: 0 0 10px 0;
             color: #666;
+            font-size: 14px;
             text-transform: uppercase;
         }
 
-        .kpi-info .value {
-            font-size: 28px;
-            font-weight: 900;
-            color: var(--dark);
+        .stat-info h2 {
             margin: 0;
+            color: var(--dark);
+            font-size: 28px;
+            transition: 0.5s;
         }
 
-        .kpi-icon {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
+        .stat-icon {
+            font-size: 40px;
+            color: rgba(0,0,0,0.1);
         }
 
-        .icon-blue {
-            background: rgba(26, 115, 232, 0.1);
-            color: var(--primary);
-        }
-
-        .icon-green {
-            background: rgba(40, 167, 69, 0.1);
-            color: var(--success);
-        }
-
-        .icon-yellow {
-            background: rgba(255, 193, 7, 0.1);
-            color: var(--warning);
-        }
-
-        .icon-red {
-            background: rgba(220, 53, 69, 0.1);
-            color: var(--danger);
-        }
-
-        .charts-grid {
+        /* KHUNG BIỂU ĐỒ */
+        .chart-section {
             display: grid;
             grid-template-columns: 2fr 1fr;
             gap: 20px;
         }
 
-        .chart-box {
+        .chart-container {
             background: white;
             padding: 25px;
             border-radius: 12px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.03);
         }
 
-            .chart-box h3 {
+            .chart-container h3 {
                 margin-top: 0;
+                margin-bottom: 20px;
                 color: var(--dark);
                 border-bottom: 1px solid #eee;
                 padding-bottom: 15px;
-                margin-bottom: 20px;
             }
     </style>
 </head>
 <body>
 
-    <header>
-        <a href="index.html" class="logo"><i class="fas fa-chart-line"></i> ADMIN DASHBOARD</a>
-        <nav class="nav-links">
-            <a href="add-property.html"><i class="fas fa-home"></i> Quản lý Nguồn hàng</a>
-            <a href="manage-transactions.html"><i class="fas fa-handshake"></i> Quản lý Giao dịch</a>
-            <a href="index.html"><i class="fas fa-sign-out-alt"></i> Về trang chủ</a>
-        </nav>
-    </header>
+    <nav class="sidebar">
+        <div class="sidebar-header">
+            <i class="fas fa-city"></i> BĐS <span>NGHĨA</span>
+        </div>
+        <div class="nav-menu">
+            <a href="#" class="nav-item active"><i class="fas fa-chart-pie"></i> Tổng quan Dashboard</a>
 
-    <div class="container">
-        <div class="kpi-grid">
-            <div class="kpi-card green">
-                <div class="kpi-info">
-                    <h3>Tổng Doanh Thu</h3>
-                    <p class="value" id="kpiRevenue">0 đ</p>
+            <div style="padding: 15px 25px; font-size: 11px; text-transform: uppercase; color: #555; font-weight: bold; letter-spacing: 1px; margin-top: 10px;">Quản lý Sản phẩm</div>
+            <a href="manage-system.html" class="nav-item"><i class="fas fa-building"></i> Danh sách Bất động sản</a>
+            <a href="manage-system.html" class="nav-item"><i class="fas fa-tags"></i> Danh mục & Dự án</a>
+
+            <div style="padding: 15px 25px; font-size: 11px; text-transform: uppercase; color: #555; font-weight: bold; letter-spacing: 1px; margin-top: 10px;">Nghiệp vụ Sales</div>
+            <a href="manage-transactions.html" class="nav-item"><i class="fas fa-handshake"></i> Quản lý Giao dịch</a>
+            <a href="manage-clients.html" class="nav-item"><i class="fas fa-calendar-alt"></i> Lịch hẹn xem nhà</a>
+
+            <div style="padding: 15px 25px; font-size: 11px; text-transform: uppercase; color: #555; font-weight: bold; letter-spacing: 1px; margin-top: 10px;">Nhân sự & Khách hàng</div>
+            <a href="manage-clients.html" class="nav-item"><i class="fas fa-users"></i> Khách hàng & Chủ nhà</a>
+            <a href="#" class="nav-item"><i class="fas fa-user-tie"></i> Nhân viên Sales</a>
+
+            <div style="padding: 15px 25px; font-size: 11px; text-transform: uppercase; color: #555; font-weight: bold; letter-spacing: 1px; margin-top: 10px;">Khác</div>
+            <a href="#" class="nav-item"><i class="fas fa-newspaper"></i> Quản lý Tin tức</a>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <header class="topbar">
+            <div>
+                <a href="index.html" style="text-decoration: none; color: var(--primary); font-weight: bold;"><i class="fas fa-globe"></i> Xem Website</a>
+            </div>
+            <div class="user-profile">
+                <i class="fas fa-user-circle" style="font-size: 30px; color: var(--primary);"></i>
+                <span id="adminName">Đang tải...</span>
+                <a href="#" onclick="logout()" class="btn-logout"><i class="fas fa-sign-out-alt"></i> Đăng xuất</a>
+            </div>
+        </header>
+
+        <div class="dashboard-content">
+            <h2 class="page-title">Báo cáo Thống kê Tổng quan</h2>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-info">
+                        <h4>Tổng Doanh Thu (Hoàn Tất)</h4>
+                        <h2 id="stat-revenue" style="color: var(--primary);"><i class="fas fa-spinner fa-spin" style="font-size:20px;"></i></h2>
+                    </div>
+                    <i class="fas fa-money-bill-wave stat-icon" style="color: rgba(26,115,232,0.2);"></i>
                 </div>
-                <div class="kpi-icon icon-green"><i class="fas fa-money-bill-wave"></i></div>
+                <div class="stat-card success">
+                    <div class="stat-info">
+                        <h4>Giao Dịch Hoàn Tất</h4>
+                        <h2 id="stat-completed"><i class="fas fa-spinner fa-spin" style="font-size:20px;"></i></h2>
+                    </div>
+                    <i class="fas fa-check-circle stat-icon" style="color: rgba(40,167,69,0.2);"></i>
+                </div>
+                <div class="stat-card warning">
+                    <div class="stat-info">
+                        <h4>Tổng Nguồn Hàng BĐS</h4>
+                        <h2 id="stat-bds"><i class="fas fa-spinner fa-spin" style="font-size:20px;"></i></h2>
+                    </div>
+                    <i class="fas fa-home stat-icon" style="color: rgba(255,193,7,0.2);"></i>
+                </div>
+                <div class="stat-card danger">
+                    <div class="stat-info">
+                        <h4>Tổng Khách Hàng</h4>
+                        <h2 id="stat-customers"><i class="fas fa-spinner fa-spin" style="font-size:20px;"></i></h2>
+                    </div>
+                    <i class="fas fa-users stat-icon" style="color: rgba(220,53,69,0.2);"></i>
+                </div>
             </div>
 
-            <div class="kpi-card">
-                <div class="kpi-info">
-                    <h3>Giao Dịch Thành Công</h3>
-                    <p class="value" id="kpiDeals">0</p>
+            <div class="chart-section">
+                <div class="chart-container">
+                    <h3>Biểu đồ Doanh thu (6 tháng gần nhất)</h3>
+                    <canvas id="revenueChart" height="100"></canvas>
                 </div>
-                <div class="kpi-icon icon-blue"><i class="fas fa-check-circle"></i></div>
-            </div>
-
-            <div class="kpi-card yellow">
-                <div class="kpi-info">
-                    <h3>Tổng Khách Hàng</h3>
-                    <p class="value" id="kpiCustomers">0</p>
+                <div class="chart-container">
+                    <h3>Trạng thái Giao dịch</h3>
+                    <canvas id="statusChart" height="200"></canvas>
                 </div>
-                <div class="kpi-icon icon-yellow"><i class="fas fa-users"></i></div>
-            </div>
-
-            <div class="kpi-card red">
-                <div class="kpi-info">
-                    <h3>Nguồn Hàng (BĐS)</h3>
-                    <p class="value" id="kpiProperties">0</p>
-                </div>
-                <div class="kpi-icon icon-red"><i class="fas fa-building"></i></div>
             </div>
         </div>
-
-        <div class="charts-grid">
-            <div class="chart-box">
-                <h3><i class="fas fa-chart-area"></i> Biểu đồ Doanh thu năm 2026</h3>
-                <canvas id="revenueChart" height="100"></canvas>
-            </div>
-
-            <div class="chart-box">
-                <h3><i class="fas fa-chart-pie"></i> Tỷ lệ trạng thái Giao dịch</h3>
-                <canvas id="statusChart" height="200"></canvas>
-            </div>
-        </div>
-    </div>
+    </main>
 
     <script>
+        // Kiểm tra quyền
         document.addEventListener("DOMContentLoaded", () => {
-
             const role = localStorage.getItem("role");
+            const username = localStorage.getItem("username");
+
             if (role !== "Admin") {
-                alert("⛔ Cảnh báo: Chỉ Ban Giám Đốc (Admin) mới có quyền xem Báo cáo doanh thu!");
+                alert("⛔ Bạn không có quyền truy cập trang Quản trị viên!");
                 window.location.href = "index.html";
                 return;
             }
+            document.getElementById("adminName").innerText = username || "Quản trị viên";
 
-            loadDashboardData();
+            loadRealData();
         });
 
-        async function loadDashboardData() {
-            try {
+        function logout() {
+            localStorage.clear();
+            window.location.href = "login.html";
+        }
 
-                const [resTrans, resCus, resProp] = await Promise.all([
+        // Hàm gọi API lấy dữ liệu thực tế
+        async function loadRealData() {
+            try {
+                const [transRes, bdsRes, cusRes] = await Promise.all([
                     fetch('/api/Transaction'),
-                    fetch('/api/Customer'),
-                    fetch('/api/BatDongSan')
+                    fetch('/api/BatDongSan'),
+                    fetch('/api/Customer')
                 ]);
 
-                const transactions = await resTrans.json();
-                const customers = await resCus.json();
-                const properties = await resProp.json();
+                const transactions = await transRes.json();
+                const bdsList = await bdsRes.json();
+                const customers = await cusRes.json();
 
+                // 1. Tính toán số liệu tổng quan
                 let totalRevenue = 0;
-                let successfulDeals = 0;
-                let pendingDeals = 0;
-                let cancelledDeals = 0;
+                let completedCount = 0;
 
-                let monthlyRevenue = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+                let statusCounts = { 'Hoàn tất': 0, 'Đang xử lý': 0, 'Đã hủy': 0 };
+                let monthlyRevenue = {};
 
                 transactions.forEach(t => {
+                    let status = t.status === 'Completed' ? 'Hoàn tất' : t.status;
+                    if (status === 'Pending') status = 'Đang xử lý';
+                    if (status === 'Cancelled') status = 'Đã hủy';
 
-                    if (t.status === "Hoàn tất") {
-                        successfulDeals++;
+                    if (statusCounts[status] !== undefined) {
+                        statusCounts[status]++;
+                    } else {
+                        statusCounts['Đang xử lý']++;
+                    }
+
+                    if (status === 'Hoàn tất') {
+                        completedCount++;
                         totalRevenue += t.price;
 
-                        const dateObj = new Date(t.date);
-                        const monthIndex = dateObj.getMonth();
-                        monthlyRevenue[monthIndex] += t.price;
-                    } else if (t.status === "Đã hủy") {
-                        cancelledDeals++;
-                    } else {
-                        pendingDeals++;
+                        const date = new Date(t.date);
+                        const monthKey = `Tháng ${date.getMonth() + 1}`;
+                        monthlyRevenue[monthKey] = (monthlyRevenue[monthKey] || 0) + t.price;
                     }
                 });
 
+                // Cập nhật lên giao diện
+                document.getElementById('stat-revenue').innerText = formatMoney(totalRevenue);
+                document.getElementById('stat-completed').innerText = completedCount;
+                document.getElementById('stat-bds').innerText = bdsList.length;
+                document.getElementById('stat-customers').innerText = customers.length;
 
-                document.getElementById('kpiRevenue').innerText = totalRevenue.toLocaleString('vi-VN') + ' đ';
-                document.getElementById('kpiDeals').innerText = successfulDeals;
-                document.getElementById('kpiCustomers').innerText = customers.length;
-                document.getElementById('kpiProperties').innerText = properties.length;
+                // 2. Chuẩn bị dữ liệu cho Biểu đồ
+                const last6Months = [];
+                const revData = [];
 
+                // Tạo mảng 6 tháng gần nhất
+                for (let i = 5; i >= 0; i--) {
+                    const d = new Date();
+                    d.setMonth(d.getMonth() - i);
+                    const mKey = `Tháng ${d.getMonth() + 1}`;
+                    last6Months.push(mKey);
 
-                const ctxRevenue = document.getElementById('revenueChart').getContext('2d');
-                new Chart(ctxRevenue, {
-                    type: 'line',
-                    data: {
-                        labels: ['Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6', 'Tháng 7', 'Tháng 8', 'Tháng 9', 'Tháng 10', 'Tháng 11', 'Tháng 12'],
-                        datasets: [{
-                            label: 'Doanh thu (VNĐ)',
-                            data: monthlyRevenue,
-                            borderColor: '#1a73e8',
-                            backgroundColor: 'rgba(26, 115, 232, 0.1)',
-                            borderWidth: 3,
-                            fill: true,
-                            tension: 0.4
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        plugins: { legend: { display: false } },
-                        scales: { y: { beginAtZero: true } }
-                    }
-                });
+                    // Chuyển doanh thu về đơn vị Tỷ VNĐ để vẽ biểu đồ cho đẹp
+                    revData.push((monthlyRevenue[mKey] || 0) / 1000000000);
+                }
 
-                const ctxStatus = document.getElementById('statusChart').getContext('2d');
-                new Chart(ctxStatus, {
-                    type: 'doughnut',
-                    data: {
-                        labels: ['Thành công', 'Đang xử lý', 'Đã hủy'],
-                        datasets: [{
-                            data: [successfulDeals, pendingDeals, cancelledDeals],
-                            backgroundColor: ['#28a745', '#ffc107', '#dc3545'],
-                            hoverOffset: 4
-                        }]
-                    }
-                });
+                drawCharts(last6Months, revData, statusCounts);
 
-            } catch(err) {
-                console.error("Lỗi tải dữ liệu Dashboard:", err);
+            } catch (error) {
+                console.error("Lỗi khi tải dữ liệu thật:", error);
             }
+        }
+
+        // Định dạng tiền tệ cho thẻ
+        function formatMoney(amount) {
+            if (amount >= 1000000000) return (amount / 1000000000).toFixed(1) + ' Tỷ';
+            if (amount >= 1000000) return (amount / 1000000).toFixed(1) + ' Tr';
+            return amount.toLocaleString('vi-VN') + ' đ';
+        }
+
+        // Hàm vẽ Biểu đồ bằng dữ liệu động
+        function drawCharts(monthLabels, revenueData, statusCounts) {
+            // 1. Biểu đồ Doanh thu (Cột)
+            const ctxRev = document.getElementById('revenueChart').getContext('2d');
+            new Chart(ctxRev, {
+                type: 'bar',
+                data: {
+                    labels: monthLabels,
+                    datasets: [{
+                        label: 'Doanh thu thực tế (Tỷ VNĐ)',
+                        data: revenueData,
+                        backgroundColor: '#1a73e8',
+                        borderRadius: 5
+                    }]
+                },
+                options: { responsive: true }
+            });
+
+            // 2. Biểu đồ Trạng thái (Tròn)
+            const ctxStatus = document.getElementById('statusChart').getContext('2d');
+            new Chart(ctxStatus, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Hoàn tất', 'Đang xử lý', 'Đã hủy'],
+                    datasets: [{
+                        data: [statusCounts['Hoàn tất'], statusCounts['Đang xử lý'], statusCounts['Đã hủy']],
+                        backgroundColor: ['#28a745', '#ffc107', '#dc3545']
+                    }]
+                },
+                options: { responsive: true, cutout: '70%' }
+            });
         }
     </script>
 </body>
