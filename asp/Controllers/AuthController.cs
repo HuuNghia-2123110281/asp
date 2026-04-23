@@ -12,7 +12,6 @@ namespace asp.Controllers
 
         public AuthController(IMongoDatabase database)
         {
-            // Kết nối tới Collection "Users" trong MongoDB
             _userCollection = database.GetCollection<User>("Users");
         }
 
@@ -20,20 +19,17 @@ namespace asp.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register(User user)
         {
-            // Kiểm tra xem Username đã tồn tại chưa
             var existingUser = await _userCollection.Find(u => u.Username == user.Username).FirstOrDefaultAsync();
             if (existingUser != null)
             {
                 return BadRequest(new { message = "Tài khoản này đã có người sử dụng!" });
             }
 
-            // Tự động gán quyền KhachHang cho tài khoản mới đăng ký trên web
             if (string.IsNullOrEmpty(user.Role))
             {
                 user.Role = "KhachHang";
             }
 
-            // Lưu người dùng mới vào MongoDB
             await _userCollection.InsertOneAsync(user);
             return Ok(new { message = "Đăng ký thành công!" });
         }

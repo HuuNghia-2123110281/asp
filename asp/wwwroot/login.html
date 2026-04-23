@@ -73,29 +73,23 @@
                 return;
             }
 
-            messageBox.innerText = "Đang kiểm tra...";
             messageBox.style.color = "blue";
+            messageBox.innerText = "Đang kiểm tra...";
 
             try {
-                const response = await fetch('/api/User/login', {
+                const response = await fetch('/api/Auth/login', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(userRequest)
                 });
 
-                const contentType = response.headers.get("content-type");
-                if (!response.ok && contentType && contentType.indexOf("application/json") === -1) {
-                    throw new Error(`Sai đường dẫn API! Mã lỗi: ${response.status}`);
-                }
-
                 const result = await response.json();
 
                 if (response.ok) {
-                    alert("Đăng nhập thành công! Chào mừng " + result.user.fullName);
+                    alert("Đăng nhập thành công! Chào mừng " + result.fullName);
 
-                    localStorage.setItem("username", result.user.fullName);
-                    localStorage.setItem("role", result.user.role);
-                    localStorage.setItem("token", result.token);
+                    localStorage.setItem("username", result.fullName);
+                    localStorage.setItem("role", result.role);
 
                     window.location.href = "index.html";
                 } else {
@@ -105,7 +99,7 @@
             } catch (error) {
                 console.error("Chi tiết lỗi:", error);
                 messageBox.style.color = "red";
-                messageBox.innerText = error.message === "Failed to fetch" ? "Lỗi kết nối máy chủ!" : error.message;
+                messageBox.innerText = "Lỗi kết nối máy chủ!";
             }
         }   
     </script>
