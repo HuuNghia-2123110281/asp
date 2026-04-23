@@ -447,17 +447,57 @@
         }
 
         async function addCustomer() {
-
             const name = document.getElementById('cusName').value.trim();
             const phone = document.getElementById('cusPhone').value.trim();
-            const email = document.getElementById('cusEmail') ? document.getElementById('cusEmail').value.trim() : "";
-            const demand = document.getElementById('cusDemand') ? document.getElementById('cusDemand').value.trim() : "Chưa có nhu cầu cụ thể";
-
+            const email = document.getElementById('cusEmail').value.trim();
+            const demand = document.getElementById('cusDemand').value.trim();
 
             if (!name || !phone) {
                 alert("Vui lòng nhập đầy đủ Họ tên và Số điện thoại!");
                 return;
             }
+
+            const phoneRegex = /^0\d{9}$/;
+            if (!phoneRegex.test(phone)) {
+                alert("Số điện thoại phải có 10 chữ số và bắt đầu bằng số 0!");
+                return;
+            }
+
+            const data = {
+                username: phone,
+                fullName: name,
+                phone: phone,
+                email: email || "",
+                role: "KhachHang"
+            };
+
+            try {
+                const response = await fetch('/api/Auth/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+
+                if (response.ok) {
+                    alert("Đã thêm khách hàng và lưu vào MongoDB thành công!");
+
+
+                    document.getElementById('cusName').value = '';
+                    document.getElementById('cusPhone').value = '';
+                    document.getElementById('cusEmail').value = '';
+                    document.getElementById('cusDemand').value = '';
+
+
+                    loadCustomers();
+                } else {
+                    const result = await response.json();
+                    alert("Lỗi: " + result.message);
+                }
+            } catch (e) {
+                console.error(e);
+                alert("Lỗi kết nối máy chủ!");
+            }
+        }
 
             const customerData = {
                 username: phone,
@@ -495,7 +535,6 @@
                 console.error("Lỗi kết nối API:", error);
                 alert("Không thể kết nối đến máy chủ!");
             }
-        }
 
         function viewDetail(id) {
             const cus = customers.find(c => c.id === id);
