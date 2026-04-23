@@ -337,18 +337,28 @@
 </head>
 <body>
     <nav class="sidebar">
-        <a href="admin-dashboard.html" class="sidebar-brand"><i class="fas fa-laugh-wink"></i> BĐS NGHĨA</a>
+        <a href="admin-dashboard.html" class="sidebar-brand">
+            <i class="fas fa-laugh-wink"></i> BĐS NGHĨA
+        </a>
+
         <div class="nav-menu">
-            <a href="admin-dashboard.html" class="nav-item"><i class="fas fa-fw fa-tachometer-alt"></i> Dashboard</a>
+            <a href="admin-dashboard.html" class="nav-item active"><i class="fas fa-fw fa-tachometer-alt"></i> Dashboard</a>
+
             <div class="divider"></div>
             <div class="nav-heading">Quản trị Nguồn hàng</div>
             <a href="add-property.html" class="nav-item"><i class="fas fa-fw fa-plus-square"></i> Đăng tin mới</a>
             <a href="manage-system.html" class="nav-item"><i class="fas fa-fw fa-building"></i> DS Bất động sản</a>
             <a href="manage-system.html" class="nav-item"><i class="fas fa-fw fa-tags"></i> Dự án & Chủ nhà</a>
+
             <div class="divider"></div>
             <div class="nav-heading">Nghiệp vụ Sales</div>
             <a href="manage-transactions.html" class="nav-item"><i class="fas fa-fw fa-handshake"></i> Quản lý Giao dịch</a>
-            <a href="manage-clients.html" class="nav-item active"><i class="fas fa-fw fa-users"></i> Khách hàng & Lịch hẹn</a>
+            <a href="manage-clients.html" class="nav-item"><i class="fas fa-fw fa-calendar-alt"></i> Lịch hẹn xem nhà</a>
+            <a href="manage-clients.html" class="nav-item"><i class="fas fa-fw fa-users"></i> Hồ sơ Khách hàng</a>
+
+            <div class="divider"></div>
+            <div class="nav-heading">Hệ thống</div>
+            <a href="#" class="nav-item"><i class="fas fa-fw fa-user-shield"></i> Tài khoản Nhân sự</a>
         </div>
     </nav>
 
@@ -483,17 +493,17 @@
                     const date = new Date(a.appointmentDate).toLocaleString('vi-VN', { hour: '2-digit', minute: '2-digit', day: '2-digit', month: '2-digit', year: 'numeric' });
 
                     html += `<tr>
-                            <td><div style="font-weight:bold; color:var(--dark);">${cus.name}</div><small style="color:#858796;">${cus.phone}</small></td>
-                            <td style="color:var(--primary); font-weight:bold;">${prop.tieuDe}</td>
-                            <td><i class="far fa-clock"></i> ${date}</td>
-                            <td><span class="status ${stClass}">${a.status}</span></td>
-                            <td>
-                                ${(a.status === 'Chờ xác nhận' || a.status === 'Đã lên lịch') ? `
-                                    <button class="action-btn btn-success" onclick="updateStatus('${a.id}', 'Đã xem nhà')"><i class="fas fa-check"></i> Chốt</button>
-                                    <button class="action-btn btn-danger" onclick="updateStatus('${a.id}', 'Đã hủy')"><i class="fas fa-times"></i> Hủy</button>
-                                ` : '<span style="color:#858796; font-size:12px;"><i class="fas fa-lock"></i> Đã đóng</span>'}
-                            </td>
-                        </tr>`;
+                                <td><div style="font-weight:bold; color:var(--dark);">${cus.name}</div><small style="color:#858796;">${cus.phone}</small></td>
+                                <td style="color:var(--primary); font-weight:bold;">${prop.tieuDe}</td>
+                                <td><i class="far fa-clock"></i> ${date}</td>
+                                <td><span class="status ${stClass}">${a.status}</span></td>
+                                <td>
+                                    ${(a.status === 'Chờ xác nhận' || a.status === 'Đã lên lịch') ? `
+                                        <button class="action-btn btn-success" onclick="updateStatus('${a.id}', 'Đã xem nhà')"><i class="fas fa-check"></i> Chốt</button>
+                                        <button class="action-btn btn-danger" onclick="updateStatus('${a.id}', 'Đã hủy')"><i class="fas fa-times"></i> Hủy</button>
+                                    ` : '<span style="color:#858796; font-size:12px;"><i class="fas fa-lock"></i> Đã đóng</span>'}
+                                </td>
+                            </tr>`;
                 });
                 document.getElementById('appointment-list').innerHTML = html;
             });
