@@ -49,7 +49,7 @@
             object-fit: cover;
         }
 
-        /* Album ảnh phụ */
+
         .image-gallery {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
@@ -160,18 +160,18 @@
 
         async function fetchPropertyDetail(id) {
             try {
-                // 1. Lấy thông tin chính
+
                 const resBds = await fetch(`/api/BatDongSan/${id}`);
                 const item = await resBds.json();
 
-                // 2. Lấy album ảnh phụ (Mới thêm)
+
                 const resImages = await fetch(`/api/PropertyImage/property/${id}`);
                 const gallery = await resImages.json();
 
                 const container = document.getElementById('detail-content');
                 const mainImg = item.hinhAnhUrl || `https://loremflickr.com/1000/600/house?lock=${item.id}`;
 
-                // Tạo HTML cho Gallery
+
                 let galleryHtml = "";
                 if (gallery.length > 0) {
                     galleryHtml = `<div class="image-gallery">`;
@@ -182,47 +182,54 @@
                 }
 
                 container.innerHTML = `
-                        <img src="${mainImg}" class="main-img" id="mainImgView" alt="BĐS">
-                        ${galleryHtml}
-                        <div class="content">
-                            <div class="price">${item.gia.toLocaleString('vi-VN')} VNĐ</div>
-                            <h1 class="title">${item.tieuDe}</h1>
-                            <div class="address"><i class="fas fa-map-marker-alt"></i> ${item.diaChi}</div>
+                            <img src="${mainImg}" class="main-img" id="mainImgView" alt="BĐS">
+                            ${galleryHtml}
+                            <div class="content">
+                                <div class="price">${item.gia.toLocaleString('vi-VN')} VNĐ</div>
+                                <h1 class="title">${item.tieuDe}</h1>
+                                <div class="address"><i class="fas fa-map-marker-alt"></i> ${item.diaChi}</div>
 
-                            <div id="admin-actions" style="margin-bottom: 25px;"></div>
+                                <div id="admin-actions" style="margin-bottom: 25px;"></div>
 
-                            <div class="specs">
-                                <div class="spec-item"><i class="fas fa-home"></i><p>Loại</p><div>${item.loaiHinh}</div></div>
-                                <div class="spec-item"><i class="fas fa-bed"></i><p>PN</p><div>${item.phongNgu || 0} PN</div></div>
-                                <div class="spec-item"><i class="fas fa-expand-arrows-alt"></i><p>Diện tích</p><div>${item.dienTich || 0} m²</div></div>
-                            </div>
-
-                            <div class="description">
-                                <h3>Mô tả chi tiết</h3>
-                                <p>${item.moTa || "Thông tin đang cập nhật..."}</p>
-                            </div>
-
-                            <div class="contact-box">
-                                <div><h4>Liên hệ ngay</h4><p>Hỗ trợ tư vấn pháp lý 24/7</p></div>
-                                <a href="tel:0901234567" class="btn-call"><i class="fas fa-phone-alt"></i> Gọi ngay</a>
-                            </div>
-
-                            <div class="booking-box">
-                                <h3 style="margin-top: 0; color: #856404;"><i class="fas fa-calendar-check"></i> Đặt lịch xem nhà</h3>
-                                <div style="display: flex; gap: 15px; margin-top: 15px;">
-                                    <input type="datetime-local" id="clientAppDate" style="flex: 1; padding: 12px; border: 1px solid #ccc; border-radius: 6px;">
-                                    <button onclick="clientBookAppointment('${item.id}')" style="background: #ffc107; padding: 12px 25px; font-weight: bold; border-radius: 6px; cursor: pointer; border:none;">Gửi yêu cầu</button>
+                                <div class="specs">
+                                    <div class="spec-item"><i class="fas fa-home"></i><p>Loại</p><div>${item.loaiHinh}</div></div>
+                                    <div class="spec-item"><i class="fas fa-bed"></i><p>PN</p><div>${item.phongNgu || 0} PN</div></div>
+                                    <div class="spec-item"><i class="fas fa-expand-arrows-alt"></i><p>Diện tích</p><div>${item.dienTich || 0} m²</div></div>
                                 </div>
-                                <p id="bookMsg" style="margin-top: 15px; font-weight: bold;"></p>
+
+                                <div class="description">
+                                    <h3>Mô tả chi tiết</h3>
+                                    <p>${item.moTa || "Thông tin đang cập nhật..."}</p>
+                                </div>
+
+                                <div class="contact-box">
+                                    <div><h4>Liên hệ ngay</h4><p>Hỗ trợ tư vấn pháp lý 24/7</p></div>
+                                    <a href="tel:0901234567" class="btn-call"><i class="fas fa-phone-alt"></i> Gọi ngay</a>
+                                </div>
+
+                                <div class="booking-box">
+                                    <h3 style="margin-top: 0; color: #856404;"><i class="fas fa-calendar-check"></i> Đặt lịch xem nhà</h3>
+                                    <div style="display: flex; gap: 15px; margin-top: 15px;">
+                                        <input type="datetime-local" id="clientAppDate" style="flex: 1; padding: 12px; border: 1px solid #ccc; border-radius: 6px;">
+                                        <button onclick="clientBookAppointment('${item.id}')" style="background: #ffc107; padding: 12px 25px; font-weight: bold; border-radius: 6px; cursor: pointer; border:none;">Gửi yêu cầu</button>
+                                    </div>
+                                    <p id="bookMsg" style="margin-top: 15px; font-weight: bold;"></p>
+                                </div>
                             </div>
-                        </div>
-                    `;
+                        `;
+
+                const dateInput = document.getElementById("clientAppDate");
+                if (dateInput) {
+                    const now = new Date();
+                    now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+                    dateInput.min = now.toISOString().slice(0, 16);
+                }
 
                 if (["Admin", "Sales"].includes(localStorage.getItem("role"))) {
                     document.getElementById("admin-actions").innerHTML = `
-                            <a href="edit-property.html?id=${item.id}" style="background: #ffc107; padding: 10px 20px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block;">
-                                <i class="fas fa-edit"></i> Sửa thông tin
-                            </a>`;
+                                <a href="edit-property.html?id=${item.id}" style="background: #ffc107; padding: 10px 20px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block;">
+                                    <i class="fas fa-edit"></i> Sửa thông tin
+                                </a>`;
                 }
             } catch (err) { console.error(err); }
         }
