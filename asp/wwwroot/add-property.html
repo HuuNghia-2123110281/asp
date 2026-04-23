@@ -7,47 +7,171 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
-            --primary: #1a73e8;
-            --dark: #202124;
-            --light: #f8f9fa;
+            --primary: #4e73df;
+            --primary-dark: #224abe;
+            --success: #1cc88a;
+            --info: #36b9cc;
+            --warning: #f6c23e;
+            --danger: #e74a3b;
+            --dark: #5a5c69;
+            --bg-light: #f8f9fc;
         }
 
         body {
-            font-family: 'Segoe UI', Roboto, sans-serif;
-            background: #f0f2f5;
+            font-family: 'Nunito', 'Segoe UI', Tahoma, sans-serif;
             margin: 0;
+            background-color: var(--bg-light);
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
         }
 
-        header {
+        /* SIDEBAR & TOPBAR */
+        .sidebar {
+            width: 250px;
+            background-image: linear-gradient(180deg, var(--primary) 10%, var(--primary-dark) 100%);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            z-index: 100;
+        }
+
+        .sidebar-brand {
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            font-weight: 900;
+            color: white;
+            text-decoration: none;
+            letter-spacing: 2px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+            .sidebar-brand i {
+                transform: rotate(-15deg);
+                margin-right: 10px;
+                font-size: 24px;
+            }
+
+        .nav-menu {
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px 0;
+        }
+
+        .nav-heading {
+            padding: 15px 20px 5px 20px;
+            font-size: 11px;
+            font-weight: 800;
+            color: rgba(255, 255, 255, 0.4);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .nav-item {
+            padding: 12px 20px;
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 14px;
+            font-weight: 700;
+            transition: 0.2s;
+        }
+
+            .nav-item i {
+                width: 20px;
+                text-align: center;
+                font-size: 16px;
+            }
+
+            .nav-item:hover, .nav-item.active {
+                color: white;
+            }
+
+        .divider {
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            margin: 10px 20px;
+        }
+
+        .content-wrapper {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+
+        .topbar {
             background: white;
-            padding: 20px 5%;
+            height: 70px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            padding: 0 25px;
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+            z-index: 10;
         }
 
-        .logo {
-            font-size: 24px;
-            font-weight: 800;
-            color: var(--primary);
+        .topbar-left a {
+            color: var(--dark);
             text-decoration: none;
-            text-transform: uppercase;
+            font-weight: bold;
+            font-size: 14px;
+            background: var(--bg-light);
+            padding: 8px 15px;
+            border-radius: 20px;
+            transition: 0.3s;
+        }
+
+            .topbar-left a:hover {
+                background: #eaecf4;
+            }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+            .user-profile span {
+                font-weight: 600;
+                color: var(--dark);
+                font-size: 14px;
+            }
+
+        .btn-logout {
+            color: var(--danger);
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 18px;
+            padding: 5px;
+        }
+
+        /* FORM BĐS STYLES */
+        .container-fluid {
+            padding: 25px;
         }
 
         .form-container {
-            max-width: 850px;
-            margin: 40px auto;
+            max-width: 900px;
+            margin: 0 auto;
             background: white;
             padding: 40px;
-            border-radius: 12px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+            border-radius: 8px;
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+            border-top: 4px solid var(--primary);
         }
 
             .form-container h2 {
                 text-align: center;
                 color: var(--dark);
+                margin-top: 0;
                 margin-bottom: 30px;
+                font-weight: 800;
             }
 
         .form-group {
@@ -56,17 +180,18 @@
 
             .form-group label {
                 display: block;
-                font-weight: 600;
+                font-weight: bold;
+                font-size: 14px;
                 margin-bottom: 8px;
-                color: #333;
+                color: var(--dark);
             }
 
             .form-group input, .form-group select, .form-group textarea {
                 width: 100%;
-                padding: 12px;
-                border: 1px solid #ccc;
-                border-radius: 6px;
-                font-size: 16px;
+                padding: 10px 15px;
+                border: 1px solid #d1d3e2;
+                border-radius: 5px;
+                font-size: 14px;
                 box-sizing: border-box;
                 outline: none;
                 transition: 0.3s;
@@ -74,13 +199,8 @@
 
                 .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
                     border-color: var(--primary);
-                    box-shadow: 0 0 5px rgba(26, 115, 232, 0.3);
+                    box-shadow: 0 0 0 0.2rem rgba(78, 115, 223, 0.25);
                 }
-
-        .dynamic-select {
-            border-left: 4px solid #ffc107 !important;
-            background-color: #fafafa;
-        }
 
         .row {
             display: flex;
@@ -92,18 +212,17 @@
         }
 
         .upload-zone {
-            border: 2px dashed #1a73e8;
+            border: 2px dashed var(--primary);
             padding: 30px;
             text-align: center;
-            border-radius: 10px;
-            background: #f8fbff;
+            border-radius: 8px;
+            background: #f8f9fc;
             cursor: pointer;
             transition: 0.3s;
         }
 
             .upload-zone:hover {
-                background: #edf4ff;
-                border-color: #1557b0;
+                background: #eaecf4;
             }
 
         .preview-container {
@@ -131,24 +250,24 @@
             position: absolute;
             top: 5px;
             right: 5px;
-            background: rgba(255,0,0,0.8);
+            background: rgba(231,74,59,0.9);
             color: white;
             border: none;
             border-radius: 50%;
             width: 22px;
             height: 22px;
             cursor: pointer;
-            font-size: 12px;
+            font-weight: bold;
         }
 
         .submit-btn {
             width: 100%;
-            padding: 15px;
-            background: #28a745;
+            padding: 12px;
+            background: var(--success);
             color: white;
             border: none;
-            border-radius: 6px;
-            font-size: 18px;
+            border-radius: 5px;
+            font-size: 16px;
             font-weight: bold;
             cursor: pointer;
             transition: 0.3s;
@@ -156,7 +275,7 @@
         }
 
             .submit-btn:hover {
-                background: #218838;
+                background: #17a673;
             }
 
         #message {
@@ -167,78 +286,98 @@
     </style>
 </head>
 <body>
-
-    <header>
-        <a href="index.html" class="logo"><i class="fas fa-home"></i> BĐS NGHĨA - SALES PANEL</a>
-        <div style="display: flex; gap: 20px;">
-            <a href="manage-system.html" id="linkConfig" style="display:none; color: var(--dark); text-decoration: none; font-weight: bold;"><i class="fas fa-cogs"></i> Cấu hình</a>
-            <a href="index.html" style="color: var(--dark); text-decoration: none; font-weight: bold;"><i class="fas fa-arrow-left"></i> Quay lại trang chủ</a>
+    <nav class="sidebar">
+        <a href="admin-dashboard.html" class="sidebar-brand"><i class="fas fa-laugh-wink"></i> BĐS NGHĨA</a>
+        <div class="nav-menu">
+            <a href="admin-dashboard.html" class="nav-item"><i class="fas fa-fw fa-tachometer-alt"></i> Dashboard</a>
+            <div class="divider"></div>
+            <div class="nav-heading">Quản trị Nguồn hàng</div>
+            <a href="add-property.html" class="nav-item active"><i class="fas fa-fw fa-plus-square"></i> Đăng tin mới</a>
+            <a href="manage-system.html" class="nav-item"><i class="fas fa-fw fa-building"></i> DS Bất động sản</a>
+            <a href="manage-system.html" class="nav-item"><i class="fas fa-fw fa-tags"></i> Dự án & Chủ nhà</a>
+            <div class="divider"></div>
+            <div class="nav-heading">Nghiệp vụ Sales</div>
+            <a href="manage-transactions.html" class="nav-item"><i class="fas fa-fw fa-handshake"></i> Quản lý Giao dịch</a>
+            <a href="manage-clients.html" class="nav-item"><i class="fas fa-fw fa-users"></i> Khách hàng & Lịch hẹn</a>
         </div>
-    </header>
+    </nav>
 
-    <div class="form-container">
-        <h2><i class="fas fa-edit"></i> ĐĂNG TIN NHÀ ĐẤT & ALBUM ẢNH</h2>
-
-        <div class="form-group">
-            <label>Tiêu đề bài đăng <span style="color:red">*</span></label>
-            <input type="text" id="tieuDe" placeholder="VD: Bán biệt thự biển Phú Quốc...">
-        </div>
-
-        <div class="row">
-            <div class="col form-group">
-                <label>Loại hình BĐS <span style="color:red">*</span></label>
-                <select id="loaiHinh" class="dynamic-select"><option value="">-- Đang tải --</option></select>
+    <div class="content-wrapper">
+        <header class="topbar">
+            <div class="topbar-left"><a href="index.html"><i class="fas fa-globe"></i> Xem trang chủ Website</a></div>
+            <div class="user-profile">
+                <span id="adminName">Đang tải...</span>
+                <img src="https://source.unsplash.com/QAB-WJcbgJk/60x60" style="width: 32px; height: 32px; border-radius: 50%;">
+                <button onclick="logout()" class="btn-logout" title="Đăng xuất"><i class="fas fa-sign-out-alt"></i></button>
             </div>
-            <div class="col form-group">
-                <label>Mức giá (VNĐ) <span style="color:red">*</span></label>
-                <input type="number" id="gia">
+        </header>
+
+        <div class="container-fluid">
+            <div class="form-container">
+                <h2><i class="fas fa-edit"></i> ĐĂNG TIN NHÀ ĐẤT & ALBUM ẢNH</h2>
+
+                <div class="form-group">
+                    <label>Tiêu đề bài đăng <span style="color:red">*</span></label>
+                    <input type="text" id="tieuDe" placeholder="VD: Bán biệt thự biển Phú Quốc...">
+                </div>
+
+                <div class="row">
+                    <div class="col form-group">
+                        <label>Loại hình BĐS <span style="color:red">*</span></label>
+                        <select id="loaiHinh"><option value="">-- Đang tải --</option></select>
+                    </div>
+                    <div class="col form-group">
+                        <label>Mức giá (VNĐ) <span style="color:red">*</span></label>
+                        <input type="number" id="gia">
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col form-group">
+                        <label>Thuộc Dự án</label>
+                        <select id="duAn"><option value="">-- Nhà lẻ --</option></select>
+                    </div>
+                    <div class="col form-group">
+                        <label>Chủ nhà ký gửi <span style="color:red">*</span></label>
+                        <select id="chuNha"><option value="">-- Chọn chủ nhà --</option></select>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col form-group">
+                        <label>Diện tích (m²)</label>
+                        <input type="number" id="dienTich">
+                    </div>
+                    <div class="col form-group">
+                        <label>Số phòng ngủ</label>
+                        <input type="number" id="phongNgu">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Địa chỉ chi tiết <span style="color:red">*</span></label>
+                    <input type="text" id="diaChi">
+                </div>
+
+                <div class="form-group">
+                    <label>Mô tả bài viết</label>
+                    <textarea id="moTa" rows="4"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Album hình ảnh (Tấm đầu tiên là ảnh đại diện) <span style="color:red">*</span></label>
+                    <div class="upload-zone" onclick="document.getElementById('multiImages').click()">
+                        <i class="fas fa-images" style="font-size: 40px; color: var(--primary); margin-bottom: 10px;"></i>
+                        <p style="margin:0; font-weight:bold; color: var(--dark);">Bấm vào đây để chọn nhiều ảnh cho album</p>
+                        <input type="file" id="multiImages" multiple accept="image/*" style="display:none;" onchange="previewImages(this.files)">
+                    </div>
+                    <div id="previewContainer" class="preview-container"></div>
+                </div>
+
+                <button class="submit-btn" onclick="submitProperty()"><i class="fas fa-cloud-upload-alt"></i> XUẤT BẢN TIN ĐĂNG</button>
+                <p id="message"></p>
             </div>
         </div>
-
-        <div class="row">
-            <div class="col form-group">
-                <label>Thuộc Dự án</label>
-                <select id="duAn" class="dynamic-select"><option value="">-- Nhà lẻ --</option></select>
-            </div>
-            <div class="col form-group">
-                <label>Chủ nhà ký gửi <span style="color:red">*</span></label>
-                <select id="chuNha" class="dynamic-select"><option value="">-- Chọn chủ nhà --</option></select>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="col form-group">
-                <label>Diện tích (m²)</label>
-                <input type="number" id="dienTich">
-            </div>
-            <div class="col form-group">
-                <label>Số phòng ngủ</label>
-                <input type="number" id="phongNgu">
-            </div>
-        </div>
-
-        <div class="form-group">
-            <label>Địa chỉ chi tiết <span style="color:red">*</span></label>
-            <input type="text" id="diaChi">
-        </div>
-
-        <div class="form-group">
-            <label>Mô tả bài viết</label>
-            <textarea id="moTa" rows="4"></textarea>
-        </div>
-
-        <div class="form-group">
-            <label>Album hình ảnh (Tấm đầu tiên là ảnh đại diện) <span style="color:red">*</span></label>
-            <div class="upload-zone" onclick="document.getElementById('multiImages').click()">
-                <i class="fas fa-images" style="font-size: 40px; color: #1a73e8; margin-bottom: 10px;"></i>
-                <p style="margin:0; font-weight:bold;">Bấm vào đây để chọn nhiều ảnh cho album</p>
-                <input type="file" id="multiImages" multiple accept="image/*" style="display:none;" onchange="previewImages(this.files)">
-            </div>
-            <div id="previewContainer" class="preview-container"></div>
-        </div>
-
-        <button class="submit-btn" onclick="submitProperty()"><i class="fas fa-cloud-upload-alt"></i> XUẤT BẢN TIN ĐĂNG</button>
-        <p id="message"></p>
     </div>
 
     <script>
@@ -246,12 +385,15 @@
 
         document.addEventListener("DOMContentLoaded", () => {
             const role = localStorage.getItem("role");
+            const username = localStorage.getItem("username");
             if (role !== "Admin" && role !== "Sales") {
                 window.location.href = "index.html"; return;
             }
-            if (role === "Admin") document.getElementById("linkConfig").style.display = "inline-block";
+            document.getElementById("adminName").innerText = username || "Sales";
             loadMasterData();
         });
+
+        function logout() { localStorage.clear(); window.location.href = "login.html"; }
 
         async function loadMasterData() {
             fetch('/api/Category').then(res => res.json()).then(data => {
@@ -278,10 +420,7 @@
                 reader.onload = (e) => {
                     const div = document.createElement('div');
                     div.className = 'preview-item';
-                    div.innerHTML = `
-                            <img src="${e.target.result}">
-                            <button class="remove-img" onclick="removeImage(${selectedFiles.length - 1}, this)">×</button>
-                        `;
+                    div.innerHTML = `<img src="${e.target.result}"><button class="remove-img" onclick="removeImage(${selectedFiles.length - 1}, this)">×</button>`;
                     document.getElementById('previewContainer').appendChild(div);
                 };
                 reader.readAsDataURL(file);
@@ -297,13 +436,10 @@
             const btn = document.querySelector('.submit-btn');
             const msg = document.getElementById('message');
 
-            if (selectedFiles.length === 0) {
-                msg.style.color = "red"; msg.innerText = "Vui lòng chọn ít nhất 1 tấm ảnh!"; return;
-            }
+            if (selectedFiles.length === 0) { msg.style.color = "red"; msg.innerText = "Vui lòng chọn ít nhất 1 tấm ảnh!"; return; }
 
             btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang xuất bản...';
             btn.disabled = true;
-
 
             const formData = new FormData();
             formData.append("TieuDe", document.getElementById('tieuDe').value);
@@ -312,6 +448,9 @@
             formData.append("DiaChi", document.getElementById('diaChi').value);
             formData.append("ProjectId", document.getElementById('duAn').value);
             formData.append("OwnerId", document.getElementById('chuNha').value);
+            formData.append("DienTich", document.getElementById('dienTich').value);
+            formData.append("PhongNgu", document.getElementById('phongNgu').value);
+            formData.append("MoTa", document.getElementById('moTa').value);
             formData.append("HinhAnhFile", selectedFiles[0]);
 
             try {
@@ -319,37 +458,24 @@
                 const bds = await response.json();
 
                 if (response.ok) {
-                    msg.style.color = "blue";
-                    msg.innerText = "Đang tải album ảnh phụ...";
-
-
+                    msg.style.color = "blue"; msg.innerText = "Đang tải album ảnh phụ...";
                     for (let i = 1; i < selectedFiles.length; i++) {
-                        const imgData = {
-                            propertyId: bds.id,
-                            imageUrl: await toBase64(selectedFiles[i])
-                        };
-                        await fetch('/api/PropertyImage', {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify(imgData)
-                        });
+                        const imgData = { propertyId: bds.id, imageUrl: await toBase64(selectedFiles[i]) };
+                        await fetch('/api/PropertyImage', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(imgData) });
                     }
-
-                    msg.style.color = "green";
-                    msg.innerText = "Thành công! Hệ thống đã lưu tin đăng và album ảnh.";
-                    setTimeout(() => window.location.href = "index.html", 2000);
-                }
+                    msg.style.color = "green"; msg.innerText = "Thành công! Hệ thống đã lưu tin đăng.";
+                    setTimeout(() => window.location.reload(), 2000);
+                } else { throw new Error(); }
             } catch (err) {
                 msg.style.color = "red"; msg.innerText = "Lỗi kết nối máy chủ!";
                 btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-cloud-upload-alt"></i> XUẤT BẢN TIN ĐĂNG';
             }
         }
 
         const toBase64 = file => new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            reader.readAsDataURL(file);
-            reader.onload = () => resolve(reader.result);
-            reader.onerror = error => reject(error);
+            const reader = new FileReader(); reader.readAsDataURL(file);
+            reader.onload = () => resolve(reader.result); reader.onerror = error => reject(error);
         });
     </script>
 </body>
