@@ -10,7 +10,6 @@
             --primary: #4e73df;
             --primary-dark: #224abe;
             --success: #1cc88a;
-            --info: #36b9cc;
             --warning: #f6c23e;
             --danger: #e74a3b;
             --dark: #5a5c69;
@@ -18,7 +17,7 @@
         }
 
         body {
-            font-family: 'Nunito', 'Segoe UI', Tahoma, sans-serif;
+            font-family: 'Nunito', sans-serif;
             margin: 0;
             background-color: var(--bg-light);
             display: flex;
@@ -26,7 +25,6 @@
             overflow: hidden;
         }
 
-        /* SIDEBAR & TOPBAR ĐỒNG BỘ */
         .sidebar {
             width: 250px;
             background-image: linear-gradient(180deg, var(--primary) 10%, var(--primary-dark) 100%);
@@ -45,29 +43,13 @@
             font-weight: 900;
             color: white;
             text-decoration: none;
-            letter-spacing: 2px;
             border-bottom: 1px solid rgba(255, 255, 255, 0.15);
         }
-
-            .sidebar-brand i {
-                transform: rotate(-15deg);
-                margin-right: 10px;
-                font-size: 24px;
-            }
 
         .nav-menu {
             flex: 1;
             overflow-y: auto;
             padding: 10px 0;
-        }
-
-        .nav-heading {
-            padding: 15px 20px 5px 20px;
-            font-size: 11px;
-            font-weight: 800;
-            color: rgba(255, 255, 255, 0.4);
-            text-transform: uppercase;
-            letter-spacing: 1px;
         }
 
         .nav-item {
@@ -81,12 +63,6 @@
             font-weight: 700;
             transition: 0.2s;
         }
-
-            .nav-item i {
-                width: 20px;
-                text-align: center;
-                font-size: 16px;
-            }
 
             .nav-item:hover, .nav-item.active {
                 color: white;
@@ -115,77 +91,15 @@
             z-index: 10;
         }
 
-        .topbar-left a {
-            color: var(--dark);
-            text-decoration: none;
-            font-weight: bold;
-            font-size: 14px;
-            background: var(--bg-light);
-            padding: 8px 15px;
-            border-radius: 20px;
-            transition: 0.3s;
-        }
-
-            .topbar-left a:hover {
-                background: #eaecf4;
-            }
-
         .user-profile {
             display: flex;
             align-items: center;
             gap: 15px;
         }
 
-            .user-profile span {
-                font-weight: 600;
-                color: var(--dark);
-                font-size: 14px;
-            }
-
-        .btn-logout {
-            color: var(--danger);
-            background: none;
-            border: none;
-            cursor: pointer;
-            font-size: 18px;
-            padding: 5px;
-        }
-
-        /* FORM STYLES */
         .container-fluid {
             padding: 25px;
         }
-
-        .page-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 25px;
-        }
-
-        .page-title {
-            margin: 0;
-            color: var(--dark);
-            font-weight: 400;
-            font-size: 28px;
-        }
-
-        .back-btn {
-            background: white;
-            color: var(--dark);
-            padding: 8px 15px;
-            border-radius: 5px;
-            text-decoration: none;
-            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
-            font-weight: bold;
-            font-size: 14px;
-            transition: 0.2s;
-        }
-
-            .back-btn:hover {
-                background: #eaecf4;
-                color: var(--primary);
-            }
 
         .form-container {
             max-width: 900px;
@@ -196,15 +110,6 @@
             box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
             border-top: 4px solid var(--primary);
         }
-
-            .form-container h2 {
-                text-align: center;
-                color: var(--dark);
-                margin-top: 0;
-                margin-bottom: 30px;
-                font-weight: 800;
-                font-size: 22px;
-            }
 
         .form-group {
             margin-bottom: 20px;
@@ -223,16 +128,8 @@
                 padding: 10px 15px;
                 border: 1px solid #d1d3e2;
                 border-radius: 5px;
-                font-size: 14px;
-                box-sizing: border-box;
                 outline: none;
-                transition: 0.3s;
             }
-
-                .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
-                    border-color: var(--primary);
-                    box-shadow: 0 0 0 0.2rem rgba(78, 115, 223, 0.25);
-                }
 
         .row {
             display: flex;
@@ -253,13 +150,7 @@
             font-size: 16px;
             font-weight: bold;
             cursor: pointer;
-            transition: 0.3s;
-            margin-top: 10px;
         }
-
-            .submit-btn:hover {
-                background: #dda20a;
-            }
 
         #current-img-preview {
             width: 200px;
@@ -267,231 +158,140 @@
             object-fit: cover;
             border-radius: 8px;
             margin-top: 10px;
-            display: block;
             border: 1px solid #ddd;
-        }
-
-        #message {
-            text-align: center;
-            margin-top: 15px;
-            font-weight: bold;
         }
     </style>
 </head>
 <body>
-
     <nav class="sidebar">
-        <a href="admin-dashboard.html" class="sidebar-brand"><i class="fas fa-laugh-wink"></i> BĐS NGHĨA</a>
+        <a href="admin-dashboard.html" class="sidebar-brand">BĐS NGHĨA</a>
         <div class="nav-menu">
-            <a href="admin-dashboard.html" class="nav-item active"><i class="fas fa-fw fa-tachometer-alt"></i> Dashboard</a>
-
+            <a href="admin-dashboard.html" class="nav-item">Dashboard</a>
             <div class="divider"></div>
-
-            <a href="add-property.html" class="nav-item"><i class="fas fa-fw fa-plus-square"></i> Đăng tin mới</a>
-            <a href="manage-properties.html" class="nav-item"><i class="fas fa-fw fa-building"></i> DS Bất động sản</a>
-            <a href="manage-system.html" class="nav-item"><i class="fas fa-fw fa-tags"></i> Dự án & Chủ nhà</a>
-
-            <div class="divider"></div>
-
-            <a href="manage-transactions.html" class="nav-item"><i class="fas fa-fw fa-handshake"></i> Quản lý Giao dịch</a>
-            <a href="manage-clients.html" class="nav-item"><i class="fas fa-fw fa-calendar-alt"></i> Lịch hẹn xem nhà</a>
-            <a href="manage-customers.html" class="nav-item"><i class="fas fa-fw fa-users"></i> Hồ sơ Khách hàng</a>
-
-            <a href="manage-employees.html" id="menu-employees" class="nav-item"><i class="fas fa-fw fa-user-tie"></i> Nhân viên sales</a>
-
-            <a href="manage-news.html" class="nav-item"><i class="fas fa-fw fa-newspaper"></i> Quản lý Tin tức</a>
+            <a href="manage-properties.html" class="nav-item active">DS Bất động sản</a>
+            <a href="manage-system.html" class="nav-item">Dự án & Chủ nhà</a>
+            <a href="manage-clients.html" class="nav-item">Lịch hẹn xem nhà</a>
         </div>
     </nav>
 
     <div class="content-wrapper">
         <header class="topbar">
-            <div class="topbar-left"><a href="index.html"><i class="fas fa-globe"></i> Xem trang chủ Website</a></div>
-            <div class="user-profile">
-                <span id="adminName">Đang tải...</span>
-                <img src="https://source.unsplash.com/QAB-WJcbgJk/60x60" style="width: 32px; height: 32px; border-radius: 50%;">
-                <button onclick="logout()" class="btn-logout" title="Đăng xuất"><i class="fas fa-sign-out-alt"></i></button>
-            </div>
+            <div class="topbar-left"><a href="index.html" style="text-decoration:none; color:var(--dark); font-weight:bold;">Xem Website</a></div>
+            <div class="user-profile"><span id="adminName">Admin</span></div>
         </header>
 
         <div class="container-fluid">
-            <div class="page-header">
-                <h1 class="page-title">Chỉnh sửa Hồ sơ</h1>
-                <a href="index.html" class="back-btn"><i class="fas fa-arrow-left"></i> Hủy và quay lại</a>
-            </div>
-
             <div class="form-container">
-                <h2><i class="fas fa-edit"></i> CẬP NHẬT THÔNG TIN BĐS</h2>
-
+                <h2 style="text-align:center;">CẬP NHẬT BẤT ĐỘNG SẢN</h2>
                 <div class="form-group">
                     <label>Tiêu đề bài đăng</label>
                     <input type="text" id="tieuDe">
                 </div>
-
                 <div class="row">
                     <div class="col form-group">
                         <label>Loại hình</label>
-                        <select id="loaiHinh"></select>
+                        <select id="loaiHinh">
+                            <option value="Căn hộ">Căn hộ/Chung cư</option>
+                            <option value="Nhà phố">Nhà phố/Liền kề</option>
+                            <option value="Biệt thự">Biệt thự</option>
+                            <option value="Đất nền">Đất nền dự án</option>
+                        </select>
                     </div>
                     <div class="col form-group">
                         <label>Mức giá (VNĐ)</label>
                         <input type="number" id="gia">
                     </div>
                 </div>
-
                 <div class="row">
-                    <div class="col form-group">
-                        <label>Thuộc Dự án</label>
-                        <select id="duAn"></select>
-                    </div>
-                    <div class="col form-group">
-                        <label>Chủ nhà ký gửi</label>
-                        <select id="chuNha"></select>
-                    </div>
+                    <div class="col form-group"><label>Dự án</label><select id="duAn"></select></div>
+                    <div class="col form-group"><label>Chủ nhà</label><select id="chuNha"></select></div>
                 </div>
-
                 <div class="row">
-                    <div class="col form-group">
-                        <label>Diện tích (m²)</label>
-                        <input type="number" id="dienTich">
-                    </div>
-                    <div class="col form-group">
-                        <label>Số phòng ngủ</label>
-                        <input type="number" id="phongNgu">
-                    </div>
+                    <div class="col form-group"><label>Diện tích (m²)</label><input type="number" id="dienTich"></div>
+                    <div class="col form-group"><label>Phòng ngủ</label><input type="number" id="phongNgu"></div>
                 </div>
-
+                <div class="form-group"><label>Địa chỉ</label><input type="text" id="diaChi"></div>
+                <div class="form-group"><label>Mô tả</label><textarea id="moTa" rows="3"></textarea></div>
                 <div class="form-group">
-                    <label>Địa chỉ</label>
-                    <input type="text" id="diaChi">
+                    <label>Ảnh hiện tại</label>
+                    <img id="current-img-preview" src="">
+                    <input type="file" id="hinhAnh" style="margin-top:10px;">
                 </div>
-
-                <div class="form-group">
-                    <label>Mô tả chi tiết</label>
-                    <textarea id="moTa" rows="4"></textarea>
-                </div>
-
-                <div class="form-group">
-                    <label>Hình ảnh hiện tại</label>
-                    <img id="current-img-preview" src="" alt="Chưa có ảnh">
-                    <label style="margin-top: 15px; color: var(--primary);">Thay đổi ảnh mới (Để trống nếu giữ nguyên)</label>
-                    <input type="file" id="hinhAnh" accept="image/*">
-                </div>
-
-                <button class="submit-btn" onclick="updateProperty()"><i class="fas fa-save"></i> LƯU THAY ĐỔI</button>
-                <p id="message"></p>
+                <button class="submit-btn" onclick="updateProperty()">LƯU THAY ĐỔI</button>
+                <p id="message" style="text-align:center; font-weight:bold; margin-top:10px;"></p>
             </div>
         </div>
     </div>
 
     <script>
-        let currentId = null;
+        let currentId = new URLSearchParams(window.location.search).get('id');
 
         document.addEventListener("DOMContentLoaded", async () => {
-            const role = localStorage.getItem("role");
             const username = localStorage.getItem("username");
-            if (role !== "Admin" && role !== "Sales") {
-                window.location.href = "index.html"; return;
-            }
-
-            if (role === "Sales") {
-                const empMenu = document.getElementById("menu-employees");
-                if (empMenu) {
-                    empMenu.style.display = "none";
-                }
-            }
-
-            document.getElementById("adminName").innerText = username || "Sales";
-
-            const urlParams = new URLSearchParams(window.location.search);
-            currentId = urlParams.get('id');
-
-            if (currentId) {
-                await loadMasterData();
-                loadOldData(currentId);
-            }
+            document.getElementById("adminName").innerText = username || "Admin";
+            await loadMasterData();
+            loadOldData();
         });
 
-        function logout() { localStorage.clear(); window.location.href = "login.html"; }
-
         async function loadMasterData() {
-            try {
-                const [resCat, resProj, resOwn] = await Promise.all([
-                    fetch('/api/Category'), fetch('/api/Project'), fetch('/api/Owner')
-                ]);
+            const [resP, resO] = await Promise.all([fetch('/api/Project'), fetch('/api/Owner')]);
+            const projs = await resP.json();
+            const owns = await resO.json();
 
-                const cats = await resCat.json();
-                let catHtml = '<option value="">-- Chọn Loại hình --</option>';
-                cats.forEach(c => catHtml += `<option value="${c.name}">${c.name}</option>`);
-                document.getElementById('loaiHinh').innerHTML = catHtml;
+            let pth = '<option value="">-- Nhà lẻ --</option>';
+            projs.forEach(p => pth += `<option value="${p.id}">${p.name}</option>`);
+            document.getElementById('duAn').innerHTML = pth;
 
-                const projs = await resProj.json();
-                let projHtml = '<option value="">-- Nhà lẻ --</option>';
-                projs.forEach(p => projHtml += `<option value="${p.id}">${p.name}</option>`);
-                document.getElementById('duAn').innerHTML = projHtml;
-
-                const owns = await resOwn.json();
-                let ownHtml = '<option value="">-- Chọn Chủ nhà --</option>';
-                owns.forEach(o => ownHtml += `<option value="${o.id}">${o.fullName}</option>`);
-                document.getElementById('chuNha').innerHTML = ownHtml;
-            } catch (err) { console.error("Lỗi load master data", err); }
+            let oth = '<option value="">-- Chưa chọn --</option>';
+            owns.forEach(o => oth += `<option value="${o.id}">${o.fullName}</option>`);
+            document.getElementById('chuNha').innerHTML = oth;
         }
 
-        async function loadOldData(id) {
-            try {
-                const response = await fetch(`/api/BatDongSan/${id}`);
-                const data = await response.json();
-
-                document.getElementById('tieuDe').value = data.tieuDe;
-                document.getElementById('loaiHinh').value = data.loaiHinh;
-                document.getElementById('gia').value = data.gia;
-                document.getElementById('diaChi').value = data.diaChi;
-                document.getElementById('moTa').value = data.moTa || "";
-                document.getElementById('dienTich').value = data.dienTich || 0;
-                document.getElementById('phongNgu').value = data.phongNgu || 0;
-                document.getElementById('duAn').value = data.projectId || "";
-                document.getElementById('chuNha').value = data.ownerId || "";
-
-                if (data.hinhAnhUrl) {
-                    document.getElementById('current-img-preview').src = data.hinhAnhUrl;
-                }
-            } catch (err) { alert("Không thể tải dữ liệu cũ!"); }
+        async function loadOldData() {
+            const res = await fetch(`/api/BatDongSan/${currentId}`);
+            const data = await res.json();
+            document.getElementById('tieuDe').value = data.tieuDe;
+            document.getElementById('loaiHinh').value = data.loaiHinh;
+            document.getElementById('gia').value = data.gia;
+            document.getElementById('diaChi').value = data.diaChi;
+            document.getElementById('moTa').value = data.moTa;
+            document.getElementById('dienTich').value = data.dienTich;
+            document.getElementById('phongNgu').value = data.phongNgu;
+            document.getElementById('duAn').value = data.projectId || "";
+            document.getElementById('chuNha').value = data.ownerId || "";
+            document.getElementById('current-img-preview').src = data.hinhAnhUrl;
         }
 
         async function updateProperty() {
             const msg = document.getElementById('message');
-            const fileInput = document.getElementById('hinhAnh');
-
             const formData = new FormData();
+            formData.append("Id", currentId);
             formData.append("TieuDe", document.getElementById('tieuDe').value);
             formData.append("LoaiHinh", document.getElementById('loaiHinh').value);
-            formData.append("Gia", document.getElementById('gia').value);
+            formData.append("Gia", document.getElementById('gia').value || 0);
+            formData.append("DienTich", document.getElementById('dienTich').value || 0);
+            formData.append("PhongNgu", document.getElementById('phongNgu').value || 0);
             formData.append("DiaChi", document.getElementById('diaChi').value);
             formData.append("MoTa", document.getElementById('moTa').value);
-            formData.append("DienTich", document.getElementById('dienTich').value);
-            formData.append("PhongNgu", document.getElementById('phongNgu').value);
-            formData.append("ProjectId", document.getElementById('duAn').value);
-            formData.append("OwnerId", document.getElementById('chuNha').value);
 
-            if (fileInput.files[0]) {
-                formData.append("HinhAnhFile", fileInput.files[0]);
-            }
+            const pId = document.getElementById('duAn').value;
+            if (pId) formData.append("ProjectId", pId);
+            const oId = document.getElementById('chuNha').value;
+            if (oId) formData.append("OwnerId", oId);
 
-            msg.style.color = "blue"; msg.innerText = "Đang cập nhật...";
+            const file = document.getElementById('hinhAnh').files[0];
+            if (file) formData.append("HinhAnhFile", file);
 
-            try {
-                const response = await fetch(`/api/BatDongSan/${currentId}`, {
-                    method: 'PUT', body: formData
-                });
+            msg.style.color = "blue"; msg.innerText = "Đang lưu...";
 
-                if (response.ok) {
-                    msg.style.color = "green"; msg.innerText = "Cập nhật thành công!";
-                    setTimeout(() => { window.location.href = `detail.html?id=${currentId}`; }, 1500);
-                } else {
-                    const errorData = await response.json();
-                    msg.style.color = "red"; msg.innerText = " Lỗi: " + (errorData.message || "Cập nhật thất bại");
-                }
-            } catch (error) {
-                msg.style.color = "red"; msg.innerText = "Lỗi kết nối server!";
+            const res = await fetch(`/api/BatDongSan/${currentId}`, { method: 'PUT', body: formData });
+            if (res.ok) {
+                msg.style.color = "green"; msg.innerText = "Thành công!";
+                setTimeout(() => location.href = 'manage-properties.html', 1000);
+            } else {
+                const err = await res.json();
+                console.log(err);
+                msg.style.color = "red"; msg.innerText = "Lỗi: " + (err.title || "Dữ liệu không hợp lệ");
             }
         }
     </script>
