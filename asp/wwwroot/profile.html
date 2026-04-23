@@ -302,15 +302,19 @@
     </div>
 
     <script>
+        // Lấy ID đăng nhập (Không dấu)
         const localUsername = localStorage.getItem("username");
+        // Lấy tên thật (Có dấu) mà lúc nãy ta vừa sửa trong login.html
+        const localFullName = localStorage.getItem("fullName") || localUsername;
 
         document.addEventListener("DOMContentLoaded", () => {
             if (!localUsername) { window.location.href = "login.html"; return; }
 
+            // Đắp tạm tên lên giao diện cho đẹp trong lúc đợi DB tải
+            document.getElementById('userFullName').innerText = localFullName;
+            document.getElementById('userAvatar').innerText = localFullName.charAt(0).toUpperCase();
 
             loadUserProfileFromDB();
-
-
             loadUserHistory();
         });
 
@@ -323,9 +327,8 @@
 
         function logout() { localStorage.clear(); window.location.href = "login.html"; }
 
-         async function loadUserProfileFromDB() {
+        async function loadUserProfileFromDB() {
             try {
-
                 const res = await fetch(`/api/User/${localUsername}`);
                 if (res.ok) {
                     const dbUser = await res.json();
@@ -343,12 +346,14 @@
 
                 } else {
                     document.getElementById('userFullName').innerText = "Lỗi tải Profile";
+                    document.getElementById('userAvatar').innerHTML = "<i class='fas fa-exclamation'></i>";
                 }
             } catch (err) {
                 console.error("Lỗi MongoDB:", err);
+                document.getElementById('userFullName').innerText = "Lỗi kết nối mạng";
+                document.getElementById('userAvatar').innerHTML = "<i class='fas fa-exclamation'></i>";
             }
         }
-
 
         async function loadUserHistory() {
             try {
@@ -362,7 +367,6 @@
 
                 const myApps = allApps.filter(a => a.customerId === localUsername || a.userId === localUsername);
                 const myTrans = allTrans.filter(t => t.customerId === localUsername);
-
 
                 let appHtml = '';
                 if (myApps.length === 0) appHtml = '<p style="text-align:center; padding: 20px; color:#888;">Bạn chưa đặt lịch hẹn xem nhà nào.</p>';
@@ -381,7 +385,6 @@
                     });
                 }
                 document.getElementById('appointment-list').innerHTML = appHtml;
-
 
                 let transHtml = '';
                 if (myTrans.length === 0) transHtml = '<p style="text-align:center; padding: 20px; color:#888;">Bạn chưa có giao dịch bất động sản nào.</p>';
