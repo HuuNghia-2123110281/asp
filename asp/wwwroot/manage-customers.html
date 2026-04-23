@@ -1,0 +1,403 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hồ sơ Khách hàng - BĐS Nghĩa</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4e73df;
+            --primary-dark: #224abe;
+            --success: #1cc88a;
+            --warning: #f6c23e;
+            --danger: #e74a3b;
+            --dark: #5a5c69;
+            --bg-light: #f8f9fc;
+        }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            margin: 0;
+            background-color: var(--bg-light);
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .sidebar {
+            width: 250px;
+            background-image: linear-gradient(180deg, var(--primary) 10%, var(--primary-dark) 100%);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            z-index: 100;
+        }
+
+        .sidebar-brand {
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            font-weight: 900;
+            color: white;
+            text-decoration: none;
+            border-bottom: 1px solid rgba(255,255,255,0.15);
+        }
+
+        .nav-menu {
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px 0;
+        }
+
+        .nav-heading {
+            padding: 15px 20px 5px;
+            font-size: 11px;
+            font-weight: 800;
+            color: rgba(255,255,255,0.4);
+            text-transform: uppercase;
+        }
+
+        .nav-item {
+            padding: 12px 20px;
+            color: rgba(255,255,255,0.8);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 14px;
+            font-weight: 700;
+            transition: 0.2s;
+        }
+
+            .nav-item:hover, .nav-item.active {
+                color: white;
+            }
+
+        .divider {
+            border-top: 1px solid rgba(255,255,255,0.15);
+            margin: 10px 20px;
+        }
+
+        .content-wrapper {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+
+        .topbar {
+            background: white;
+            height: 70px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 25px;
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58,59,69,0.15);
+            z-index: 10;
+        }
+
+        .topbar-left a {
+            color: var(--dark);
+            text-decoration: none;
+            font-weight: bold;
+            background: var(--bg-light);
+            padding: 8px 15px;
+            border-radius: 20px;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .btn-logout {
+            color: var(--danger);
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+        .container-fluid {
+            padding: 25px;
+        }
+
+        .page-title {
+            margin-top: 0;
+            color: var(--dark);
+            font-size: 28px;
+            margin-bottom: 20px;
+        }
+
+        .add-box {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58,59,69,0.15);
+            border-left: 4px solid var(--success);
+            margin-bottom: 25px;
+            display: flex;
+            gap: 15px;
+        }
+
+            .add-box input {
+                flex: 1;
+                padding: 10px;
+                border: 1px solid #ddd;
+                border-radius: 5px;
+                outline: none;
+            }
+
+        .btn-add {
+            background: var(--success);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .table-box {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58,59,69,0.15);
+            overflow: hidden;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 15px 20px;
+            text-align: left;
+            border-bottom: 1px solid #e3e6f0;
+            font-size: 14px;
+        }
+
+        th {
+            background: #f8f9fc;
+            color: var(--dark);
+            font-weight: bold;
+        }
+
+        .action-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        /* Modal Chi tiết */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.6);
+            z-index: 1050;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            width: 700px;
+            max-height: 85vh;
+            overflow-y: auto;
+        }
+
+        .profile-header {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            border-bottom: 2px solid #eaecf4;
+            padding-bottom: 20px;
+            margin-bottom: 20px;
+        }
+
+        .profile-avatar {
+            width: 60px;
+            height: 60px;
+            background: var(--primary);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .history-list {
+            background: #f8f9fc;
+            border-radius: 5px;
+            padding: 15px;
+            border: 1px solid #eaecf4;
+            margin-bottom: 15px;
+        }
+
+        .history-item {
+            padding: 10px 0;
+            border-bottom: 1px dashed #d1d3e2;
+            font-size: 14px;
+        }
+
+            .history-item:last-child {
+                border-bottom: none;
+            }
+    </style>
+</head>
+<body>
+    <nav class="sidebar">
+        <a href="admin-dashboard.html" class="sidebar-brand"><i class="fas fa-laugh-wink"></i> BĐS NGHĨA</a>
+        <div class="nav-menu">
+            <a href="admin-dashboard.html" class="nav-item"><i class="fas fa-fw fa-tachometer-alt"></i> Dashboard</a>
+            <div class="divider"></div>
+            <div class="nav-heading">Quản trị Nguồn hàng</div>
+            <a href="add-property.html" class="nav-item"><i class="fas fa-fw fa-plus-square"></i> Đăng tin mới</a>
+            <a href="manage-properties.html" class="nav-item"><i class="fas fa-fw fa-building"></i> DS Bất động sản</a>
+            <a href="manage-system.html" class="nav-item"><i class="fas fa-fw fa-tags"></i> Dự án & Chủ nhà</a>
+            <div class="divider"></div>
+            <div class="nav-heading">Nghiệp vụ Sales</div>
+            <a href="manage-transactions.html" class="nav-item"><i class="fas fa-fw fa-handshake"></i> Quản lý Giao dịch</a>
+            <a href="manage-clients.html" class="nav-item"><i class="fas fa-fw fa-calendar-alt"></i> Lịch hẹn xem nhà</a>
+            <a href="manage-customers.html" class="nav-item active"><i class="fas fa-fw fa-users"></i> Hồ sơ Khách hàng</a>
+        </div>
+    </nav>
+
+    <div class="content-wrapper">
+        <header class="topbar">
+            <div class="topbar-left"><a href="index.html"><i class="fas fa-globe"></i> Xem trang chủ</a></div>
+            <div class="user-profile">
+                <span id="adminName">Đang tải...</span>
+                <button onclick="localStorage.clear(); window.location.href='login.html'" class="btn-logout"><i class="fas fa-sign-out-alt"></i></button>
+            </div>
+        </header>
+
+        <div class="container-fluid">
+            <h1 class="page-title">Hồ sơ Khách hàng</h1>
+
+            <div class="add-box">
+                <input type="text" id="cusName" placeholder="Họ và tên (*)">
+                <input type="text" id="cusPhone" placeholder="Số điện thoại (*)">
+                <input type="text" id="cusDemand" placeholder="Nhu cầu (VD: Tìm mua căn hộ)...">
+                <button class="btn-add" onclick="addCustomer()"><i class="fas fa-user-plus"></i> THÊM MỚI</button>
+            </div>
+
+            <div class="table-box">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Họ và Tên</th>
+                            <th>Số điện thoại / Email</th>
+                            <th>Nhu cầu nhập ban đầu</th>
+                            <th>Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody id="customer-list"><tr><td colspan="4">Đang tải...</td></tr></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div id="detailModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="profile-header">
+                <div class="profile-avatar" id="modalAvt">C</div>
+                <div>
+                    <h2 style="margin: 0; color: var(--dark);" id="modalName">Tên KH</h2>
+                    <p style="margin: 5px 0 0; color: #858796;"><i class="fas fa-phone"></i> <span id="modalPhone"></span> | <i class="fas fa-envelope"></i> <span id="modalEmail"></span></p>
+                </div>
+            </div>
+
+            <h4 style="color:var(--primary);"><i class="fas fa-heart"></i> Bất động sản đang quan tâm (Qua lịch hẹn)</h4>
+            <div class="history-list" id="modalInterestList">Đang tải...</div>
+
+            <h4 style="color:var(--success);"><i class="fas fa-handshake"></i> Lịch sử Giao dịch</h4>
+            <div class="history-list" id="modalTransList">Đang tải...</div>
+
+            <div style="text-align: right;">
+                <button onclick="document.getElementById('detailModal').style.display='none'" class="action-btn" style="background:#858796;">Đóng hồ sơ</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let customers = []; let properties = [];
+        document.addEventListener("DOMContentLoaded", async () => {
+            document.getElementById("adminName").innerText = localStorage.getItem("username") || "Sales";
+            const resP = await fetch('/api/BatDongSan'); properties = await resP.json();
+            loadCustomers();
+        });
+
+        function loadCustomers() {
+            fetch('/api/Customer').then(res => res.json()).then(data => {
+                customers = data; let html = '';
+                if(data.length===0) html = '<tr><td colspan="4" style="text-align:center;">Chưa có khách</td></tr>';
+                data.forEach(c => {
+                    html += `<tr>
+                        <td><strong style="color:var(--primary); font-size:16px;">${c.name}</strong></td>
+                        <td>${c.phone}<br><small style="color:#858796">${c.email||'Không có'}</small></td>
+                        <td>${c.demand||'Không rõ'}</td>
+                        <td><button class="action-btn" onclick="viewDetail('${c.id}')"><i class="fas fa-id-card"></i> Xem chi tiết</button></td>
+                    </tr>`;
+                });
+                document.getElementById('customer-list').innerHTML = html;
+            });
+        }
+
+        async function addCustomer() {
+            const data = { name: document.getElementById('cusName').value, phone: document.getElementById('cusPhone').value, demand: document.getElementById('cusDemand').value };
+            if(!data.name || !data.phone) return;
+            await fetch('/api/Customer', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(data) });
+            loadCustomers(); document.getElementById('cusName').value=''; document.getElementById('cusPhone').value=''; document.getElementById('cusDemand').value='';
+        }
+
+        async function viewDetail(id) {
+            const cus = customers.find(c => c.id === id);
+            document.getElementById('modalAvt').innerText = cus.name.charAt(0).toUpperCase();
+            document.getElementById('modalName').innerText = cus.name;
+            document.getElementById('modalPhone').innerText = cus.phone;
+            document.getElementById('modalEmail').innerText = cus.email || 'Chưa có email';
+            document.getElementById('detailModal').style.display = 'flex';
+
+            const [appRes, transRes] = await Promise.all([fetch('/api/Appointment'), fetch('/api/Transaction')]);
+            const allApps = await appRes.json(); const allTrans = await transRes.json();
+
+            const cusApps = allApps.filter(a => a.customerId === id);
+            const cusTrans = allTrans.filter(t => t.customerId === id);
+
+            // BĐS Quan tâm 
+            let interestHtml = '';
+            cusApps.forEach(a => {
+                const prop = properties.find(p => p.id === a.propertyId);
+                const d = new Date(a.appointmentDate).toLocaleString('vi-VN');
+                interestHtml += `<div class="history-item">Hẹn xem ngày: <b>${d}</b> - <span style="color:var(--primary)">${prop ? prop.tieuDe : 'BĐS đã xóa'}</span> (Trạng thái: ${a.status})</div>`;
+            });
+            document.getElementById('modalInterestList').innerHTML = interestHtml || '<div class="history-item">Chưa có tương tác xem nhà.</div>';
+
+            // Lịch sử giao dịch 
+            let transHtml = '';
+            cusTrans.forEach(t => {
+                const prop = properties.find(p => p.id === t.propertyId);
+                transHtml += `<div class="history-item">Hợp đồng: <b>${t.type}</b> - <span style="color:var(--primary)">${prop ? prop.tieuDe : 'BĐS đã xóa'}</span> - Giá: <strong style="color:var(--danger)">${t.price.toLocaleString('vi-VN')} đ</strong> (Trạng thái: ${t.status})</div>`;
+            });
+            document.getElementById('modalTransList').innerHTML = transHtml || '<div class="history-item">Chưa có giao dịch.</div>';
+        }
+    </script>
+</body>
+</html>

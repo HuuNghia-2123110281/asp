@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lịch hẹn xem nhà - BĐS Nghĩa</title>
+    <title>Danh sách Bất động sản - BĐS Nghĩa</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
@@ -158,42 +158,22 @@
             font-weight: bold;
         }
 
-        .status {
-            padding: 5px 10px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: bold;
+        .img-thumb {
+            width: 80px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 5px;
         }
 
-            .status.dang-cho {
-                background: #f6c23e;
-                color: white;
-            }
-
-            .status.da-xem {
-                background: #36b9cc;
-                color: white;
-            }
-
-            .status.da-chot {
-                background: #1cc88a;
-                color: white;
-            }
-
-            .status.da-huy {
-                background: #e74a3b;
-                color: white;
-            }
-
         .action-btn {
+            background: var(--warning);
+            color: #333;
             border: none;
-            padding: 5px 10px;
+            padding: 6px 12px;
             border-radius: 4px;
             cursor: pointer;
+            text-decoration: none;
             font-weight: bold;
-            font-size: 12px;
-            color: white;
-            margin-right: 5px;
         }
     </style>
 </head>
@@ -205,91 +185,61 @@
             <div class="divider"></div>
             <div class="nav-heading">Quản trị Nguồn hàng</div>
             <a href="add-property.html" class="nav-item"><i class="fas fa-fw fa-plus-square"></i> Đăng tin mới</a>
-            <a href="manage-properties.html" class="nav-item"><i class="fas fa-fw fa-building"></i> DS Bất động sản</a>
+            <a href="manage-properties.html" class="nav-item active"><i class="fas fa-fw fa-building"></i> DS Bất động sản</a>
             <a href="manage-system.html" class="nav-item"><i class="fas fa-fw fa-tags"></i> Dự án & Chủ nhà</a>
             <div class="divider"></div>
             <div class="nav-heading">Nghiệp vụ Sales</div>
             <a href="manage-transactions.html" class="nav-item"><i class="fas fa-fw fa-handshake"></i> Quản lý Giao dịch</a>
-            <a href="manage-clients.html" class="nav-item active"><i class="fas fa-fw fa-calendar-alt"></i> Lịch hẹn xem nhà</a>
+            <a href="manage-clients.html" class="nav-item"><i class="fas fa-fw fa-calendar-alt"></i> Lịch hẹn xem nhà</a>
             <a href="manage-customers.html" class="nav-item"><i class="fas fa-fw fa-users"></i> Hồ sơ Khách hàng</a>
         </div>
     </nav>
 
     <div class="content-wrapper">
         <header class="topbar">
-            <div class="topbar-left"><a href="index.html"><i class="fas fa-globe"></i> Xem trang chủ Website</a></div>
+            <div class="topbar-left"><a href="index.html"><i class="fas fa-globe"></i> Xem trang chủ</a></div>
             <div class="user-profile">
                 <span id="adminName">Đang tải...</span>
                 <button onclick="localStorage.clear(); window.location.href='login.html'" class="btn-logout"><i class="fas fa-sign-out-alt"></i></button>
             </div>
         </header>
-
         <div class="container-fluid">
-            <h1 class="page-title">Quản lý Lịch hẹn</h1>
+            <h1 class="page-title">Danh sách Bất động sản</h1>
             <div class="table-box">
                 <table>
                     <thead>
                         <tr>
-                            <th>Khách hàng</th>
-                            <th>Bất động sản</th>
-                            <th>Thời gian hẹn</th>
-                            <th>Trạng thái (DB)</th>
-                            <th>Hành động</th>
+                            <th>Hình ảnh</th>
+                            <th>Tiêu đề & Địa chỉ</th>
+                            <th>Loại hình</th>
+                            <th>Mức giá thực tế</th>
+                            <th>Thao tác</th>
                         </tr>
                     </thead>
-                    <tbody id="appointment-list"><tr><td colspan="5">Đang tải...</td></tr></tbody>
+                    <tbody id="bds-list"><tr><td colspan="5">Đang tải...</td></tr></tbody>
                 </table>
             </div>
         </div>
     </div>
-
     <script>
-        let customers = []; let properties = [];
-        document.addEventListener("DOMContentLoaded", async () => {
+        document.addEventListener("DOMContentLoaded", () => {
             document.getElementById("adminName").innerText = localStorage.getItem("username") || "Sales";
-            const [resC, resP] = await Promise.all([fetch('/api/Customer'), fetch('/api/BatDongSan')]);
-            customers = await resC.json(); properties = await resP.json();
-            loadAppointments();
-        });
-
-        function loadAppointments() {
-            fetch('/api/Appointment').then(res => res.json()).then(data => {
+            fetch('/api/BatDongSan').then(res => res.json()).then(data => {
                 let html = '';
-                if (data.length === 0) html = '<tr><td colspan="5" style="text-align:center;">Chưa có lịch hẹn</td></tr>';
-                data.forEach(a => {
-                    const c = customers.find(x => x.id === a.customerId) || { name: a.customerId, phone: 'Thành viên Web' };
-                    const p = properties.find(x => x.id === a.propertyId) || { tieuDe: 'BĐS đã xóa' };
-
-                    // Xử lý trạng thái chuẩn
-                    let stClass = "dang-cho"; let stText = "Đợi duyệt";
-                    if (a.status.includes("xem")) { stClass = "da-xem"; stText = "Đã xem"; }
-                    if (a.status.includes("hủy") || a.status.includes("Cancel")) { stClass = "da-huy"; stText = "Đã hủy"; }
-                    if (a.status.includes("chốt") || a.status.includes("hoàn tất")) { stClass = "da-chot"; stText = "Đã chốt"; }
-
-                    const d = new Date(a.appointmentDate).toLocaleString('vi-VN');
+                if (data.length === 0) html = '<tr><td colspan="5" style="text-align:center;">Chưa có BĐS nào</td></tr>';
+                data.forEach(p => {
+                    const img = p.hinhAnhUrl || `https://loremflickr.com/400/300/house?lock=${p.id}`;
                     html += `<tr>
-                            <td><strong>${c.name}</strong><br><small style="color:#858796">${c.phone}</small></td>
-                            <td style="color:var(--primary); font-weight:bold;">${p.tieuDe}</td>
-                            <td><i class="far fa-clock"></i> ${d}</td>
-                            <td><span class="status ${stClass}">${stText}</span></td>
-                            <td>
-                                ${stClass === 'dang-cho' ? `
-                                <button class="action-btn" style="background:var(--info)" onclick="updateStatus('${a.id}', 'Đã xem nhà')"><i class="fas fa-eye"></i> Đã xem</button>
-                                <button class="action-btn" style="background:var(--danger)" onclick="updateStatus('${a.id}', 'Đã hủy')"><i class="fas fa-times"></i> Hủy</button>
-                                ` : `<button class="action-btn" style="background:var(--success)" onclick="updateStatus('${a.id}', 'Đã chốt')"><i class="fas fa-check"></i> Đã chốt</button>`}
-                            </td>
+                            <td><img src="${img}" class="img-thumb"></td>
+                            <td><strong style="color:var(--primary); font-size:15px;">${p.tieuDe}</strong><br><small><i class="fas fa-map-marker-alt"></i> ${p.diaChi}</small></td>
+                            <td><strong style="background:var(--success); color:white; padding:4px 8px; border-radius:4px; font-size:12px;">${p.loaiHinh}</strong></td>
+                            <td><strong style="color:var(--danger); font-size:16px;">${p.gia.toLocaleString('vi-VN')} đ</strong></td>
+                            <td><a href="edit-property.html?id=${p.id}" class="action-btn"><i class="fas fa-edit"></i> Sửa</a></td>
                         </tr>`;
                 });
-                document.getElementById('appointment-list').innerHTML = html;
+                document.getElementById('bds-list').innerHTML = html;
             });
-        }
-
-        async function updateStatus(id, st) {
-            if (confirm(`Xác nhận: ${st}?`)) {
-                await fetch(`/api/Appointment/${id}/status`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(st) });
-                loadAppointments();
-            }
-        }
+        });
     </script>
 </body>
 </html>

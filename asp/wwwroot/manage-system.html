@@ -3,14 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cấu hình Hệ thống - BĐS Nghĩa</title>
+    <title>Dự án & Chủ nhà - BĐS Nghĩa</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
             --primary: #4e73df;
             --primary-dark: #224abe;
             --success: #1cc88a;
-            --info: #36b9cc;
             --warning: #f6c23e;
             --danger: #e74a3b;
             --dark: #5a5c69;
@@ -18,7 +17,7 @@
         }
 
         body {
-            font-family: 'Nunito', 'Segoe UI', Tahoma, sans-serif;
+            font-family: 'Nunito', sans-serif;
             margin: 0;
             background-color: var(--bg-light);
             display: flex;
@@ -26,7 +25,6 @@
             overflow: hidden;
         }
 
-        /* SIDEBAR & TOPBAR */
         .sidebar {
             width: 250px;
             background-image: linear-gradient(180deg, var(--primary) 10%, var(--primary-dark) 100%);
@@ -45,15 +43,8 @@
             font-weight: 900;
             color: white;
             text-decoration: none;
-            letter-spacing: 2px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+            border-bottom: 1px solid rgba(255,255,255,0.15);
         }
-
-            .sidebar-brand i {
-                transform: rotate(-15deg);
-                margin-right: 10px;
-                font-size: 24px;
-            }
 
         .nav-menu {
             flex: 1;
@@ -62,17 +53,16 @@
         }
 
         .nav-heading {
-            padding: 15px 20px 5px 20px;
+            padding: 15px 20px 5px;
             font-size: 11px;
             font-weight: 800;
-            color: rgba(255, 255, 255, 0.4);
+            color: rgba(255,255,255,0.4);
             text-transform: uppercase;
-            letter-spacing: 1px;
         }
 
         .nav-item {
             padding: 12px 20px;
-            color: rgba(255, 255, 255, 0.8);
+            color: rgba(255,255,255,0.8);
             text-decoration: none;
             display: flex;
             align-items: center;
@@ -82,18 +72,12 @@
             transition: 0.2s;
         }
 
-            .nav-item i {
-                width: 20px;
-                text-align: center;
-                font-size: 16px;
-            }
-
             .nav-item:hover, .nav-item.active {
                 color: white;
             }
 
         .divider {
-            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            border-top: 1px solid rgba(255,255,255,0.15);
             margin: 10px 20px;
         }
 
@@ -111,7 +95,7 @@
             justify-content: space-between;
             align-items: center;
             padding: 0 25px;
-            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58,59,69,0.15);
             z-index: 10;
         }
 
@@ -119,16 +103,10 @@
             color: var(--dark);
             text-decoration: none;
             font-weight: bold;
-            font-size: 14px;
             background: var(--bg-light);
             padding: 8px 15px;
             border-radius: 20px;
-            transition: 0.3s;
         }
-
-            .topbar-left a:hover {
-                background: #eaecf4;
-            }
 
         .user-profile {
             display: flex;
@@ -136,22 +114,14 @@
             gap: 15px;
         }
 
-            .user-profile span {
-                font-weight: 600;
-                color: var(--dark);
-                font-size: 14px;
-            }
-
         .btn-logout {
             color: var(--danger);
             background: none;
             border: none;
             cursor: pointer;
             font-size: 18px;
-            padding: 5px;
         }
 
-        /* CONFIG STYLES */
         .container-fluid {
             padding: 25px;
         }
@@ -159,35 +129,22 @@
         .page-title {
             margin-top: 0;
             color: var(--dark);
-            margin-bottom: 5px;
-            font-weight: 400;
             font-size: 28px;
+            margin-bottom: 20px;
         }
 
-        .grid-3 {
+        .grid-2 {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            grid-template-columns: 1fr 1fr;
             gap: 25px;
-            margin-top: 25px;
         }
 
         .box {
             background: white;
             padding: 25px;
             border-radius: 8px;
-            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
-            border-top: 4px solid var(--primary);
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58,59,69,0.15);
         }
-
-            .box h3 {
-                margin-top: 0;
-                color: var(--primary);
-                border-bottom: 1px solid #e3e6f0;
-                padding-bottom: 15px;
-                margin-bottom: 20px;
-                font-size: 16px;
-                font-weight: bold;
-            }
 
         .form-group {
             margin-bottom: 15px;
@@ -195,18 +152,12 @@
 
             .form-group input {
                 width: 100%;
-                padding: 10px 15px;
+                padding: 10px;
                 border: 1px solid #d1d3e2;
                 border-radius: 5px;
-                outline: none;
                 box-sizing: border-box;
-                font-size: 14px;
+                outline: none;
             }
-
-                .form-group input:focus {
-                    border-color: var(--primary);
-                    box-shadow: 0 0 0 0.2rem rgba(78, 115, 223, 0.25);
-                }
 
         .btn-add {
             background: var(--primary);
@@ -217,16 +168,11 @@
             font-weight: bold;
             cursor: pointer;
             width: 100%;
-            transition: 0.3s;
         }
-
-            .btn-add:hover {
-                opacity: 0.9;
-            }
 
         .data-list {
             margin-top: 20px;
-            max-height: 250px;
+            max-height: 400px;
             overflow-y: auto;
             border: 1px solid #e3e6f0;
             border-radius: 5px;
@@ -234,47 +180,30 @@
         }
 
         .data-item {
-            padding: 12px 15px;
+            padding: 15px;
             border-bottom: 1px solid #e3e6f0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 14px;
         }
 
             .data-item:last-child {
                 border-bottom: none;
             }
-
-            .data-item strong {
-                color: var(--dark);
-            }
     </style>
 </head>
 <body>
     <nav class="sidebar">
-        <a href="admin-dashboard.html" class="sidebar-brand">
-            <i class="fas fa-laugh-wink"></i> BĐS NGHĨA
-        </a>
-
+        <a href="admin-dashboard.html" class="sidebar-brand"><i class="fas fa-laugh-wink"></i> BĐS NGHĨA</a>
         <div class="nav-menu">
-            <a href="admin-dashboard.html" class="nav-item active"><i class="fas fa-fw fa-tachometer-alt"></i> Dashboard</a>
-
+            <a href="admin-dashboard.html" class="nav-item"><i class="fas fa-fw fa-tachometer-alt"></i> Dashboard</a>
             <div class="divider"></div>
             <div class="nav-heading">Quản trị Nguồn hàng</div>
             <a href="add-property.html" class="nav-item"><i class="fas fa-fw fa-plus-square"></i> Đăng tin mới</a>
-            <a href="manage-system.html" class="nav-item"><i class="fas fa-fw fa-building"></i> DS Bất động sản</a>
-            <a href="manage-system.html" class="nav-item"><i class="fas fa-fw fa-tags"></i> Dự án & Chủ nhà</a>
-
+            <a href="manage-properties.html" class="nav-item"><i class="fas fa-fw fa-building"></i> DS Bất động sản</a>
+            <a href="manage-system.html" class="nav-item active"><i class="fas fa-fw fa-tags"></i> Dự án & Chủ nhà</a>
             <div class="divider"></div>
             <div class="nav-heading">Nghiệp vụ Sales</div>
             <a href="manage-transactions.html" class="nav-item"><i class="fas fa-fw fa-handshake"></i> Quản lý Giao dịch</a>
             <a href="manage-clients.html" class="nav-item"><i class="fas fa-fw fa-calendar-alt"></i> Lịch hẹn xem nhà</a>
-            <a href="manage-clients.html" class="nav-item"><i class="fas fa-fw fa-users"></i> Hồ sơ Khách hàng</a>
-
-            <div class="divider"></div>
-            <div class="nav-heading">Hệ thống</div>
-            <a href="#" class="nav-item"><i class="fas fa-fw fa-user-shield"></i> Tài khoản Nhân sự</a>
+            <a href="manage-customers.html" class="nav-item"><i class="fas fa-fw fa-users"></i> Hồ sơ Khách hàng</a>
         </div>
     </nav>
 
@@ -283,37 +212,25 @@
             <div class="topbar-left"><a href="index.html"><i class="fas fa-globe"></i> Xem trang chủ Website</a></div>
             <div class="user-profile">
                 <span id="adminName">Đang tải...</span>
-                <img src="https://source.unsplash.com/QAB-WJcbgJk/60x60" style="width: 32px; height: 32px; border-radius: 50%;">
-                <button onclick="logout()" class="btn-logout" title="Đăng xuất"><i class="fas fa-sign-out-alt"></i></button>
+                <button onclick="localStorage.clear(); window.location.href='login.html'" class="btn-logout"><i class="fas fa-sign-out-alt"></i></button>
             </div>
         </header>
 
         <div class="container-fluid">
-            <h1 class="page-title">Cấu hình Hệ thống</h1>
-            <p style="color: #858796;">Thiết lập các dữ liệu danh mục nền tảng trước khi tiến hành đăng tin BĐS.</p>
-
-            <div class="grid-3">
-                <div class="box">
-                    <h3><i class="fas fa-tags"></i> Quản lý Loại Bất Động Sản</h3>
-                    <div class="form-group"><input type="text" id="catName" placeholder="Tên loại (VD: Căn hộ, Shophouse)..."></div>
-                    <div class="form-group"><input type="text" id="catDesc" placeholder="Mô tả ngắn (Tùy chọn)..."></div>
-                    <button class="btn-add" onclick="addCategory()"><i class="fas fa-plus"></i> THÊM LOẠI BĐS</button>
-                    <div class="data-list" id="list-categories">Đang tải...</div>
-                </div>
-
-                <div class="box" style="border-top-color: var(--success);">
-                    <h3 style="color: var(--success);"><i class="fas fa-building"></i> Quản lý Dự Án</h3>
+            <h1 class="page-title">Quản lý Dự án & Chủ nhà</h1>
+            <div class="grid-2">
+                <div class="box" style="border-top: 4px solid var(--success);">
+                    <h3 style="margin-top:0; color: var(--success);"><i class="fas fa-building"></i> Danh sách Dự Án</h3>
                     <div class="form-group"><input type="text" id="projName" placeholder="Tên dự án (VD: Vinhomes)..."></div>
-                    <div class="form-group"><input type="text" id="projInvestor" placeholder="Chủ đầu tư (VD: Vingroup)..."></div>
+                    <div class="form-group"><input type="text" id="projInvestor" placeholder="Chủ đầu tư..."></div>
                     <button class="btn-add" style="background: var(--success);" onclick="addProject()"><i class="fas fa-plus"></i> THÊM DỰ ÁN</button>
                     <div class="data-list" id="list-projects">Đang tải...</div>
                 </div>
 
-                <div class="box" style="border-top-color: var(--warning);">
-                    <h3 style="color: #d39e00;"><i class="fas fa-user-tie"></i> Quản lý Chủ Nhà Ký Gửi</h3>
+                <div class="box" style="border-top: 4px solid var(--warning);">
+                    <h3 style="margin-top:0; color: #d39e00;"><i class="fas fa-user-tie"></i> Hồ sơ Chủ Nhà Ký Gửi</h3>
                     <div class="form-group"><input type="text" id="ownName" placeholder="Họ tên Chủ nhà..."></div>
                     <div class="form-group"><input type="text" id="ownPhone" placeholder="Số điện thoại..."></div>
-                    <div class="form-group"><input type="text" id="ownID" placeholder="CCCD (Tùy chọn)..."></div>
                     <button class="btn-add" style="background: var(--warning); color: #333;" onclick="addOwner()"><i class="fas fa-plus"></i> THÊM CHỦ NHÀ</button>
                     <div class="data-list" id="list-owners">Đang tải...</div>
                 </div>
@@ -323,48 +240,51 @@
 
     <script>
         document.addEventListener("DOMContentLoaded", () => {
-            const role = localStorage.getItem("role");
-            if (role !== "Admin") { alert("⛔ Chỉ Admin mới có quyền!"); window.location.href = "index.html"; return; }
             document.getElementById("adminName").innerText = localStorage.getItem("username") || "Admin";
             loadAllData();
         });
 
-        function logout() { localStorage.clear(); window.location.href = "login.html"; }
+        async function loadAllData() {
+            const [resProj, resOwn, resBds] = await Promise.all([fetch('/api/Project'), fetch('/api/Owner'), fetch('/api/BatDongSan')]);
+            const projects = await resProj.json();
+            const owners = await resOwn.json();
+            const bdsList = await resBds.json();
 
-        function loadAllData() {
-            fetch('/api/Category').then(res => res.json()).then(data => {
-                let html = ''; data.forEach(d => html += `<div class="data-item"><strong>${d.name}</strong></div>`);
-                document.getElementById('list-categories').innerHTML = html || '<div class="data-item">Chưa có dữ liệu</div>';
-            });
-            fetch('/api/Project').then(res => res.json()).then(data => {
-                let html = ''; data.forEach(d => html += `<div class="data-item"><strong>${d.name}</strong> <small style="color:#858796;">${d.investor || ''}</small></div>`);
-                document.getElementById('list-projects').innerHTML = html || '<div class="data-item">Chưa có dữ liệu</div>';
-            });
-            fetch('/api/Owner').then(res => res.json()).then(data => {
-                let html = ''; data.forEach(d => html += `<div class="data-item"><strong>${d.fullName}</strong> <span style="color:var(--primary)">${d.phone}</span></div>`);
-                document.getElementById('list-owners').innerHTML = html || '<div class="data-item">Chưa có dữ liệu</div>';
-            });
-        }
+            // Render Dự án
+            let projHtml = '';
+            projects.forEach(d => projHtml += `<div class="data-item"><strong style="font-size:16px;">${d.name}</strong><br><small style="color:#858796;">CĐT: ${d.investor || 'Đang cập nhật'}</small></div>`);
+            document.getElementById('list-projects').innerHTML = projHtml || '<div class="data-item">Chưa có dữ liệu</div>';
 
-        async function addCategory() {
-            const name = document.getElementById('catName').value.trim();
-            if (!name) return alert("Vui lòng nhập tên loại BĐS!");
-            await fetch('/api/Category', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name: name, description: document.getElementById('catDesc').value }) });
-            document.getElementById('catName').value = ''; loadAllData();
+            // Render Chủ nhà & BĐS đã ký gửi (Truy vấn thật từ DB)
+            let ownHtml = '';
+            owners.forEach(o => {
+                // Lọc ra các BĐS thuộc sở hữu của ông này
+                const ownerProps = bdsList.filter(b => b.ownerId === o.id);
+                let propDetails = ownerProps.length > 0
+                    ? ownerProps.map(b => `<div style="background:white; border:1px solid #ddd; padding:4px 8px; border-radius:4px; margin-top:5px; font-size:12px;"><b>[${b.loaiHinh}]</b> ${b.tieuDe}</div>`).join('')
+                    : '<small style="color:#e74a3b;">Chưa ký gửi BĐS nào</small>';
+
+                ownHtml += `<div class="data-item">
+                        <div style="display:flex; justify-content:space-between; margin-bottom:5px;">
+                            <strong style="color:var(--dark); font-size:15px;">${o.fullName}</strong>
+                            <span style="color:var(--primary); font-weight:bold;"><i class="fas fa-phone"></i> ${o.phone}</span>
+                        </div>
+                        <div style="color:#858796; font-size:13px; font-weight:bold; margin-top:10px;">BĐS Đang ký gửi:</div>
+                        ${propDetails}
+                    </div>`;
+            });
+            document.getElementById('list-owners').innerHTML = ownHtml || '<div class="data-item">Chưa có dữ liệu</div>';
         }
 
         async function addProject() {
-            const name = document.getElementById('projName').value.trim();
-            if (!name) return alert("Vui lòng nhập tên Dự án!");
-            await fetch('/api/Project', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name: name, investor: document.getElementById('projInvestor').value }) });
+            const data = { name: document.getElementById('projName').value, investor: document.getElementById('projInvestor').value };
+            await fetch('/api/Project', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
             document.getElementById('projName').value = ''; loadAllData();
         }
 
         async function addOwner() {
-            const name = document.getElementById('ownName').value.trim();
-            const phone = document.getElementById('ownPhone').value.trim();
-            if (!name || !phone) return alert("Vui lòng nhập Tên và Số điện thoại!");
-            await fetch('/api/Owner', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ fullName: name, phone: phone, idCard: document.getElementById('ownID').value }) });
+            const data = { fullName: document.getElementById('ownName').value, phone: document.getElementById('ownPhone').value };
+            await fetch('/api/Owner', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
             document.getElementById('ownName').value = ''; document.getElementById('ownPhone').value = ''; loadAllData();
         }
     </script>
