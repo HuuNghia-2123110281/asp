@@ -45,6 +45,7 @@
             gap: 10px;
         }
 
+
         .nav-links {
             display: flex;
             gap: 30px;
@@ -66,7 +67,6 @@
                     color: #4da3ff;
                 }
 
-        /* Dropdown Header */
         .dropdown {
             position: relative;
             display: inline-block;
@@ -105,7 +105,7 @@
                 padding-left: 26px !important;
             }
 
-        /* User Menu */
+
         .user-dropdown-content {
             min-width: 180px;
             right: 0;
@@ -163,7 +163,7 @@
                 color: #4da3ff;
             }
 
-        /* Hero & Search */
+
         .hero {
             background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1350&q=80');
             background-position: center;
@@ -299,6 +299,7 @@
                 background: #008a44;
             }
 
+
         .search-filters-row {
             display: flex;
             gap: 10px;
@@ -316,7 +317,6 @@
             cursor: pointer;
             transition: 0.3s;
             appearance: none;
-            -webkit-appearance: none;
             padding-right: 30px;
             background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23FFFFFF%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
             background-repeat: no-repeat;
@@ -352,7 +352,6 @@
                 background: rgba(255,255,255,0.1);
             }
 
-        /* CUSTOM LOCATION MENU (Giống batdongsan.vn) */
         .custom-loc-wrapper {
             position: relative;
             display: inline-block;
@@ -429,11 +428,6 @@
             font-size: 14px;
         }
 
-            .loc-btn-apply:hover {
-                background: #008a44;
-            }
-
-        /* Layout Container */
         .container {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
@@ -452,7 +446,6 @@
             font-size: 24px;
         }
 
-        /* Card Styles */
         .card {
             background: white;
             border-radius: 12px;
@@ -501,21 +494,83 @@
             margin-top: 15px;
         }
 
-        /* News Specific Layout */
-        .news-card {
-            display: flex;
-            flex-direction: column;
-            background: white;
-            border-radius: 12px;
-            border: 1px solid #eee;
-            overflow: hidden;
-            cursor: pointer;
+        .bds-news-layout {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            gap: 30px;
+            width: 100%;
         }
 
-        .news-img {
-            width: 100%;
-            height: 200px;
-            object-fit: cover;
+        .news-featured {
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+            .news-featured:hover h3 {
+                color: var(--primary);
+            }
+
+            .news-featured img {
+                width: 100%;
+                height: 350px;
+                object-fit: cover;
+                border-radius: 8px;
+                margin-bottom: 15px;
+            }
+
+            .news-featured h3 {
+                font-size: 22px;
+                color: var(--dark);
+                margin: 0 0 10px 0;
+                line-height: 1.4;
+            }
+
+        .news-list {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .news-list-item {
+            display: flex;
+            gap: 15px;
+            cursor: pointer;
+            transition: 0.3s;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 15px;
+        }
+
+            .news-list-item:hover h4 {
+                color: var(--primary);
+            }
+
+            .news-list-item:last-child {
+                border-bottom: none;
+            }
+
+            .news-list-item img {
+                width: 130px;
+                height: 85px;
+                object-fit: cover;
+                border-radius: 6px;
+                flex-shrink: 0;
+            }
+
+            .news-list-item h4 {
+                font-size: 15px;
+                color: var(--dark);
+                margin: 0 0 8px 0;
+                line-height: 1.4;
+                display: -webkit-box;
+                -webkit-line-clamp: 2;
+                -webkit-box-orient: vertical;
+                overflow: hidden;
+            }
+
+        @media (max-width: 768px) {
+            .bds-news-layout {
+                grid-template-columns: 1fr;
+            }
         }
 
         footer {
@@ -552,11 +607,10 @@
                 </div>
             </div>
             <a onclick="loadProjectsUI()">Dự án</a>
-            <a onclick="loadNewsUI()">Tin tức</a>
         </nav>
 
         <div class="auth-box" id="auth-section">
-            <a href="login.html" class="btn-header btn-outline"><i class="fas fa-user-circle"></i> Đăng nhập</a>
+            <a href="login.html" class="btn-header"><i class="fas fa-user-circle"></i> Đăng nhập</a>
         </div>
     </header>
 
@@ -590,7 +644,6 @@
             </div>
 
             <div class="search-filters-row">
-
                 <div class="custom-loc-wrapper">
                     <button class="filter-pill" onclick="toggleLocMenu(event)" id="btnLocTitle">Toàn quốc</button>
                     <div class="loc-menu" id="locMenu">
@@ -631,8 +684,8 @@
     </section>
 
     <h2 class="section-title">Bản tin bất động sản</h2>
-    <div id="home-news" class="container" style="gap: 20px;">
-        <p style="text-align: center; grid-column: 1/-1;"><i class="fas fa-spinner fa-spin"></i> Đang tải tin tức...</p>
+    <div id="home-news" class="container" style="display: block;">
+        <p style="text-align: center;"><i class="fas fa-spinner fa-spin"></i> Đang tải tin tức...</p>
     </div>
 
     <h2 class="section-title" id="main-title">Bất động sản Mới nhất</h2>
@@ -649,11 +702,11 @@
             const authSection = document.getElementById("auth-section");
 
             if (fullName) {
-                let menuHTML = ``;
+                let menuHTML = '';
                 if (role === "Admin") {
-                    menuHTML += `<a href="admin-dashboard.html" class="btn-header btn-admin" style="border:none;"><i class="fas fa-user-shield"></i> Trang Quản Trị</a>`;
+                    menuHTML += `<a href="admin-dashboard.html" class="btn-header" style="border:none;"><i class="fas fa-user-shield"></i> Trang Quản Trị</a>`;
                 } else if (role === "Sales") {
-                    menuHTML += `<a href="admin-dashboard.html" class="btn-header btn-post"><i class="fas fa-edit"></i> Sales Panel</a>`;
+                    menuHTML += `<a href="admin-dashboard.html" class="btn-header" style="background:var(--success); border-color:var(--success);"><i class="fas fa-edit"></i> Sales Panel</a>`;
                 }
                 menuHTML += `
                         <div class="dropdown" style="margin-left: 15px;">
@@ -670,8 +723,6 @@
             }
 
             updatePriceFilter();
-
-            // Tải song song cả 2 phần (Tin tức và BĐS) khi mở trang web
             loadHomeNews();
             loadData();
 
@@ -679,7 +730,6 @@
                 if (e.key === "Enter") executeAdvancedSearch();
             });
 
-            // Tắt custom menu khi click ra ngoài
             document.addEventListener('click', function (event) {
                 const locMenu = document.getElementById('locMenu');
                 const btnLocTitle = document.getElementById('btnLocTitle');
@@ -689,7 +739,6 @@
             });
         });
 
-        // Hàm bật/tắt Custom Menu Địa điểm
         function toggleLocMenu(e) {
             e.stopPropagation();
             document.getElementById('locMenu').classList.toggle('active');
@@ -697,6 +746,7 @@
 
         function logout() { localStorage.clear(); window.location.reload(); }
         function viewDetail(id) { window.location.href = `detail.html?id=${id}`; }
+        function viewNewsDetail(id) { window.location.href = `news-detail.html?id=${id}`; }
 
         function updatePriceFilter() {
             const isRent = document.querySelector('input[name="transType"]:checked').value === 'thue';
@@ -712,48 +762,60 @@
             document.querySelector(`input[name="transType"][value="${mode}"]`).checked = true;
             updatePriceFilter();
             document.getElementById("searchType").value = type;
-            resetFiltersBase();
+            document.getElementById("searchKeyword").value = "";
+            document.getElementById("searchPrice").value = "";
+            document.getElementById("searchArea").value = "";
+            document.getElementById("searchBedrooms").value = "";
             document.getElementById("main-title").innerText = mode === 'ban' ? `Nhà đất bán: ${type}` : `Nhà đất cho thuê: ${type}`;
             executeAdvancedSearch();
             document.getElementById('main-title').scrollIntoView({ behavior: 'smooth' });
         }
 
-        function resetFiltersBase() {
+        function resetFilters() {
             document.getElementById("searchKeyword").value = "";
+            document.getElementById("searchType").value = "Tất cả";
             document.getElementById("searchPrice").value = "";
             document.getElementById("searchArea").value = "";
             document.getElementById("searchBedrooms").value = "";
-        }
-
-        function resetFilters() {
-            resetFiltersBase();
-            document.getElementById("searchType").value = "Tất cả";
             loadData();
         }
 
-        // Tải 4 bài tin tức lên trang chủ
         function loadHomeNews() {
             fetch('/api/News').then(res => res.json()).then(data => {
-                let html = '';
                 if (data.length === 0) {
-                    html = '<p style="grid-column: 1/-1; text-align:center;">Chưa có bài viết nào.</p>';
-                } else {
-                    // Lấy tối đa 4 bài báo mới nhất để hiện trang chủ
-                    const topNews = data.slice(0, 4);
-                    topNews.forEach(n => {
-                        html += `
-                                <div class="news-card" onclick="alert('Đang xem bản tin: ${n.title}')">
-                                    <img src="${n.imageUrl}" class="news-img">
-                                    <div style="padding: 15px;">
-                                        <h3 style="margin: 0 0 10px 0; font-size: 16px; color: var(--dark);">${n.title}</h3>
-                                        <small style="color: var(--gray);"><i class="far fa-clock"></i> ${new Date(n.createdAt).toLocaleDateString('vi-VN')}</small>
-                                    </div>
-                                </div>`;
-                    });
+                    document.getElementById('home-news').innerHTML = '<p style="text-align:center;">Chưa có bài viết nào.</p>';
+                    return;
                 }
+                data.reverse();
+                const featured = data[0];
+                const others = data.slice(1, 5);
+
+                let html = `<div class="bds-news-layout">`;
+                const featuredDate = new Date(featured.createdAt).toLocaleDateString('vi-VN');
+                html += `
+                        <div class="news-featured" onclick="viewNewsDetail('${featured.id}')">
+                            <img src="${featured.imageUrl || 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?fit=crop&w=800&q=80'}">
+                            <h3>${featured.title}</h3>
+                            <small style="color: var(--gray);"><i class="far fa-clock"></i> ${featuredDate} • ${featured.author || 'Ban biên tập'}</small>
+                        </div>
+                    `;
+                html += `<div class="news-list">`;
+                others.forEach(n => {
+                    const date = new Date(n.createdAt).toLocaleDateString('vi-VN');
+                    html += `
+                            <div class="news-list-item" onclick="viewNewsDetail('${n.id}')">
+                                <img src="${n.imageUrl || 'https://images.unsplash.com/photo-1582407947304-fd86f028f716?fit=crop&w=200&q=80'}">
+                                <div>
+                                    <h4>${n.title}</h4>
+                                    <small style="color: var(--gray);"><i class="far fa-clock"></i> ${date}</small>
+                                </div>
+                            </div>
+                        `;
+                });
+                html += `</div></div>`;
                 document.getElementById('home-news').innerHTML = html;
             }).catch(e => {
-                document.getElementById('home-news').innerHTML = '';
+                document.getElementById('home-news').innerHTML = '<p style="text-align:center; color:red;">Lỗi tải tin tức</p>';
             });
         }
 
@@ -786,11 +848,8 @@
             if (maxArea) url += `maxDienTich=${maxArea}&`;
 
             if (bedrooms) {
-                if (bedrooms === "5") {
-                    url += `phongNgu=5&`;
-                } else {
-                    url += `phongNgu=${bedrooms}&`;
-                }
+                if (bedrooms === "5") url += `phongNgu=5&`;
+                else url += `phongNgu=${bedrooms}&`;
             }
 
             if (url.endsWith('&') || url.endsWith('?')) url = url.slice(0, -1);
@@ -828,25 +887,6 @@
         }
 
         function loadProjectsUI() {
-        }
-
-        function loadNewsUI() {
-            document.getElementById("main-title").innerText = "Tin tức Thị trường";
-            fetch('/api/News').then(res => res.json()).then(data => {
-                let html = '';
-                data.forEach(n => {
-                    html += `
-                            <div class="card" style="display: flex; flex-direction: column;">
-                                <img src="${n.imageUrl}" style="width: 100%; height: 200px; object-fit: cover;">
-                                <div style="padding: 20px;">
-                                    <small style="color: var(--gray);"><i class="far fa-clock"></i> ${new Date(n.createdAt).toLocaleDateString('vi-VN')}</small>
-                                    <h3 style="margin: 10px 0; color: var(--dark); font-size: 18px;">${n.title}</h3>
-                                </div>
-                            </div>`;
-                });
-                document.getElementById('list-bds').innerHTML = html;
-                document.getElementById('main-title').scrollIntoView({ behavior: 'smooth' });
-            });
         }
     </script>
 </body>
