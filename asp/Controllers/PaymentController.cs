@@ -16,8 +16,6 @@ namespace asp.Controllers
         {
             _paymentCollection = database.GetCollection<Payment>("Payments");
         }
-
-        // 1. Lấy toàn bộ lịch sử thanh toán của 1 Giao dịch
         [HttpGet("transaction/{transId}")]
         public async Task<ActionResult<IEnumerable<Payment>>> GetByTransaction(string transId)
         {
@@ -26,8 +24,6 @@ namespace asp.Controllers
                 .ToListAsync();
             return Ok(list);
         }
-
-        // 2. Thêm một đợt thanh toán mới
         [HttpPost]
         public async Task<IActionResult> Create(Payment payment)
         {
@@ -37,6 +33,41 @@ namespace asp.Controllers
             await _paymentCollection.InsertOneAsync(payment);
 
             return Ok(new { message = "Ghi nhận thanh toán thành công!", data = payment });
+        }
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdatePayment(string id, [FromBody] Payment paymentIn)
+        {
+            try
+            {
+                var existing = await _paymentCollection.Find(p => p.Id == id).FirstOrDefaultAsync();
+                if (existing == null) return NotFound(new { message = "Không tìm thấy dữ liệu thanh toán!" });
+
+                paymentIn.Id = existing.Id;
+                await _paymentCollection.ReplaceOneAsync(p => p.Id == id, paymentIn);
+
+                return Ok(new { message = "Cập nhật thông tin thanh toán thành công!" });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Lỗi Server: " + ex.Message });
+            }
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeletePayment(string id)
+        {
+            try
+            {
+                var result = await _paymentCollection.DeleteOneAsync(p => p.Id == id);
+                if (result.DeletedCount > 0)
+                    return Ok(new { message = "Đã xóa thanh toán thành công!" });
+
+                return NotFound(new { message = "Không tìm thấy dữ liệu thanh toán!" });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Lỗi Server: " + ex.Message });
+            }
         }
     }
 }

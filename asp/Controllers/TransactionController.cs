@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MongoDB.Driver;
 using asp.Data;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -17,61 +18,62 @@ namespace asp.Controllers
             _transactionCollection = database.GetCollection<Transaction>("Transactions");
         }
 
-        // 1. Lấy danh sách giao dịch (Ưu tiên mới nhất lên đầu)
+        // 1. LẤY TẤT CẢ
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Transaction>>> Get()
-        {
-            var list = await _transactionCollection.Find(_ => true)
-                .SortByDescending(t => t.Date)
-                .ToListAsync();
-            return Ok(list);
-        }
+        public async Task<ActionResult<IEnumerable<Transaction>>> GetAll() =>
+            Ok(await _transactionCollection.Find(_ => true).ToListAsync());
 
-        // --- MỚI BỔ SUNG: Xem chi tiết 1 giao dịch ---
+        // 2. LẤY CHI TIẾT THEO ID
         [HttpGet("{id}")]
-        public async Task<ActionResult<Transaction>> GetTransactionById(string id)
+        public async Task<ActionResult<Transaction>> GetById(string id)
         {
-            var trans = await _transactionCollection.Find(t => t.Id == id).FirstOrDefaultAsync();
-            if (trans == null) return NotFound(new { message = "Không tìm thấy giao dịch!" });
-            return Ok(trans);
+            var tran = await _transactionCollection.Find(t => t.Id == id).FirstOrDefaultAsync();
+            if (tran == null) return NotFound(new { message = "Không tìm thấy giao dịch!" });
+            return Ok(tran);
         }
 
-        // 2. Tạo giao dịch mới (Kèm Fix lỗi TC07)
+        // 3. THÊM MỚI 
         [HttpPost]
-        public async Task<IActionResult> Post(Transaction transaction)
+        public async Task<IActionResult> Create([FromBody] Transaction transaction)
         {
-            // KIỂM TRA LOGIC TC07: BĐS này đã bị chốt hay chưa?
-            var existing = await _transactionCollection.Find(t =>
-                t.PropertyId == transaction.PropertyId &&
-                (t.Status == "Đang xử lý" || t.Status == "Hoàn tất")
-            ).FirstOrDefaultAsync();
-
-            if (existing != null)
-            {
-                return BadRequest(new { message = "LỖI: Bất động sản này đã được giao dịch, không thể thao tác!" });
-            }
-
-            transaction.Date = System.DateTime.Now;
-            if (string.IsNullOrEmpty(transaction.Status))
-            {
-                transaction.Status = "Đang xử lý";
-            }
-
             await _transactionCollection.InsertOneAsync(transaction);
-            return Ok(new { message = "Tạo giao dịch thành công", data = transaction });
+            return Ok(new { message = "Thêm giao dịch thành công bởi Nguyen Huu Nghia!", data = transaction });
         }
 
-        // 3. Cập nhật trạng thái giao dịch (Hoàn tất / Hủy)
-        [HttpPut("{id}/status")]
-        public async Task<IActionResult> UpdateStatus(string id, [FromBody] string newStatus)
+        // 4. SỬA TOÀN BỘ THÔNG TIN GIAO DỊCH
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Update(string id, [FromBody] Transaction transactionIn)
         {
-            var filter = Builders<Transaction>.Filter.Eq(t => t.Id, id);
-            var update = Builders<Transaction>.Update.Set(t => t.Status, newStatus);
+            var existing = await _transactionCollection.Find(t => t.Id == id).FirstOrDefaultAsync();
+            if (existing == null) return NotFound(new { message = "Không tìm thấy giao dịch!" });
 
-            var result = await _transactionCollection.UpdateOneAsync(filter, update);
+            transactionIn.Id = existing.Id;
+            await _transactionCollection.ReplaceOneAsync(t => t.Id == id, transactionIn);
+            return Ok(new { message = "Cập nhật giao dịch thành công bởi Nguyen Huu Nghia!" });
+        }
 
-            if (result.MatchedCount == 0) return NotFound(new { message = "Không tìm thấy giao dịch" });
-            return Ok(new { message = "Cập nhật trạng thái thành công" });
+        // 4.1 SỬA NHANH TRẠNG THÁI
+        [HttpPut("{id}/status")]
+        public async Task<IActionResult> UpdateStatus(string id, [FromBody] string status)
+        {
+            var update = Builders<Transaction>.Update.Set("Status", status);
+            var result = await _transactionCollection.UpdateOneAsync(t => t.Id == id, update);
+
+            if (result.ModifiedCount > 0)
+                return Ok(new { message = "Cập nhật trạng thái thành công bởi Nguyen Huu Nghia!" });
+
+            return NotFound(new { message = "Không tìm thấy giao dịch!" });
+        }
+
+        // 5. XÓA GIAO DỊCH
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(string id)
+        {
+            var result = await _transactionCollection.DeleteOneAsync(t => t.Id == id);
+            if (result.DeletedCount > 0)
+                return Ok(new { message = "Đã xóa giao dịch thành công bởi Nguyen Huu Nghia!" });
+
+            return NotFound(new { message = "Không tìm thấy giao dịch!" });
         }
     }
 }

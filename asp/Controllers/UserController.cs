@@ -17,7 +17,7 @@ namespace asp.Controllers
             _userCollection = database.GetCollection<User>("Users");
         }
 
-        // 1. Lấy danh sách toàn bộ người dùng 
+        // 1. LẤY DANH SÁCH TOÀN BỘ NGƯỜI DÙNG
         [HttpGet]
         public async Task<ActionResult<IEnumerable<object>>> GetAllUsers()
         {
@@ -27,7 +27,7 @@ namespace asp.Controllers
             return Ok(users);
         }
 
-        // 2. LẤY THÔNG TIN HỒ SƠ 
+        // 2. LẤY THÔNG TIN HỒ SƠ
         [HttpGet("{username}")]
         public async Task<IActionResult> GetProfile(string username)
         {
@@ -48,7 +48,18 @@ namespace asp.Controllers
             });
         }
 
-        // 3. CHỈNH SỬA HỒ SƠ
+        // 3. THÊM TÀI KHOẢN MỚI
+        [HttpPost]
+        public async Task<IActionResult> CreateUser([FromBody] User newUser)
+        {
+            var exists = await _userCollection.Find(u => u.Username == newUser.Username).FirstOrDefaultAsync();
+            if (exists != null) return BadRequest(new { message = "Tên đăng nhập này đã tồn tại!" });
+
+            await _userCollection.InsertOneAsync(newUser);
+            return Ok(new { message = "Thêm tài khoản thành công bởi Nguyen Huu Nghia!", data = newUser });
+        }
+
+        // 4. CHỈNH SỬA HỒ SƠ
         [HttpPut("{username}")]
         public async Task<IActionResult> UpdateProfile(string username, [FromBody] User updatedInfo)
         {
@@ -61,16 +72,17 @@ namespace asp.Controllers
 
             await _userCollection.ReplaceOneAsync(u => u.Username == username, user);
 
-            return Ok(new { message = "Cập nhật hồ sơ thành công!", fullName = user.FullName });
+            return Ok(new { message = "Cập nhật hồ sơ thành công bởi Nguyen Huu Nghia!", fullName = user.FullName });
         }
 
-        // 4. XÓA NGƯỜI DÙNG
+        // 5. XÓA NGƯỜI DÙNG
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUser(string id)
         {
             var result = await _userCollection.DeleteOneAsync(u => u.Id == id);
             if (result.DeletedCount == 0) return NotFound(new { message = "Không tìm thấy nhân viên!" });
-            return Ok(new { message = "Đã xóa nhân viên thành công!" });
+
+            return Ok(new { message = "Đã xóa nhân viên thành công bởi Nguyen Huu Nghia!" });
         }
     }
 }

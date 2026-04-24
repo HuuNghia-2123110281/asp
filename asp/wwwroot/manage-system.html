@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dự án & Chủ nhà - BĐS Nghĩa</title>
+    <title>Quản lý Dự án - BĐS Nghĩa</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
@@ -133,22 +133,33 @@
             margin-bottom: 20px;
         }
 
-        .grid-2 {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 25px;
-        }
-
         .box {
             background: white;
             padding: 25px;
             border-radius: 8px;
             box-shadow: 0 0.15rem 1.75rem 0 rgba(58,59,69,0.15);
+            border-top: 4px solid var(--success);
+        }
+
+        .form-box {
+            display: none;
+            background: #f8f9fc;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #e3e6f0;
+            margin-bottom: 20px;
         }
 
         .form-group {
             margin-bottom: 15px;
         }
+
+            .form-group label {
+                display: block;
+                font-weight: bold;
+                margin-bottom: 5px;
+                color: var(--dark);
+            }
 
             .form-group input {
                 width: 100%;
@@ -159,47 +170,66 @@
                 outline: none;
             }
 
-        .btn-add {
-            background: var(--primary);
-            color: white;
+        .btn {
+            padding: 10px 20px;
             border: none;
-            padding: 10px;
             border-radius: 5px;
-            font-weight: bold;
+            color: white;
             cursor: pointer;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        .btn-add {
+            background: var(--success);
+        }
+
+        .btn-cancel {
+            background: #858796;
+        }
+
+        table {
             width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
         }
 
-        .data-list {
-            margin-top: 20px;
-            max-height: 400px;
-            overflow-y: auto;
-            border: 1px solid #e3e6f0;
-            border-radius: 5px;
+        th {
             background: #f8f9fc;
+            color: var(--dark);
+            font-size: 14px;
+            padding: 15px;
+            border-bottom: 2px solid #e3e6f0;
+            text-align: left;
         }
 
-        .data-item {
+        td {
             padding: 15px;
             border-bottom: 1px solid #e3e6f0;
+            color: var(--dark);
+            font-size: 14px;
         }
 
-            .data-item:last-child {
-                border-bottom: none;
-            }
+        .btn-action {
+            width: 35px;
+            height: 35px;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+            color: white;
+            margin-right: 5px;
+        }
     </style>
 </head>
 <body>
     <nav class="sidebar">
         <a href="admin-dashboard.html" class="sidebar-brand"><i class="fas fa-laugh-wink"></i> BĐS NGHĨA</a>
         <div class="nav-menu">
-            <a href="admin-dashboard.html" class="nav-item active"><i class="fas fa-fw fa-tachometer-alt"></i> Dashboard</a>
-
+            <a href="admin-dashboard.html" class="nav-item"><i class="fas fa-fw fa-tachometer-alt"></i> Dashboard</a>
             <div class="divider"></div>
-
             <a href="add-property.html" class="nav-item"><i class="fas fa-fw fa-plus-square"></i> Đăng tin mới</a>
             <a href="manage-properties.html" class="nav-item"><i class="fas fa-fw fa-building"></i> DS Bất động sản</a>
-            <a href="manage-system.html" class="nav-item"><i class="fas fa-fw fa-tags"></i> Dự án & Chủ nhà</a>
+            <a href="manage-system.html" class="nav-item active"><i class="fas fa-fw fa-city"></i> Quản lý Dự án </a>
             <a href="manage-category.html" class="nav-item"><i class="fas fa-fw fa-newspaper"></i> Quản lý danh mục</a>
             <a href="manage-contracts.html" class="nav-item"><i class="fas fa-fw fa-newspaper"></i> Quản lý hợp đồng</a>
 
@@ -223,30 +253,44 @@
         </header>
 
         <div class="container-fluid">
-            <h1 class="page-title">Quản lý Dự án & Chủ nhà</h1>
-            <div class="grid-2">
-                <div class="box" style="border-top: 4px solid var(--success);">
-                    <h3 style="margin-top:0; color: var(--success);"><i class="fas fa-building"></i> Danh sách Dự Án</h3>
-                    <div class="form-group"><input type="text" id="projName" placeholder="Tên dự án (VD: Vinhomes)..."></div>
-                    <div class="form-group"><input type="text" id="projInvestor" placeholder="Chủ đầu tư..."></div>
-                    <button class="btn-add" style="background: var(--success);" onclick="addProject()"><i class="fas fa-plus"></i> THÊM DỰ ÁN</button>
-                    <div class="data-list" id="list-projects">Đang tải...</div>
+            <h1 class="page-title">Quản lý Danh sách Dự án</h1>
+
+            <div class="box">
+                <button class="btn btn-add" onclick="showForm('add')"><i class="fas fa-plus"></i> THÊM DỰ ÁN MỚI</button>
+
+                <div id="projectForm" class="form-box" style="margin-top: 20px;">
+                    <h3 id="formTitle" style="margin-top:0; color:var(--success);">Thêm Dự Án Mới</h3>
+                    <input type="hidden" id="editId">
+                    <div class="form-group">
+                        <label>Tên dự án</label>
+                        <input type="text" id="projName" placeholder="VD: Vinhomes Grand Park...">
+                    </div>
+                    <div class="form-group">
+                        <label>Chủ đầu tư</label>
+                        <input type="text" id="projInvestor" placeholder="Tên công ty/Tập đoàn...">
+                    </div>
+                    <button class="btn btn-add" id="btnSave" onclick="saveProject()">Lưu Dự Án</button>
+                    <button class="btn btn-cancel" onclick="hideForm()">Hủy Bỏ</button>
                 </div>
 
-                <div class="box" style="border-top: 4px solid var(--warning);">
-                    <h3 style="margin-top:0; color: #d39e00;"><i class="fas fa-user-tie"></i> Hồ sơ Chủ Nhà Ký Gửi</h3>
-                    <div class="form-group"><input type="text" id="ownName" placeholder="Họ tên Chủ nhà..."></div>
-                    <div class="form-group"><input type="text" id="ownPhone" placeholder="Số điện thoại..."></div>
-                    <button class="btn-add" style="background: var(--warning); color: #333;" onclick="addOwner()"><i class="fas fa-plus"></i> THÊM CHỦ NHÀ</button>
-                    <div class="data-list" id="list-owners">Đang tải...</div>
-                </div>
+                <table style="margin-top: 20px;">
+                    <thead>
+                        <tr>
+                            <th>Tên Dự Án</th>
+                            <th>Chủ đầu tư</th>
+                            <th style="width: 120px; text-align: center;">Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody id="list-projects">
+                        <tr><td colspan="3" style="text-align:center;">Đang tải...</td></tr>
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
 
     <script>
         document.addEventListener("DOMContentLoaded", () => {
-            // 1. KIỂM TRA PHÂN QUYỀN 
             const role = localStorage.getItem("role");
             const username = localStorage.getItem("username");
 
@@ -255,61 +299,113 @@
                 return;
             }
 
-            // 2. TÀNG HÌNH MENU NHÂN VIÊN 
             if (role === "Sales") {
                 const empMenu = document.getElementById("menu-employees");
-                if (empMenu) {
-                    empMenu.style.display = "none";
-                }
+                if (empMenu) empMenu.style.display = "none";
             }
 
-            // 3. HIỂN THỊ TÊN VÀ KHỞI TẠO DỮ LIỆU
             document.getElementById("adminName").innerText = username || "Admin";
-            loadAllData();
+            loadProjects();
         });
 
-        async function loadAllData() {
-            const [resProj, resOwn, resBds] = await Promise.all([fetch('/api/Project'), fetch('/api/Owner'), fetch('/api/BatDongSan')]);
-            const projects = await resProj.json();
-            const owners = await resOwn.json();
-            const bdsList = await resBds.json();
+        // TẢI DANH SÁCH
+        async function loadProjects() {
+            try {
+                const resProj = await fetch('/api/Project');
+                const projects = await resProj.json();
 
-            // Render Dự án
-            let projHtml = '';
-            projects.forEach(d => projHtml += `<div class="data-item"><strong style="font-size:16px;">${d.name}</strong><br><small style="color:#858796;">CĐT: ${d.investor || 'Đang cập nhật'}</small></div>`);
-            document.getElementById('list-projects').innerHTML = projHtml || '<div class="data-item">Chưa có dữ liệu</div>';
+                let projHtml = '';
+                if (projects.length === 0) projHtml = '<tr><td colspan="3" style="text-align:center;">Chưa có dự án nào.</td></tr>';
 
-            // Render Chủ nhà & BĐS đã ký gửi (Truy vấn thật từ DB)
-            let ownHtml = '';
-            owners.forEach(o => {
-                // Lọc ra các BĐS thuộc sở hữu của ông này
-                const ownerProps = bdsList.filter(b => b.ownerId === o.id);
-                let propDetails = ownerProps.length > 0
-                    ? ownerProps.map(b => `<div style="background:white; border:1px solid #ddd; padding:4px 8px; border-radius:4px; margin-top:5px; font-size:12px;"><b>[${b.loaiHinh}]</b> ${b.tieuDe}</div>`).join('')
-                    : '<small style="color:#e74a3b;">Chưa ký gửi BĐS nào</small>';
+                projects.forEach(d => {
+                    const name = d.name ? d.name.replace(/'/g, "\\'") : '';
+                    const inv = d.investor ? d.investor.replace(/'/g, "\\'") : '';
 
-                ownHtml += `<div class="data-item">
-                        <div style="display:flex; justify-content:space-between; margin-bottom:5px;">
-                            <strong style="color:var(--dark); font-size:15px;">${o.fullName}</strong>
-                            <span style="color:var(--primary); font-weight:bold;"><i class="fas fa-phone"></i> ${o.phone}</span>
-                        </div>
-                        <div style="color:#858796; font-size:13px; font-weight:bold; margin-top:10px;">BĐS Đang ký gửi:</div>
-                        ${propDetails}
-                    </div>`;
-            });
-            document.getElementById('list-owners').innerHTML = ownHtml || '<div class="data-item">Chưa có dữ liệu</div>';
+                    projHtml += `<tr>
+                            <td><strong style="color:var(--primary); font-size:16px;">${name}</strong></td>
+                            <td>${inv || 'Đang cập nhật'}</td>
+                            <td style="text-align: center;">
+                                <button class="btn-action" style="background:var(--warning);"
+                                    onclick="showForm('edit', '${d.id}', '${name}', '${inv}')" title="Sửa">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="btn-action" style="background:var(--danger);"
+                                    onclick="deleteProject('${d.id}')" title="Xóa">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </td>
+                        </tr>`;
+                });
+                document.getElementById('list-projects').innerHTML = projHtml;
+            } catch (e) {
+                document.getElementById('list-projects').innerHTML = '<tr><td colspan="3" style="color:red; text-align:center;">Lỗi kết nối máy chủ!</td></tr>';
+            }
         }
 
-        async function addProject() {
-            const data = { name: document.getElementById('projName').value, investor: document.getElementById('projInvestor').value };
-            await fetch('/api/Project', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
-            document.getElementById('projName').value = ''; loadAllData();
+        // BẬT / TẮT FORM
+        function showForm(mode, id = '', name = '', inv = '') {
+            document.getElementById('projectForm').style.display = 'block';
+            if (mode === 'add') {
+                document.getElementById('formTitle').innerText = 'Thêm Dự Án Mới';
+                document.getElementById('editId').value = '';
+                document.getElementById('projName').value = '';
+                document.getElementById('projInvestor').value = '';
+            } else {
+                document.getElementById('formTitle').innerText = 'Cập Nhật Dự Án';
+                document.getElementById('editId').value = id;
+                document.getElementById('projName').value = name;
+                document.getElementById('projInvestor').value = inv;
+            }
         }
 
-        async function addOwner() {
-            const data = { fullName: document.getElementById('ownName').value, phone: document.getElementById('ownPhone').value };
-            await fetch('/api/Owner', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
-            document.getElementById('ownName').value = ''; document.getElementById('ownPhone').value = ''; loadAllData();
+        function hideForm() {
+            document.getElementById('projectForm').style.display = 'none';
+        }
+
+        // LƯU (THÊM / SỬA)
+        async function saveProject() {
+            const id = document.getElementById('editId').value;
+            const data = {
+                name: document.getElementById('projName').value.trim(),
+                investor: document.getElementById('projInvestor').value.trim()
+            };
+
+            if (!data.name) return alert("Vui lòng nhập Tên Dự Án!");
+
+            const url = id ? `/api/Project/${id}` : `/api/Project`;
+            const method = id ? 'PUT' : 'POST';
+
+            document.getElementById('btnSave').innerText = "Đang xử lý...";
+
+            try {
+                const res = await fetch(url, {
+                    method: method,
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+
+                if (res.ok) {
+                    alert(id ? "Cập nhật thành công!" : "Thêm mới thành công!");
+                    hideForm();
+                    loadProjects();
+                } else {
+                    alert("Lỗi lưu dữ liệu!");
+                }
+            } catch (e) { alert("Lỗi kết nối máy chủ!"); }
+
+            document.getElementById('btnSave').innerText = "Lưu Dự Án";
+        }
+
+        // XÓA
+        async function deleteProject(id) {
+            if (confirm("Bạn có chắc chắn muốn xóa dự án này không?")) {
+                const res = await fetch(`/api/Project/${id}`, { method: 'DELETE' });
+                if (res.ok) {
+                    loadProjects();
+                } else {
+                    alert("Lỗi khi xóa dự án!");
+                }
+            }
         }
     </script>
 </body>

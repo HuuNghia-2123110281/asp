@@ -29,5 +29,40 @@ namespace asp.Controllers
             await _projectCollection.InsertOneAsync(project);
             return Ok(new { message = "Thêm dự án thành công!", data = project });
         }
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateProject(string id, [FromBody] Project projectIn)
+        {
+            try
+            {
+                var existing = await _projectCollection.Find(p => p.Id == id).FirstOrDefaultAsync();
+                if (existing == null) return NotFound(new { message = "Không tìm thấy dự án để cập nhật!" });
+
+                projectIn.Id = existing.Id;
+                await _projectCollection.ReplaceOneAsync(p => p.Id == id, projectIn);
+
+                return Ok(new { message = "Cập nhật dự án thành công!" });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Lỗi Server: " + ex.Message });
+            }
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteProject(string id)
+        {
+            try
+            {
+                var result = await _projectCollection.DeleteOneAsync(p => p.Id == id);
+                if (result.DeletedCount > 0)
+                    return Ok(new { message = "Đã xóa dự án thành công!" });
+
+                return NotFound(new { message = "Không tìm thấy dự án!" });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Lỗi Server: " + ex.Message });
+            }
+        }
     }
 }
