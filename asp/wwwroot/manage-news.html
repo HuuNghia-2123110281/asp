@@ -382,8 +382,14 @@
         }
 
         async function deleteNews(id) {
-            if (confirm("Xác nhận xóa bài viết này? Hành động này không thể hoàn tác!")) {
-                await fetch(`/api/News/${id}`, { method: 'DELETE' }); loadNews();
+            if (confirm("Bạn có chắc chắn muốn xóa bài viết này không?")) {
+                const res = await fetch(`/api/News/${id}`, { method: 'DELETE' });
+                if (res.ok) {
+                    alert("Đã xóa tin tức!");
+                    loadNewsAdmin();
+                } else {
+                    alert("Lỗi khi xóa!");
+                }
             }
         }
     </script>

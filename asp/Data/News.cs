@@ -19,5 +19,6 @@ namespace asp.Data
         public string Author { get; set; } = null!;
 
         public DateTime CreatedAt { get; set; } = DateTime.Now;
+        public DateTime UpdatedAt { get; internal set; }
     }
 }

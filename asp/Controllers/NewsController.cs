@@ -40,5 +40,21 @@ namespace asp.Controllers
             if (result.DeletedCount == 0) return NotFound();
             return Ok(new { message = "Đã xóa tin tức!" });
         }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateNews(string id, [FromBody] News news)
+        {
+            var existingNews = await _newsCollection.Find(n => n.Id == id).FirstOrDefaultAsync();
+            if (existingNews == null) return NotFound();
+
+            existingNews.Title = news.Title;
+            existingNews.Description = news.Description;
+            existingNews.ImageUrl = news.ImageUrl;
+            existingNews.Author = news.Author;
+            existingNews.UpdatedAt = DateTime.Now;
+
+            await _newsCollection.ReplaceOneAsync(n => n.Id == id, existingNews);
+            return Ok(new { message = "Cập nhật tin tức thành công!" });
+        }
     }
 }

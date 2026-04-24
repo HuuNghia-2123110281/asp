@@ -1,0 +1,209 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chỉnh sửa Tin tức - BĐS Nghĩa</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4e73df;
+            --dark: #5a5c69;
+            --bg-light: #f8f9fc;
+            --success: #1cc88a;
+        }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            margin: 0;
+            background-color: var(--bg-light);
+            display: flex;
+            height: 100vh;
+        }
+
+        .sidebar {
+            width: 250px;
+            background: linear-gradient(180deg, #4e73df 10%, #224abe 100%);
+            color: white;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .content-wrapper {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+
+        .topbar {
+            background: white;
+            height: 70px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 25px;
+            box-shadow: 0 .15rem 1.75rem 0 rgba(58,59,69,.15);
+        }
+
+        .container-fluid {
+            padding: 40px;
+            max-width: 800px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .card {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 .15rem 1.75rem 0 rgba(58,59,69,.1);
+            border-top: 4px solid var(--primary);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+            .form-group label {
+                display: block;
+                font-weight: bold;
+                margin-bottom: 8px;
+                color: var(--dark);
+            }
+
+            .form-group input, .form-group textarea {
+                width: 100%;
+                padding: 12px;
+                border: 1px solid #d1d3e2;
+                border-radius: 5px;
+                outline: none;
+                box-sizing: border-box;
+            }
+
+        .btn-save {
+            background: var(--success);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            transition: 0.3s;
+            font-size: 16px;
+        }
+
+            .btn-save:hover {
+                background: #17a673;
+            }
+
+        #imgPreview {
+            width: 100%;
+            max-height: 250px;
+            object-fit: cover;
+            border-radius: 5px;
+            margin-top: 10px;
+            display: none;
+            border: 1px solid #ddd;
+        }
+    </style>
+</head>
+<body>
+    <div class="content-wrapper">
+        <header class="topbar">
+            <div style="font-weight: bold; color: var(--dark);">TRANG QUẢN TRỊ TIN TỨC</div>
+            <a href="manage-news.html" style="text-decoration:none; color:var(--primary); font-weight:bold;"><i class="fas fa-arrow-left"></i> Quay lại</a>
+        </header>
+
+        <div class="container-fluid">
+            <div class="card">
+                <h2 style="text-align:center; margin-top:0; color:var(--dark);">CHỈNH SỬA BÀI VIẾT</h2>
+
+                <div class="form-group">
+                    <label>Tiêu đề bài viết</label>
+                    <input type="text" id="editTitle">
+                </div>
+
+                <div class="form-group">
+                    <label>Nội dung chi tiết</label>
+                    <textarea id="editDesc" rows="8"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Hình ảnh hiện tại</label>
+                    <img id="imgPreview" src="">
+                    <input type="file" id="editFile" accept="image/*" style="margin-top:10px;" onchange="handleFile(this)">
+                </div>
+
+                <button class="btn-save" onclick="saveChanges()"><i class="fas fa-save"></i> LƯU THAY ĐỔI</button>
+                <p id="editMsg" style="text-align:center; font-weight:bold; margin-top:15px;"></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const newsId = urlParams.get('id');
+        let currentBase64 = "";
+        document.addEventListener("DOMContentLoaded", async () => {
+            if (!newsId) { alert("Không tìm thấy ID tin tức!"); return; }
+
+            try {
+                const res = await fetch(`/api/News`);
+                const list = await res.json();
+                const news = list.find(n => n.id === newsId);
+
+                if (news) {
+                    document.getElementById('editTitle').value = news.title;
+                    document.getElementById('editDesc').value = news.description;
+                    currentBase64 = news.imageUrl;
+                    const img = document.getElementById('imgPreview');
+                    img.src = news.imageUrl;
+                    img.style.display = "block";
+                }
+            } catch (e) { console.error("Lỗi tải tin cũ", e); }
+        });
+        function handleFile(input) {
+            const file = input.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    currentBase64 = e.target.result;
+                    document.getElementById('imgPreview').src = currentBase64;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+        async function saveChanges() {
+            const msg = document.getElementById('editMsg');
+            const data = {
+                title: document.getElementById('editTitle').value.trim(),
+                description: document.getElementById('editDesc').value.trim(),
+                imageUrl: currentBase64,
+                author: localStorage.getItem('username') || 'Admin'
+            };
+
+            if (!data.title || !data.description) {
+                msg.style.color = "red"; msg.innerText = "Không được bỏ trống thông tin!";
+                return;
+            }
+
+            try {
+                const res = await fetch(`/api/News/${newsId}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+
+                if (res.ok) {
+                    msg.style.color = "green"; msg.innerText = "Cập nhật thành công! Đang chuyển hướng...";
+                    setTimeout(() => window.location.href = "manage-news.html", 1500);
+                }
+            } catch (e) {
+                msg.style.color = "red"; msg.innerText = "Lỗi kết nối máy chủ!";
+            }
+        }
+    </script>
+</body>
+</html>
