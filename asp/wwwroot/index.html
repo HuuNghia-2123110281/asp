@@ -607,6 +607,7 @@
                 </div>
             </div>
             <a onclick="loadProjectsUI()">Dự án</a>
+            <a onclick="loadNewsUI()">Tin tức</a>
         </nav>
 
         <div class="auth-box" id="auth-section">
@@ -830,8 +831,6 @@
             const priceRange = document.getElementById("searchPrice").value;
             const areaRange = document.getElementById("searchArea").value;
             const bedrooms = document.getElementById("searchBedrooms").value;
-
-            // ĐỌC GIÁ TRỊ CỦA Ô RADIO (BÁN HAY CHO THUÊ)
             const transTypeRaw = document.querySelector('input[name="transType"]:checked').value;
             const loaiGiaoDich = transTypeRaw === 'ban' ? 'Bán' : 'Cho thuê';
 
@@ -893,6 +892,52 @@
         }
 
         function loadProjectsUI() {
+            document.getElementById("main-title").innerText = "Dự án Bất động sản Nổi bật";
+            document.getElementById('list-bds').innerHTML = '<p style="text-align: center; grid-column: 1/-1; padding: 50px;"><i class="fas fa-spinner fa-spin"></i> Đang tải dữ liệu dự án...</p>';
+
+            fetch('/api/Project').then(res => res.json()).then(data => {
+                let html = '';
+                if (data.length === 0) html = '<p style="grid-column: 1/-1; text-align:center;">Chưa có dự án nào.</p>';
+                data.forEach(p => {
+                    html += `<div class="card" style="padding: 25px; border-top: 4px solid var(--success);">
+                            <h3 style="color: var(--primary); margin: 0 0 10px 0; font-size: 22px;">${p.name}</h3>
+                            <p style="color: var(--dark); font-size: 14px; margin-bottom: 5px;"><strong>Chủ đầu tư:</strong> ${p.investor || 'Đang cập nhật'}</p>
+                            <p style="color: var(--gray); font-size: 13px; margin-bottom: 15px;"><i class="fas fa-map-marker-alt"></i> ${p.address || 'Đang cập nhật'}</p>
+                            <button style="width: 100%; margin-top: 10px; padding: 8px; background: white; border: 1px solid var(--primary); color: var(--primary); border-radius: 4px; font-weight: bold; cursor:pointer; transition:0.3s;" onmouseover="this.style.background='var(--primary)'; this.style.color='white';" onmouseout="this.style.background='white'; this.style.color='var(--primary)';">Xem chi tiết</button>
+                        </div>`;
+                });
+                document.getElementById('list-bds').innerHTML = html;
+                document.getElementById('main-title').scrollIntoView({ behavior: 'smooth' });
+            }).catch(e => {
+                document.getElementById('list-bds').innerHTML = '<p style="text-align:center; color:red; grid-column: 1/-1;">Lỗi tải dữ liệu dự án.</p>';
+            });
+        }
+
+        function loadNewsUI() {
+            document.getElementById("main-title").innerText = "Tin tức Thị trường";
+            document.getElementById('list-bds').innerHTML = '<p style="text-align: center; grid-column: 1/-1; padding: 50px;"><i class="fas fa-spinner fa-spin"></i> Đang tải bài viết...</p>';
+
+            fetch('/api/News').then(res => res.json()).then(data => {
+                let html = '';
+                if (data.length === 0) html = '<p style="grid-column: 1/-1; text-align:center;">Chưa có bài viết nào được đăng.</p>';
+
+                data.reverse().forEach(n => {
+                    const date = new Date(n.createdAt).toLocaleDateString('vi-VN');
+                    html += `
+                        <div class="card" style="display: flex; flex-direction: column;" onclick="viewNewsDetail('${n.id}')">
+                            <img src="${n.imageUrl || 'https://images.unsplash.com/photo-1582407947304-fd86f028f716?fit=crop&w=600&q=80'}" style="width: 100%; height: 200px; object-fit: cover;">
+                            <div style="padding: 20px;">
+                                <small style="color: var(--gray);"><i class="far fa-clock"></i> ${date} - ${n.author || 'Ban biên tập'}</small>
+                                <h3 style="margin: 10px 0; color: var(--dark); font-size: 18px;">${n.title}</h3>
+                                <p style="color: #666; font-size: 14px; line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;">${n.description}</p>
+                            </div>
+                        </div>`;
+                });
+                document.getElementById('list-bds').innerHTML = html;
+                document.getElementById('main-title').scrollIntoView({ behavior: 'smooth' });
+            }).catch(e => {
+                document.getElementById('list-bds').innerHTML = '<p style="text-align:center; color:red; grid-column: 1/-1;">Lỗi tải tin tức.</p>';
+            });
         }
     </script>
 </body>
