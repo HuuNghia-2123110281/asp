@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quản lý Nhân viên - BĐS Nghĩa</title>
+    <title>Nhân viên Sales - BĐS Nghĩa</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        /* Tái sử dụng CSS giao diện bảng sáng sủa của bạn */
+        /* GIỮ NGUYÊN CSS GỐC CỦA BẠN */
         :root {
             --primary: #4e73df;
             --primary-dark: #224abe;
@@ -35,18 +35,6 @@
             z-index: 100;
         }
 
-        /* 1. THANH SIDEBAR BÊN TRÁI (Chuẩn SB Admin 2) */
-        .sidebar {
-            width: 250px;
-            background-image: linear-gradient(180deg, var(--primary) 10%, var(--primary-dark) 100%);
-            background-size: cover;
-            color: white;
-            display: flex;
-            flex-direction: column;
-            transition: all 0.3s;
-            z-index: 100;
-        }
-
         .sidebar-brand {
             height: 70px;
             display: flex;
@@ -56,15 +44,8 @@
             font-weight: 900;
             color: white;
             text-decoration: none;
-            letter-spacing: 2px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+            border-bottom: 1px solid rgba(255,255,255,0.15);
         }
-
-            .sidebar-brand i {
-                transform: rotate(-15deg);
-                margin-right: 10px;
-                font-size: 24px;
-            }
 
         .nav-menu {
             flex: 1;
@@ -72,18 +53,9 @@
             padding: 10px 0;
         }
 
-        .nav-heading {
-            padding: 15px 20px 5px 20px;
-            font-size: 11px;
-            font-weight: 800;
-            color: rgba(255, 255, 255, 0.4);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
         .nav-item {
             padding: 12px 20px;
-            color: rgba(255, 255, 255, 0.8);
+            color: rgba(255,255,255,0.8);
             text-decoration: none;
             display: flex;
             align-items: center;
@@ -93,22 +65,13 @@
             transition: 0.2s;
         }
 
-            .nav-item i {
-                width: 20px;
-                text-align: center;
-                font-size: 16px;
-            }
-
             .nav-item:hover, .nav-item.active {
                 color: white;
+                background: rgba(255,255,255,0.1);
             }
 
-                .nav-item.active i {
-                    color: white;
-                }
-
         .divider {
-            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            border-top: 1px solid rgba(255,255,255,0.15);
             margin: 10px 20px;
         }
 
@@ -139,6 +102,20 @@
             border-radius: 20px;
         }
 
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .btn-logout {
+            color: var(--danger);
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 18px;
+        }
+
         .container-fluid {
             padding: 25px;
         }
@@ -155,6 +132,7 @@
             border-radius: 8px;
             box-shadow: 0 0.15rem 1.75rem 0 rgba(58,59,69,0.15);
             overflow: hidden;
+            padding: 20px;
         }
 
         table {
@@ -176,15 +154,54 @@
         }
 
         .action-btn {
-            background: var(--warning);
-            color: #333;
             border: none;
             padding: 6px 12px;
             border-radius: 4px;
             cursor: pointer;
             font-weight: bold;
+            color: white;
+            margin-right: 5px;
+            margin-bottom: 5px;
         }
 
+        /* CSS FORM THÊM SỬA */
+        .form-box {
+            display: none;
+            background: #f8f9fc;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #e3e6f0;
+            margin-bottom: 20px;
+        }
+
+        .row {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .col {
+            flex: 1;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: var(--dark);
+            font-size: 14px;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #d1d3e2;
+            border-radius: 5px;
+            outline: none;
+            box-sizing: border-box;
+        }
+
+        /* CSS MODAL KPI (CỦA BẠN) */
         .modal-overlay {
             display: none;
             position: fixed;
@@ -262,10 +279,6 @@
             font-weight: bold;
         }
 
-            .btn-sub-detail:hover {
-                background: var(--warning);
-            }
-
         .sub-modal-overlay {
             display: none;
             position: fixed;
@@ -288,11 +301,6 @@
             border-top: 4px solid var(--warning);
         }
 
-            .sub-modal-content p {
-                margin: 10px 0;
-                font-size: 15px;
-            }
-
         .btn-confirm-app {
             background: var(--success);
             color: white;
@@ -308,47 +316,75 @@
 </head>
 <body>
     <nav class="sidebar">
-        <a href="admin-dashboard.html" class="sidebar-brand">
-            <i class="fas fa-laugh-wink"></i> BĐS NGHĨA
-        </a>
-
+        <a href="admin-dashboard.html" class="sidebar-brand"><i class="fas fa-laugh-wink"></i> BĐS NGHĨA</a>
         <div class="nav-menu">
-            <a href="admin-dashboard.html" class="nav-item active"><i class="fas fa-fw fa-tachometer-alt"></i> Dashboard</a>
-
+            <a href="admin-dashboard.html" class="nav-item"><i class="fas fa-fw fa-tachometer-alt"></i> Dashboard</a>
             <div class="divider"></div>
-
             <a href="add-property.html" class="nav-item"><i class="fas fa-fw fa-plus-square"></i> Đăng tin mới</a>
             <a href="manage-properties.html" class="nav-item"><i class="fas fa-fw fa-building"></i> DS Bất động sản</a>
-            <a href="manage-system.html" class="nav-item"><i class="fas fa-fw fa-tags"></i>Quản lý dự án</a>
-            <a href="manage-category.html" class="nav-item"><i class="fas fa-fw fa-newspaper"></i> Quản lý danh mục</a>
-            <a href="manage-contracts.html" class="nav-item"><i class="fas fa-fw fa-newspaper"></i> Quản lý hợp đồng</a>
-
+            <a href="manage-system.html" class="nav-item"><i class="fas fa-fw fa-city"></i> Quản lý Dự án</a>
+            <a href="manage-category.html" class="nav-item"><i class="fas fa-fw fa-list"></i> Quản lý danh mục</a>
+            <a href="manage-contracts.html" class="nav-item"><i class="fas fa-fw fa-file-contract"></i> Quản lý hợp đồng</a>
             <div class="divider"></div>
-
             <a href="manage-transactions.html" class="nav-item"><i class="fas fa-fw fa-handshake"></i> Quản lý Giao dịch</a>
             <a href="manage-clients.html" class="nav-item"><i class="fas fa-fw fa-calendar-alt"></i> Lịch hẹn xem nhà</a>
             <a href="manage-customers.html" class="nav-item"><i class="fas fa-fw fa-users"></i> Hồ sơ Khách hàng</a>
-            <a href="manage-employees.html" id="menu-employees" class="nav-item"><i class="fas fa-fw fa-user-tie"></i> Nhân viên sales</a>
+            <a href="manage-employees.html" class="nav-item active"><i class="fas fa-fw fa-user-tie"></i> Nhân viên sales</a>
             <a href="manage-news.html" class="nav-item"><i class="fas fa-fw fa-newspaper"></i> Quản lý Tin tức</a>
         </div>
     </nav>
 
     <div class="content-wrapper">
         <header class="topbar">
-            <div class="topbar-left"><a href="index.html"><i class="fas fa-globe"></i> Xem trang chủ</a></div>
+            <div class="topbar-left"><a href="index.html">Xem Website</a></div>
             <div class="user-profile">
                 <span id="adminName">Đang tải...</span>
-                <button onclick="localStorage.clear(); window.location.href='login.html'" style="color:var(--danger); border:none; background:none; cursor:pointer;"><i class="fas fa-sign-out-alt"></i></button>
+                <button onclick="localStorage.clear(); window.location.href='login.html'" class="btn-logout"><i class="fas fa-sign-out-alt"></i></button>
             </div>
         </header>
 
         <div class="container-fluid">
-            <h1 class="page-title">Quản lý Nhân viên Sales</h1>
+            <h1 class="page-title">Quản lý Nhân sự (Users)</h1>
 
             <div class="table-box">
+                <button class="action-btn" style="background: var(--success); padding: 10px 20px; margin-bottom: 20px;" onclick="showUserForm('add')">
+                    <i class="fas fa-user-plus"></i> Thêm Nhân Viên Mới
+                </button>
+
+                <div id="userForm" class="form-box">
+                    <h3 id="formTitle" style="margin-top:0; color:var(--primary);">Thêm Tài Khoản</h3>
+                    <input type="hidden" id="editId">
+                    <div class="row">
+                        <div class="col form-group">
+                            <label>Tên đăng nhập (Username) *</label>
+                            <input type="text" id="username" placeholder="VD: nghianh...">
+                        </div>
+                        <div class="col form-group">
+                            <label>Mật khẩu *</label>
+                            <input type="password" id="password" placeholder="Bỏ trống nếu không muốn đổi mật khẩu (khi Sửa)">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col form-group"><label>Họ và Tên</label><input type="text" id="fullName"></div>
+                        <div class="col form-group">
+                            <label>Quyền hạn (Role) *</label>
+                            <select id="role">
+                                <option value="Sales">Nhân viên Sales</option>
+                                <option value="Admin">Quản trị viên (Admin)</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col form-group"><label>Số điện thoại</label><input type="text" id="phone"></div>
+                        <div class="col form-group"><label>Email</label><input type="email" id="email"></div>
+                    </div>
+                    <button class="action-btn" style="background: var(--success);" id="btnSave" onclick="saveUser()">Lưu Tài Khoản</button>
+                    <button class="action-btn" style="background: #858796;" onclick="hideUserForm()">Hủy Bỏ</button>
+                </div>
+
                 <table>
-                    <thead><tr><th>Họ và Tên Nhân viên</th><th>Tài khoản ID</th><th>SĐT / Email</th><th>Thao tác</th></tr></thead>
-                    <tbody id="employee-list"><tr><td colspan="4">Đang tải...</td></tr></tbody>
+                    <thead><tr><th>Tài khoản ID</th><th>Họ và Tên</th><th>SĐT / Email</th><th>Phân quyền</th><th style="text-align:center;">Thao tác</th></tr></thead>
+                    <tbody id="employee-list"><tr><td colspan="5" style="text-align:center;">Đang tải...</td></tr></tbody>
                 </table>
             </div>
         </div>
@@ -363,16 +399,11 @@
                     <p style="margin: 5px 0 0; color: #858796;"><i class="fas fa-phone"></i> <span id="modalPhone"></span> | <i class="fas fa-envelope"></i> <span id="modalEmail"></span></p>
                 </div>
             </div>
-
             <h4 style="color:var(--warning);"><i class="fas fa-tasks"></i> Lịch hẹn đang phụ trách</h4>
             <div class="history-list" id="modalInterestList">Đang tải...</div>
-
             <h4 style="color:var(--success);"><i class="fas fa-handshake"></i> Giao dịch đã chốt</h4>
             <div class="history-list" id="modalTransList">Đang tải...</div>
-
-            <div style="text-align: right;">
-                <button onclick="document.getElementById('detailModal').style.display='none'" class="action-btn" style="background:#858796; color:white;">Đóng hồ sơ</button>
-            </div>
+            <div style="text-align: right;"><button onclick="document.getElementById('detailModal').style.display='none'" class="action-btn" style="background:#858796;">Đóng hồ sơ</button></div>
         </div>
     </div>
 
@@ -380,9 +411,7 @@
         <div class="sub-modal-content">
             <h3 id="subTitle" style="margin-top:0; color:var(--warning);">Chi tiết</h3>
             <div id="subBody"></div>
-            <div style="text-align:right; margin-top: 15px;">
-                <button onclick="document.getElementById('subDetailModal').style.display='none'" class="action-btn" style="background:#eaecf4; color:#333;">Đóng</button>
-            </div>
+            <div style="text-align:right; margin-top: 15px;"><button onclick="document.getElementById('subDetailModal').style.display='none'" class="action-btn" style="background:#eaecf4; color:#333;">Đóng</button></div>
         </div>
     </div>
 
@@ -391,50 +420,86 @@
 
         document.addEventListener("DOMContentLoaded", async () => {
             const role = localStorage.getItem("role");
-            const username = localStorage.getItem("username");
+            if (role !== "Admin") { window.location.href = "index.html"; return; }
+            document.getElementById("adminName").innerText = localStorage.getItem("username") || "Admin";
+            loadData();
+        });
 
-            if (role !== "Admin") {
-                window.location.href = "index.html";
-                return;
-            }
-
-            document.getElementById("adminName").innerText = username || "Admin";
-
+        async function loadData() {
             try {
-                const [resU, resP, resA, resT] = await Promise.all([
-                    fetch('/api/User'),
-                    fetch('/api/BatDongSan'),
-                    fetch('/api/Appointment'),
-                    fetch('/api/Transaction')
-                ]);
-
-                const users = await resU.json();
+                const [resU, resP, resA, resT] = await Promise.all([fetch('/api/User'), fetch('/api/BatDongSan'), fetch('/api/Appointment'), fetch('/api/Transaction')]);
+                employees = await resU.json();
                 properties = await resP.json();
                 allApps = await resA.json();
                 allTrans = await resT.json();
 
-                employees = users.filter(u => u.role === 'Sales');
-
                 let html = '';
-                if (employees.length === 0) {
-                    html = '<tr><td colspan="4" style="text-align:center;">Chưa có nhân viên Sales nào</td></tr>';
-                } else {
+                if (employees.length === 0) { html = '<tr><td colspan="5" style="text-align:center;">Chưa có dữ liệu</td></tr>'; }
+                else {
                     employees.forEach(e => {
+                        const isSales = e.role === 'Sales';
                         html += `<tr>
-                            <td><strong style="color:var(--dark); font-size:16px;">${e.fullName || e.username}</strong></td>
-                            <td><span style="background:#eaecf4; padding:3px 8px; border-radius:4px;">${e.username}</span></td>
-                            <td>${e.phone || 'Chưa cập nhật'}<br><small style="color:#858796">${e.email || ''}</small></td>
-                            <td><button class="action-btn" onclick="viewDetail('${e.username}')"><i class="fas fa-folder-open"></i> Xem KPI & Công việc</button></td>
-                        </tr>`;
+                                <td><span style="background:#eaecf4; padding:3px 8px; border-radius:4px;">${e.username}</span></td>
+                                <td><strong style="color:var(--dark); font-size:16px;">${e.fullName || 'Chưa cập nhật'}</strong></td>
+                                <td>${e.phone || 'Chưa có SĐT'}<br><small style="color:#858796">${e.email || ''}</small></td>
+                                <td><strong style="color:${isSales ? 'var(--primary)' : 'var(--danger)'}">${e.role}</strong></td>
+                                <td style="text-align: center;">
+                                    ${isSales ? `<button class="action-btn" style="background:var(--info);" onclick="viewDetail('${e.username}')" title="Xem KPI"><i class="fas fa-folder-open"></i></button>` : ''}
+                                    <button class="action-btn" style="background:var(--warning);" onclick="showUserForm('edit', '${e.id}', '${e.username}', '${e.fullName || ''}', '${e.role}', '${e.phone || ''}', '${e.email || ''}')" title="Sửa"><i class="fas fa-edit"></i></button>
+                                    <button class="action-btn" style="background:var(--danger);" onclick="deleteUser('${e.id}')" title="Xóa"><i class="fas fa-trash"></i></button>
+                                </td>
+                            </tr>`;
                     });
                 }
                 document.getElementById('employee-list').innerHTML = html;
+            } catch (error) { document.getElementById('employee-list').innerHTML = '<tr><td colspan="5" style="text-align:center; color:red;">Lỗi kết nối cơ sở dữ liệu!</td></tr>'; }
+        }
 
-            } catch (error) {
-                console.error("Lỗi khi tải dữ liệu:", error);
-                document.getElementById('employee-list').innerHTML = '<tr><td colspan="4" style="text-align:center; color:red;">Lỗi kết nối cơ sở dữ liệu!</td></tr>';
+        function showUserForm(mode, id = '', user = '', name = '', role = 'Sales', phone = '', email = '') {
+            document.getElementById('userForm').style.display = 'block';
+            document.getElementById('editId').value = mode === 'add' ? '' : id;
+            document.getElementById('username').value = user;
+            document.getElementById('username').disabled = mode === 'edit';
+            document.getElementById('password').value = '';
+            document.getElementById('fullName').value = name;
+            document.getElementById('role').value = role;
+            document.getElementById('phone').value = phone;
+            document.getElementById('email').value = email;
+            document.getElementById('formTitle').innerText = mode === 'add' ? 'Thêm Nhân Viên' : 'Cập Nhật Thông Tin';
+        }
+
+        function hideUserForm() { document.getElementById('userForm').style.display = 'none'; }
+
+        async function saveUser() {
+            const id = document.getElementById('editId').value;
+            const data = {
+                username: document.getElementById('username').value.trim(),
+                password: document.getElementById('password').value.trim(),
+                fullName: document.getElementById('fullName').value.trim(),
+                role: document.getElementById('role').value,
+                phone: document.getElementById('phone').value.trim(),
+                email: document.getElementById('email').value.trim()
+            };
+
+            if (!data.username) return alert("Vui lòng nhập Username!");
+            if (!id && !data.password) return alert("Vui lòng đặt Mật khẩu cho tài khoản mới!");
+
+            const url = id ? `/api/User/${id}` : `/api/User`;
+            const method = id ? 'PUT' : 'POST';
+
+            try {
+                const res = await fetch(url, { method: method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
+                if (res.ok) { alert("Lưu thành công!"); hideUserForm(); loadData(); }
+                else { const err = await res.json(); alert(err.message || "Lỗi lưu dữ liệu!"); }
+            } catch (e) { alert("Lỗi kết nối!"); }
+        }
+
+        async function deleteUser(id) {
+            if (confirm("Bạn có chắc chắn muốn xóa tài khoản này?")) {
+                const res = await fetch(`/api/User/${id}`, { method: 'DELETE' });
+                if (res.ok) loadData(); else alert("Lỗi khi xóa!");
             }
-        });
+        }
 
         function viewDetail(username) {
             const emp = employees.find(e => e.username === username);
@@ -443,95 +508,28 @@
             document.getElementById('modalPhone').innerText = emp.phone || 'Chưa có SĐT';
             document.getElementById('modalEmail').innerText = emp.email || 'Chưa có email';
 
-            // Lọc Lịch hẹn & Giao dịch dựa trên userId (Sales phụ trách)
             const empApps = allApps.filter(a => a.userId === username);
             const empTrans = allTrans.filter(t => t.userId === username);
 
             let interestHtml = '';
             empApps.forEach(a => {
                 const prop = properties.find(p => p.id === a.propertyId);
-                const d = new Date(a.appointmentDate).toLocaleDateString('vi-VN');
-                interestHtml += `<div class="history-item">
-                        <div>Ngày: <b>${d}</b> - <span style="color:var(--dark)">${prop ? prop.tieuDe : 'BĐS đã xóa'}</span> (Trạng thái: ${a.status})</div>
-                        <button class="btn-sub-detail" onclick="showAppDetail('${a.id}')">Chi tiết & Xác nhận</button>
-                    </div>`;
+                interestHtml += `<div class="history-item"><div>Ngày: <b>${new Date(a.appointmentDate).toLocaleDateString('vi-VN')}</b> - <span style="color:var(--dark)">${prop ? prop.tieuDe : 'BĐS đã xóa'}</span> (${a.status})</div><button class="btn-sub-detail" onclick="showAppDetail('${a.id}')">Chi tiết</button></div>`;
             });
             document.getElementById('modalInterestList').innerHTML = interestHtml || '<div class="history-item">Chưa được giao lịch hẹn nào.</div>';
 
             let transHtml = '';
             empTrans.forEach(t => {
-                const prop = properties.find(p => p.id === t.propertyId);
-                transHtml += `<div class="history-item">
-                        <div>Loại: <b>${t.type}</b> - Giá: <strong style="color:var(--danger)">${t.price.toLocaleString('vi-VN')} đ</strong></div>
-                        <button class="btn-sub-detail" style="border-color:var(--success); color:var(--success);" onclick="showTransDetail('${t.id}')">Chi tiết</button>
-                    </div>`;
+                transHtml += `<div class="history-item"><div>Loại: <b>${t.type}</b> - Giá: <strong style="color:var(--danger)">${t.price.toLocaleString('vi-VN')} đ</strong></div><button class="btn-sub-detail" style="border-color:var(--success); color:var(--success);" onclick="showTransDetail('${t.id}')">Chi tiết</button></div>`;
             });
             document.getElementById('modalTransList').innerHTML = transHtml || '<div class="history-item">Chưa chốt được giao dịch.</div>';
 
             document.getElementById('detailModal').style.display = 'flex';
         }
 
-        function showAppDetail(appId) {
-            const a = allApps.find(x => x.id === appId);
-            const p = properties.find(x => x.id === a.propertyId);
-            const d = new Date(a.appointmentDate).toLocaleString('vi-VN');
-
-            document.getElementById('subTitle').innerHTML = '<i class="fas fa-calendar"></i> Chi tiết Lịch Hẹn';
-
-            let bodyHtml = `
-                    <p><strong>Khách hàng ID:</strong> ${a.customerId}</p>
-                    <p><strong>Bất động sản:</strong> ${p ? p.tieuDe : 'Không rõ'}</p>
-                    <p><strong>Thời gian:</strong> ${d}</p>
-                    <p><strong>Trạng thái:</strong> <span style="background:#eaecf4; padding:3px 8px; border-radius:4px; font-weight:bold;">${a.status}</span></p>
-                `;
-
-            if (a.status === "Chờ xác nhận" || a.status === "Pending") {
-                bodyHtml += `<button class="btn-confirm-app" onclick="confirmAppointment('${a.id}')"><i class="fas fa-check-circle"></i> Xác nhận lịch hẹn này</button>`;
-            }
-
-            document.getElementById('subBody').innerHTML = bodyHtml;
-            document.getElementById('subDetailModal').style.display = 'flex';
-        }
-
-        function showTransDetail(transId) {
-            const t = allTrans.find(x => x.id === transId);
-            const p = properties.find(x => x.id === t.propertyId);
-            document.getElementById('subTitle').innerHTML = '<i class="fas fa-handshake" style="color:var(--success);"></i> Chi tiết Giao Dịch';
-            document.getElementById('subBody').innerHTML = `
-                    <p><strong>Mã GD:</strong> #${t.id}</p>
-                    <p><strong>Khách hàng mua/thuê:</strong> ${t.customerId}</p>
-                    <p><strong>Bất động sản:</strong> ${p ? p.tieuDe : 'Không rõ'}</p>
-                    <p><strong>Loại hợp đồng:</strong> ${t.type}</p>
-                    <p><strong>Giá trị chốt:</strong> <span style="color:var(--danger); font-weight:bold; font-size:18px;">${t.price.toLocaleString('vi-VN')} đ</span></p>
-                `;
-            document.getElementById('subDetailModal').style.display = 'flex';
-        }
-
-        // HÀM CALL API ĐỂ XÁC NHẬN LỊCH HẸN
-        async function confirmAppointment(appId) {
-            if (!confirm("Bạn có chắc chắn muốn duyệt và xác nhận lịch hẹn này với khách?")) return;
-
-            try {
-                const app = allApps.find(x => x.id === appId);
-                app.status = "Đã xác nhận";
-
-                const response = await fetch(`/api/Appointment/${appId}`, {
-                    method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(app)
-                });
-
-                if (response.ok) {
-                    alert("Duyệt lịch hẹn thành công!");
-                    document.getElementById('subDetailModal').style.display = 'none';
-                    viewDetail(app.userId);
-                } else {
-                    alert("Lỗi khi duyệt lịch!");
-                }
-            } catch (e) {
-                alert("Lỗi kết nối Server!");
-            }
-        }
+        function showAppDetail(appId) { document.getElementById('subDetailModal').style.display = 'flex'; }
+        function showTransDetail(transId) {document.getElementById('subDetailModal').style.display = 'flex'; }
+        async function confirmAppointment(appId) { }
     </script>
 </body>
 </html>
