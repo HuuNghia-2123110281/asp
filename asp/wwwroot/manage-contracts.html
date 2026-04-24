@@ -1,0 +1,394 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý Hợp đồng - BĐS Nghĩa</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* --- COPY CSS TỪ CÁC TRANG MANAGE KHÁC SANG --- */
+        :root {
+            --primary: #4e73df;
+            --primary-dark: #224abe;
+            --success: #1cc88a;
+            --danger: #e74a3b;
+            --warning: #f6c23e;
+            --dark: #5a5c69;
+            --bg-light: #f8f9fc;
+        }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            margin: 0;
+            background-color: var(--bg-light);
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .sidebar {
+            width: 250px;
+            background-image: linear-gradient(180deg, var(--primary) 10%, var(--primary-dark) 100%);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            z-index: 100;
+        }
+
+        .sidebar-brand {
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            font-weight: 900;
+            color: white;
+            text-decoration: none;
+            border-bottom: 1px solid rgba(255,255,255,0.15);
+        }
+
+        .nav-menu {
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px 0;
+        }
+
+        .nav-item {
+            padding: 12px 20px;
+            color: rgba(255,255,255,0.8);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 14px;
+            font-weight: 700;
+            transition: 0.2s;
+        }
+
+            .nav-item:hover, .nav-item.active {
+                color: white;
+                background: rgba(255,255,255,0.1);
+            }
+
+        .divider {
+            border-top: 1px solid rgba(255,255,255,0.15);
+            margin: 10px 20px;
+        }
+
+        .content-wrapper {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+
+        .topbar {
+            background: white;
+            height: 70px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 25px;
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58,59,69,0.15);
+            z-index: 10;
+        }
+
+        .topbar-left a {
+            color: var(--dark);
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 14px;
+            background: var(--bg-light);
+            padding: 8px 15px;
+            border-radius: 20px;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        /* --- NỘI DUNG --- */
+        .container-fluid {
+            padding: 25px;
+        }
+
+        .page-title {
+            margin-top: 0;
+            color: var(--dark);
+            margin-bottom: 25px;
+            font-weight: 400;
+            font-size: 28px;
+        }
+
+        .card-custom {
+            background: white;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58,59,69,0.15);
+            border-top: 4px solid var(--primary);
+            margin-bottom: 25px;
+        }
+
+        /* Modal Form (Ẩn hiện) */
+        .form-box {
+            display: none;
+            background: #f8f9fc;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #e3e6f0;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+            .form-group label {
+                display: block;
+                font-weight: bold;
+                margin-bottom: 5px;
+                color: var(--dark);
+            }
+
+            .form-group input {
+                width: 100%;
+                padding: 10px;
+                border: 1px solid #d1d3e2;
+                border-radius: 5px;
+                outline: none;
+                box-sizing: border-box;
+            }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        .btn-add {
+            background: var(--primary);
+        }
+
+        .btn-success {
+            background: var(--success);
+        }
+
+        .btn-cancel {
+            background: #858796;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        th {
+            background: #f8f9fc;
+            color: var(--dark);
+            font-size: 14px;
+            padding: 15px;
+            border-bottom: 2px solid #e3e6f0;
+            text-align: left;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #e3e6f0;
+            color: var(--dark);
+            font-size: 14px;
+        }
+
+        .btn-action {
+            width: 35px;
+            height: 35px;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+            color: white;
+            margin-right: 5px;
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="sidebar">
+        <a href="admin-dashboard.html" class="sidebar-brand">BĐS NGHĨA</a>
+        <div class="nav-menu">
+            <a href="admin-dashboard.html" class="nav-item active"><i class="fas fa-fw fa-tachometer-alt"></i> Dashboard</a>
+
+            <div class="divider"></div>
+
+            <a href="add-property.html" class="nav-item"><i class="fas fa-fw fa-plus-square"></i> Đăng tin mới</a>
+            <a href="manage-properties.html" class="nav-item"><i class="fas fa-fw fa-building"></i> DS Bất động sản</a>
+            <a href="manage-system.html" class="nav-item"><i class="fas fa-fw fa-tags"></i> Dự án & Chủ nhà</a>
+            <a href="manage-category.html" class="nav-item"><i class="fas fa-fw fa-newspaper"></i> Quản lý danh mục</a>
+            <a href="manage-contracts.html" class="nav-item"><i class="fas fa-fw fa-newspaper"></i> Quản lý hợp đồng</a>
+
+            <div class="divider"></div>
+
+            <a href="manage-transactions.html" class="nav-item"><i class="fas fa-fw fa-handshake"></i> Quản lý Giao dịch</a>
+            <a href="manage-clients.html" class="nav-item"><i class="fas fa-fw fa-calendar-alt"></i> Lịch hẹn xem nhà</a>
+            <a href="manage-customers.html" class="nav-item"><i class="fas fa-fw fa-users"></i> Hồ sơ Khách hàng</a>
+            <a href="manage-employees.html" id="menu-employees" class="nav-item"><i class="fas fa-fw fa-user-tie"></i> Nhân viên sales</a>
+            <a href="manage-news.html" class="nav-item"><i class="fas fa-fw fa-newspaper"></i> Quản lý Tin tức</a>
+        </div>
+    </nav>
+
+    <div class="content-wrapper">
+        <header class="topbar">
+            <div class="topbar-left"><a href="index.html">Xem Website</a></div>
+            <div class="user-profile"><span id="adminName">Đang tải...</span></div>
+        </header>
+
+        <div class="container-fluid">
+            <h1 class="page-title">Quản lý Kho Hợp Đồng</h1>
+
+            <div class="card-custom">
+                <button class="btn btn-add" onclick="showForm('add')"><i class="fas fa-plus"></i> Tải hợp đồng mới</button>
+
+                <div id="contractForm" class="form-box">
+                    <h3 id="formTitle" style="margin-top:0; color:var(--primary);">Thêm Hợp Đồng</h3>
+                    <input type="hidden" id="editId">
+                    <div class="form-group">
+                        <label>Mã Giao Dịch (Transaction ID)</label>
+                        <input type="text" id="transId" placeholder="Nhập mã giao dịch liên kết...">
+                    </div>
+                    <div class="form-group">
+                        <label>Số Hợp Đồng</label>
+                        <input type="text" id="contractNum" placeholder="Ví dụ: HD-10293">
+                    </div>
+                    <div class="form-group">
+                        <label>File đính kèm (PDF, Word, Ảnh)</label>
+                        <input type="file" id="fileUpload" style="padding: 5px;">
+                        <small id="fileHint" style="color:red; display:none;">Chỉ chọn file nếu bạn muốn thay đổi file cũ.</small>
+                    </div>
+                    <button class="btn btn-success" id="btnSave" onclick="saveContract()">Lưu Hợp Đồng</button>
+                    <button class="btn btn-cancel" onclick="hideForm()">Hủy Bỏ</button>
+                </div>
+
+                <table style="margin-top: 20px;">
+                    <thead>
+                        <tr>
+                            <th>Số Hợp Đồng</th>
+                            <th>Mã Giao Dịch</th>
+                            <th>File Đính Kèm</th>
+                            <th style="width: 120px; text-align: center;">Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody id="contractTableBody">
+                        <tr><td colspan="4" style="text-align:center;"><i class="fas fa-spinner fa-spin"></i> Đang tải dữ liệu...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            document.getElementById("adminName").innerText = localStorage.getItem("username") || "Admin";
+            loadContracts();
+        });
+
+        // TẢI DANH SÁCH (Dùng tạm API lấy tất cả, nếu chưa có API GET All thì phải viết thêm ở Controller)
+        // Lưu ý: Nếu Backend bạn chưa viết lệnh Get All, hãy bổ sung lệnh [HttpGet] vào ContractController
+        async function loadContracts() {
+            try {
+                // Giả định bạn có một API trả về toàn bộ Hợp đồng (ví dụ: GET /api/Contract)
+                const res = await fetch('/api/Contract');
+                const data = await res.json();
+
+                let html = '';
+                if (data.length === 0) html = '<tr><td colspan="4" style="text-align:center;">Chưa có hợp đồng nào.</td></tr>';
+
+                data.forEach(c => {
+                    html += `<tr>
+                            <td><strong>${c.contractNumber}</strong></td>
+                            <td>${c.transactionId}</td>
+                            <td><a href="${c.fileUrl}" target="_blank" style="color:var(--primary); font-weight:bold;"><i class="fas fa-download"></i> Tải về / Xem</a></td>
+                            <td style="text-align: center;">
+                                <button class="btn-action" style="background:var(--warning);" onclick="showForm('edit', '${c.id}', '${c.transactionId}', '${c.contractNumber}')" title="Sửa"><i class="fas fa-edit"></i></button>
+                                <button class="btn-action" style="background:var(--danger);" onclick="deleteContract('${c.id}')" title="Xóa"><i class="fas fa-trash"></i></button>
+                            </td>
+                        </tr>`;
+                });
+                document.getElementById('contractTableBody').innerHTML = html;
+            } catch (e) {
+                document.getElementById('contractTableBody').innerHTML = '<tr><td colspan="4" style="color:red; text-align:center;">Lưu ý: Cần bổ sung API Get All trong Backend để hiển thị danh sách.</td></tr>';
+            }
+        }
+
+        function showForm(mode, id = '', transId = '', num = '') {
+            document.getElementById('contractForm').style.display = 'block';
+            if (mode === 'add') {
+                document.getElementById('formTitle').innerText = 'Thêm Hợp Đồng Mới';
+                document.getElementById('editId').value = '';
+                document.getElementById('transId').value = '';
+                document.getElementById('contractNum').value = '';
+                document.getElementById('fileHint').style.display = 'none';
+            } else {
+                document.getElementById('formTitle').innerText = 'Cập Nhật Hợp Đồng';
+                document.getElementById('editId').value = id;
+                document.getElementById('transId').value = transId;
+                document.getElementById('contractNum').value = num;
+                document.getElementById('fileHint').style.display = 'block';
+            }
+        }
+
+        function hideForm() {
+            document.getElementById('contractForm').style.display = 'none';
+            document.getElementById('fileUpload').value = ''; // Reset file
+        }
+
+        // LƯU / CẬP NHẬT
+        async function saveContract() {
+            const id = document.getElementById('editId').value;
+            const transId = document.getElementById('transId').value.trim();
+            const num = document.getElementById('contractNum').value.trim();
+            const file = document.getElementById('fileUpload').files[0];
+
+            if (!transId || !num) return alert("Vui lòng nhập đủ Mã Giao Dịch và Số Hợp Đồng!");
+            if (!id && !file) return alert("Vui lòng chọn file Hợp đồng để tải lên!");
+
+            const formData = new FormData();
+            formData.append("transactionId", transId);
+            formData.append("contractNumber", num);
+            if (file) formData.append("file", file);
+
+            const url = id ? `/api/Contract/${id}` : `/api/Contract/upload`;
+            const method = id ? 'PUT' : 'POST';
+
+            document.getElementById('btnSave').innerText = "Đang xử lý...";
+
+            try {
+                const res = await fetch(url, { method: method, body: formData });
+                if (res.ok) {
+                    alert(id ? "Cập nhật thành công!" : "Tải lên thành công!");
+                    hideForm();
+                    loadContracts();
+                } else {
+                    const err = await res.json();
+                    alert(err.message || "Có lỗi xảy ra!");
+                }
+            } catch (e) { alert("Lỗi kết nối máy chủ!"); }
+
+            document.getElementById('btnSave').innerText = "Lưu Hợp Đồng";
+        }
+
+        // XÓA
+        async function deleteContract(id) {
+            if (confirm("Bạn có chắc chắn muốn xóa Hợp đồng này (Bao gồm cả file đính kèm)?")) {
+                const res = await fetch(`/api/Contract/${id}`, { method: 'DELETE' });
+                if (res.ok) loadContracts();
+                else alert("Lỗi khi xóa!");
+            }
+        }
+    </script>
+</body>
+</html>
