@@ -68,17 +68,15 @@ namespace asp.Controllers
                 var batDongSan = new BatDongSan
                 {
                     TieuDe = request.TieuDe,
+                    LoaiGiaoDich = request.LoaiGiaoDich,
                     LoaiHinh = request.LoaiHinh,
                     DienTich = request.DienTich,
                     PhongNgu = request.PhongNgu,
                     Gia = request.Gia,
                     DiaChi = request.DiaChi,
                     MoTa = request.MoTa,
-
-                    // --- MỚI THÊM: Hứng dữ liệu Dự án và Chủ nhà ---
                     ProjectId = request.ProjectId,
                     OwnerId = request.OwnerId,
-
                     HinhAnhUrl = hinhAnhUrl ?? "https://loremflickr.com/400/300/house"
                 };
 
@@ -112,6 +110,7 @@ namespace asp.Controllers
             }
 
             existingBds.TieuDe = request.TieuDe;
+            existingBds.LoaiGiaoDich = request.LoaiGiaoDich;
             existingBds.LoaiHinh = request.LoaiHinh;
             existingBds.Gia = request.Gia;
             existingBds.DiaChi = request.DiaChi;
@@ -156,17 +155,18 @@ namespace asp.Controllers
         // 7. TÌM KIẾM NÂNG CAO (LỌC THEO TIÊU CHÍ)
         [HttpGet("filter")]
         public async Task<ActionResult<IEnumerable<BatDongSan>>> FilterBatDongSan(
-    [FromQuery] string? keyword,
-    [FromQuery] string? loaiHinh,
-    [FromQuery] double? minGia,
-    [FromQuery] double? maxGia,
-    [FromQuery] double? minDienTich,
-    [FromQuery] double? maxDienTich,
-    [FromQuery] int? phongNgu,
-    [FromQuery] string? loaiGiaoDich)
+            [FromQuery] string? keyword,
+            [FromQuery] string? loaiHinh,
+            [FromQuery] double? minGia,
+            [FromQuery] double? maxGia,
+            [FromQuery] double? minDienTich,
+            [FromQuery] double? maxDienTich,
+            [FromQuery] int? phongNgu,
+            [FromQuery] string? loaiGiaoDich)
         {
             var builder = Builders<BatDongSan>.Filter;
             var filter = builder.Empty;
+
             // 1. Lọc theo từ khóa
             if (!string.IsNullOrWhiteSpace(keyword))
             {
@@ -176,11 +176,13 @@ namespace asp.Controllers
                 );
                 filter &= keywordFilter;
             }
+
             // 2. Lọc theo loại hình
             if (!string.IsNullOrWhiteSpace(loaiHinh) && loaiHinh != "Tất cả")
             {
                 filter &= builder.Eq(x => x.LoaiHinh, loaiHinh);
             }
+
             // 3. Lọc theo giá
             if (minGia.HasValue)
             {
@@ -190,6 +192,7 @@ namespace asp.Controllers
             {
                 filter &= builder.Lte(x => x.Gia, maxGia.Value);
             }
+
             // 4. LỌC THEO DIỆN TÍCH
             if (minDienTich.HasValue)
             {
@@ -199,7 +202,8 @@ namespace asp.Controllers
             {
                 filter &= builder.Lte(x => x.DienTich, maxDienTich.Value);
             }
-            // 5.LỌC THEO PHÒNG NGỦ
+
+            // 5. LỌC THEO PHÒNG NGỦ
             if (phongNgu.HasValue)
             {
                 if (phongNgu.Value >= 5)
@@ -211,6 +215,13 @@ namespace asp.Controllers
                     filter &= builder.Eq(x => x.PhongNgu, phongNgu.Value);
                 }
             }
+
+            // 6. BỔ SUNG: LỌC THEO LOẠI GIAO DỊCH (Bán / Cho thuê)
+            if (!string.IsNullOrWhiteSpace(loaiGiaoDich))
+            {
+                filter &= builder.Eq(x => x.LoaiGiaoDich, loaiGiaoDich);
+            }
+
             var list = await _bdsCollection.Find(filter)
                 .SortByDescending(x => x.Id)
                 .ToListAsync();
