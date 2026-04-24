@@ -50,5 +50,48 @@ namespace asp.Controllers
             if (result.MatchedCount == 0) return NotFound(new { message = "Không tìm thấy khách hàng để cập nhật!" });
             return Ok(new { message = "Cập nhật thành công!" });
         }
+        // --- CHỈ THÊM 2 HÀM NÀY VÀO CUSTOMER CONTROLLER ---
+
+        // 1. SỬA THÔNG TIN KHÁCH HÀNG (PUT)
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateCustomer(string id, [FromBody] Customer customerIn)
+        {
+            try
+            {
+                var existing = await _customerCollection.Find(c => c.Id == id).FirstOrDefaultAsync();
+                if (existing == null) return NotFound(new { message = "Không tìm thấy khách hàng!" });
+
+                // Cập nhật thông tin mới
+                existing.FullName = customerIn.FullName;
+                existing.Phone = customerIn.Phone;
+                existing.Email = customerIn.Email;
+                existing.Address = customerIn.Address;
+
+                await _customerCollection.ReplaceOneAsync(c => c.Id == id, existing);
+                return Ok(new { message = "Cập nhật thành công!" });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Lỗi Server: " + ex.Message });
+            }
+        }
+
+        // 2. XÓA KHÁCH HÀNG (DELETE)
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteCustomer(string id)
+        {
+            try
+            {
+                var result = await _customerCollection.DeleteOneAsync(c => c.Id == id);
+                if (result.DeletedCount > 0)
+                    return Ok(new { message = "Xóa khách hàng thành công!" });
+
+                return NotFound(new { message = "Không tìm thấy khách hàng!" });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Lỗi Server: " + ex.Message });
+            }
+        }
     }
 }
